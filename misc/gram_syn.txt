@@ -1,0 +1,7 @@
+Grammar && Syntax
+---------------------------
+
+This file contains the specifications for the grammar and syntax of Sol.
+
+Syntax:
+---------------------------
