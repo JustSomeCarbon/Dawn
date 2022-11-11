@@ -8,17 +8,27 @@ languages. This, of course, is not free. Some of the design choices will seem
 odd until a viable sweetspot is found for the grammar and syntax. Unlike Java,
 Daylang will not require everything to be an object. Oftentimes its unecessary
 and verbose for something simple. Therefore, Daylang hopes to work around this
-in an elegant and pragmatic maner.
+in an elegant and pragmatic maner. A more flushed and polished representaion of
+the language will be published alongside this document.
 
 This is still a work in progress, im trying my best.
 
-Syntax:
+Grammar:
 ---------------------------
+
+A look at the words reserved words of the language.
+Notice inclusion position does not imply precedence.
 
 Reserved Words:
   Types:
+	void
 	int
+	int16
+	int32
+	int64
 	float
+	float32
+	float64
 	bool
 	char
 	string
@@ -29,7 +39,9 @@ Reserved Words:
 
   Permissions:
 	pub
+	+
 	priv
+	-
 
   Control:
 	if
@@ -37,11 +49,41 @@ Reserved Words:
 	for
 	while
 
-Values allowed:
+Operators:
+	+
+	-
+	*
+	/
+	%
+	++
+	--
+	+=
+	-=
+	*=
+	/=
+	&&
+	||
+	!
+	==
+	<=
+	>=
+	>
+	<
+
+  Structures & control:
+	( )
+	[ ]
+
+
+Syntax:
+---------------------------
+
+User defined Names:
   Names:
 	Variable, class, and function names should allow lower and upper case letters,
 	numbers, underscores, and hyphens. hyphens should only be allowed between
 	characters, and should not start or end any name.
+
 
 Examples:
 ---------------------------
@@ -90,26 +132,63 @@ Classes are always private unless otherwise specified:
 		}
 	}
 
+If a class wants to inherit from another class:
+
+	pub class className -> parentClass
+	{/* body of the class /*}
+
 
 Functions outside classes can be defined, reducing the need to write unecessarily long
 verbose static classes and methods.
 Functions are public by default, and must be made private otherwise:
 	
-	returnType functionName
+	f functionName: returnType
 	{ (paramType param1, ...)
+		// function body
+	}
+	// or define explicity public
+	+f functionName: returnType
+	{ ()
 		// function body
 	}
 
 	// we can define a private function:
-	priv returnType functionName
+	priv f functionName: returnType
 	{ (paramType param1)
 		// function body
 	}
 	// or ...
-	-- returnType functionName
+	-f functionName: returnType
 	{ (paramType param1)
 		// function body
 	}
 
+
+To run a program, the main function must be described.
+Since main is a function it is always public unless otherwise specified:
+
+	f Main: void
+	{ (Typeparam param1, ...)
+		// Main body
+	}
+
+
+Constrol structures are the heart and soul of every application. The following are
+some examples of how the control structures should look.
+
+	while (expression) {// while loop body}
+	// or...
+	while
+	{ (expression)
+		// while loop body
+	}
+
+	/* similar structure with for loops */
+	for (start; stop; step) {// for loop body}
+	// or...
+	for
+	{ (start; stop; step)
+		// for loop body
+	}
 
 
