@@ -3,5 +3,113 @@ Grammar && Syntax
 
 This file contains the specifications for the grammar and syntax of Sol.
 
+Daylang strives for simplicity and design with less code than traditional oop
+languages. This, of course, is not free. Some of the design choices will seem
+odd until a viable sweetspot is found for the grammar and syntax. Unlike Java,
+Daylang will not require everything to be an object. Oftentimes its unecessary
+and verbose for something simple. Therefore, Daylang hopes to work around this
+in an elegant and pragmatic maner.
+
+This is still a work in progress, im trying my best.
+
 Syntax:
 ---------------------------
+
+Reserved Words:
+  Types:
+	int
+	float
+	bool
+	char
+	string
+
+  Objects:
+	class
+	new
+
+  Permissions:
+	pub
+	priv
+
+  Control:
+	if
+	else
+	for
+	while
+
+Values allowed:
+  Names:
+	Variable, class, and function names should allow lower and upper case letters,
+	numbers, underscores, and hyphens. hyphens should only be allowed between
+	characters, and should not start or end any name.
+
+Examples:
+---------------------------
+Basic variable declaration is going to be similar to other languages:
+
+	varType varName = varValue;
+
+	int foo = 0;
+	string foo = "bar";
+	float foo = .0;
+	char foo = 'a';
+	...
+
+Comments are similar to C style comments:
+
+	// This is a comment
+
+	/*
+		This is a multiline comment
+	*/
+
+Defining classes will be a little different from any other oop language.
+Classes are always private unless otherwise specified:
+
+	pub class className
+	{
+		{
+			// define the members within here
+			varType varName;	  // private
+			pub varType varName;  // public
+			// ...
+		}
+
+		pub className;  // shorthand to define general constructor
+						// This expects values matching member variables to be passed.
+		
+		pub className
+		{ (paramType param1, ...)
+			// standard definition for Daylang.
+			// an effort to make cleaner, and more readable code.
+		}
+
+		pub className (paramType param1, ...)
+		{
+			// This should also be allowed.
+		}
+	}
+
+
+Functions outside classes can be defined, reducing the need to write unecessarily long
+verbose static classes and methods.
+Functions are public by default, and must be made private otherwise:
+	
+	returnType functionName
+	{ (paramType param1, ...)
+		// function body
+	}
+
+	// we can define a private function:
+	priv returnType functionName
+	{ (paramType param1)
+		// function body
+	}
+	// or ...
+	-- returnType functionName
+	{ (paramType param1)
+		// function body
+	}
+
+
+
