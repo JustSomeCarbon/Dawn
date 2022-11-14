@@ -105,61 +105,35 @@ Comments are similar to C style comments:
 		This is a multiline comment
 	*/
 
-Defining classes will be a little different from any other oop language.
-Classes are always private unless otherwise specified:
+Defining classes will be a little different from any other oop language:
 
-	pub class className
+	class className
 	{
+		// constructors are implicit and need not be defined
 		{
 			// define the members within here
 			varType varName;	  // private
 			pub varType varName;  // public
 			// ...
 		}
-
-		pub className;  // shorthand to define general constructor
-						// This expects values matching member variables to be passed.
-		
-		pub className
-		{ (paramType param1, ...)
-			// standard definition for Daylang.
-			// an effort to make cleaner, and more readable code.
-		}
-
-		pub className (paramType param1, ...)
-		{
-			// This should also be allowed.
-		}
 	}
 
 If a class wants to inherit from another class:
 
-	pub class className -> parentClass
+	class className -> parentClass
 	{/* body of the class /*}
 
 
 Functions outside classes can be defined, reducing the need to write unecessarily long
-verbose static classes and methods.
-Functions are public by default, and must be made private otherwise:
+verbose static classes and methods:
 	
 	f functionName: returnType
 	{ (paramType param1, ...)
 		// function body
 	}
-	// or define explicity public
-	+f functionName: returnType
-	{ ()
-		// function body
-	}
-
-	// we can define a private function:
-	priv f functionName: returnType
-	{ (paramType param1)
-		// function body
-	}
-	// or ...
-	-f functionName: returnType
-	{ (paramType param1)
+	// or
+	f functionName: returnType (paramType param1, ...)
+	{
 		// function body
 	}
 
