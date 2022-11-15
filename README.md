@@ -1,9 +1,9 @@
-# DayLang
-I will probably change the name of the language as I find something better, but I am really bad at naming things.
+# Solace
+~~I will probably change the name of the language as I find something better, but I am really bad at naming things.~~
 An implementation of a new language. This language is for fun and is an exercise.
 
 ## About the language
-The plan for the language is to make DayLang a simple Object Oriented programming language. The plan is to take some of
+The plan for the language is to make Solace a simple Object Oriented programming language. The plan is to take some of
 the interesting and useful features from Java, Rust, and other langauges to preserve them while ignoring and changing
 the other less likable features. This will be a large project requiring a lot of hours, and since I am fairly busy
 I will be updating it when I have the time.
