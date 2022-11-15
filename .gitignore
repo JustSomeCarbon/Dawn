@@ -1,2 +1,3 @@
 misc/lang-spec-src/*.log
 misc/lang-spec-src/*.aux
+.DS_Store
