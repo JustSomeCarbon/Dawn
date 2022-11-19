@@ -39,25 +39,27 @@ Composite, and Domain-specific.
 	void & null return type \\
 	null & base type representing no data type \\
 	int & integer data type, defaults to int32 \\
-	int32 & integer data type up to 4 bytes \\
-	int64 & integer data type up to 8 bytes \\
+	int32 & integer data type up to 4 bytes (possible) \\
+	int64 & integer data type up to 8 bytes (possible) \\
 	float & floating point number type, defaults to float 64 \\
-	float32 & floating point number type up to 4 bytes \\
-	float64 & floating point number type up to 8 bytes \\
+	float32 & floating point number type up to 4 bytes (possible) \\
+	float64 & floating point number type up to 8 bytes (possible) \\
 	char & character type \\
 	string & string type \\
 	bool & bolean type \\
-	: & symbolic type, user defined
+	:sym & symbolic type \\
+	\hline
 \end{tabular}
 
 \subsection{Composite Types}
 \begin{tabular}{r|l}
-	reserved words & description \\
+	type name & description \\
 	\hline
 	\hline
-	array & designating an array object \\
+	arrays & designating an array object, contains same type collections. \\
+	maps & contain key/value pairs of designated types \\
 	class & designating a class object definition \\
-	struct & designating a general structure object
+	\hline
 \end{tabular}
 
 \subsection{Domain-Specific}
@@ -65,15 +67,48 @@ There is nothing to note here right now. As Solace if flushed out more informati
 
 
 \section{Lexical Rules}
-Things
+Like in many languages, Solace has rules as to what constitutes legal syntax for things such as
+variable declarations, class naming, and function and method naming.
 
+Solace defines a number of reserved words that are used in defining types, function definitions,
+class definitions, data structures, and much more. The reserved words chosen for this language
+are meant to be similar to other languages, such as Python and C. A lot of those reserved words
+are defined for type declarations shown above, or the legal operators for the language defined
+below. The following are the reserved words for the language that do not fit in under the other
+sections, however, are just as crucial to the language definition.
 
-\section{Reserved Words}
-Things
+\subsection{Reserved Words}
+
+\begin{tabular}{r|l}
+Reserved word & description \\
+\hline
+\hline
+main & used to declare the main function of the program \\
+class & used to declare a class structure \\
+\hline
+\end{tabular}
 
 
 \section{Operators}
-Things
+The following showcase some of the legal oporators for Solace
+
+\begin{tabular}{r|l}
+Oporator character(s) & description \\
+\hline
+\hline
++ & addition operation \\
+- & subtraction operation \\
+* & multiplication operation \\
+/ & division operation \\
+\% & modulo operation \\
+> & greater than comparison \\
+< & less than comparison \\
+>= & greater than or equal to comparison \\
+<= & less than or equal to comparison \\
+== & equal to comparison \\
+!= & not equal to comparison \\
+\hline
+\end{tabular}
 
 \section{Punctuation}
 Things
@@ -84,7 +119,12 @@ Things
 
 
 \section{Summary}
-Things
+Solace is a simple object oriented programming language built as a simple project language.
+This language is meant to be simple to read and write programs with, circumventing the verbose
+nature of traditional object oriented languages. Solace is written utilizing Yacc, Bison, and C.
+The goal right now is getting the language up and off the ground by implementing the specifications
+defined above. From there, the language will be evaluated and this document will be updated on
+where the language will build from there.
 
 
 \end{document}

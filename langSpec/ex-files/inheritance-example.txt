@@ -1,0 +1,50 @@
+module:Animal
+
+/*
+    classes need not be named after the
+    module they reside in.
+*/
+
+class Animal
+{
+    {
+        genus string;
+        age int;
+        animalSound string;
+    }
+
+    printAge: void ()
+    {
+        log.print(age);
+    }
+
+    printSound: void ()
+    {
+        log.print("sounds");
+    }
+}
+
+class Dog -> Animal
+{
+    // super implies all parent class values and methods
+    {
+        super;
+        name string;
+        breed string;
+    }
+    // parent method is included
+
+    // overload methods
+    ol printSoud: void ()
+    {
+        log.print("Bark!");
+    }
+}
+
+class Cat -> Animal
+{
+    {
+        super;
+        name string;
+    }
+}

@@ -1,0 +1,29 @@
+module:Square
+
+class Square
+{
+    {
+        sides int32;
+        sideLen float;
+        color string = blue; // default values for all instances
+    }
+
+    // define methods
+    // self is implicit
+    Area: float ()
+    {
+        this.sideLen * this.SideLen;
+    }
+
+    Perimeter: float ()
+    {
+        // keyword this is implicit for methods
+        sideLen * 4;
+    }
+}
+
+/*
+    constructors are implicit, meaning they are not defined explicitly in the
+    class definition. For this reason when a object is constructed from a class
+    and not all values are given, an error will be thrown at compile time.
+*/
