@@ -5,7 +5,7 @@
 
 \title{
 	\vspace{2in}
-	\textmd{\textbf{Solace Spec Document}}
+	\textmd{\textbf{Solace Specification Document}}
 	\vspace{3in}
 }
 \author{Noe Garcia}
@@ -23,6 +23,7 @@ construction and easy to read and write syntax. Unlike languages such as Java, n
 structures are required to be objects. The following document defines syntax, grammar, and
 lexical aspects of the langauge. As the definition of the language grows, this document
 will be updated.
+Solace is not a pure object oriented programming language like smalltalk.
 Solace is a small project designed and constructed by one person who is learning more
 as they are building the language.
 
@@ -39,11 +40,7 @@ Composite, and Domain-specific.
 	void & null return type \\
 	null & base type representing no data type \\
 	int & integer data type, defaults to int32 \\
-	int32 & integer data type up to 4 bytes (possible) \\
-	int64 & integer data type up to 8 bytes (possible) \\
 	float & floating point number type, defaults to float 64 \\
-	float32 & floating point number type up to 4 bytes (possible) \\
-	float64 & floating point number type up to 8 bytes (possible) \\
 	char & character type \\
 	string & string type \\
 	bool & bolean type \\
@@ -64,6 +61,7 @@ Composite, and Domain-specific.
 
 \subsection{Domain-Specific}
 There is nothing to note here right now. As Solace if flushed out more information will be added.
+Solace is meant to be general purpose at this point, so nothin domain specific will be listed.
 
 
 \section{Lexical Rules}
@@ -85,6 +83,9 @@ Reserved word & description \\
 \hline
 main & used to declare the main function of the program \\
 class & used to declare a class structure \\
+use & used to include packages/libraries \\
+module & used to define the module the file belongs to \\
+return & keyword used to return value(s) from function \\
 \hline
 \end{tabular}
 

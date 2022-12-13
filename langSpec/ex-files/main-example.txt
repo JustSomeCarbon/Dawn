@@ -3,7 +3,7 @@ module.Main
 // example of importing separate modules
 use Math
 
-Main: void ()
+main: void ()
 {
     foo int = 0;
     bar char = 'a';
