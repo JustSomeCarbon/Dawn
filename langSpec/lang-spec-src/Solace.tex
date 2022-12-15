@@ -111,12 +111,30 @@ Oporator character(s) & description \\
 \hline
 \end{tabular}
 
-\section{Punctuation}
-Things
-
 
 \section{Syntax}
-Things
+This section outlines an overview on the basic syntax of the Solace language. The main goal of the syntax is to remain
+simple but flexible enough to build interesting programs. The following showcase a simple program that defines a
+factorial function and the main function of the program.
+
+\begin{verbatim}
+module Fibonacci
+
+main: void ()
+{
+	int n = 5;
+	printc(fibonacci(n));
+}
+
+fibonacci: int (int n)
+{
+	if (n <= 1) {
+		return 1;
+	}
+	return fibonacci(n-1) + fibonacci(n-2)
+}
+
+\end{verbatim}
 
 
 \section{Summary}
