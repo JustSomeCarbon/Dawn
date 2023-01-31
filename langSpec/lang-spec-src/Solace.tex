@@ -5,10 +5,10 @@
 
 \title{
 	\vspace{2in}
-	\textmd{\textbf{Solace Specification Document}}
+	\textmd{\textbf{Solace Language Specification Document}}
 	\vspace{3in}
 }
-\author{Noe Garcia}
+\author{No\'e Garcia}
 \date{12 November, 2022}
 
 \begin{document}
@@ -18,26 +18,34 @@
 
 \section{Solace Overview}
 This document contains the specification lists and requirements for the Solace Language.
-Solace is a statically typed object oriented programming language with a focus on quick
-construction and easy to read and write syntax. Unlike languages such as Java, not all
-structures are required to be objects. The following document defines syntax, grammar, and
-lexical aspects of the langauge. As the definition of the language grows, this document
-will be updated.
-Solace is not a pure object oriented programming language like smalltalk.
+Solace is a statically typed functional programming language with a focus on quick
+construction and easy to read and write syntax. The following document defines syntax,
+grammar, and lexical aspects of the langauge. As the definition of the language grows
+and changes, this document will be updated.
+
+Solace is an implementation of a functional programming language similar to Elixir,
+while taking aspects from many different languages such as C, Python, and Rust.
+The main focus with this project is introducing the functional paradigm in a easily
+digestible manner so as to minimize confusion for users who are most comfortable with
+the imparative paradigm. I will be exploring different ideas for how to do this, and as
+such, the specifications of the language will most likely change quite a bit until a more
+stable foundation is established.
+
 Solace is a small project designed and constructed by one person who is learning more
-as they are building the language.
+as they are building the language. As such take all implementation with a grain of salt,
+their main training did not have a large focus (or much) on functional langauge design.
 
 
 \section{Types}
 This section documents the available types within Solace. Types are broken into Atomic,
-Composite, and Domain-specific.
+Composite, and Domain-specific. Solace is going to function as a general programming language,
+with no specific focus on any domain (as of yet).
 
 \subsection{Atomic Types}
 \begin{tabular}{r|l}
 	reserved words & description \\
 	\hline
 	\hline
-	void & null return type \\
 	null & base type representing no data type \\
 	int & integer data type, defaults to int32 \\
 	float & floating point number type, defaults to float 64 \\
@@ -45,6 +53,7 @@ Composite, and Domain-specific.
 	string & string type \\
 	bool & bolean type \\
 	:sym & symbolic type \\
+	fn & function type \\
 	\hline
 \end{tabular}
 
@@ -53,27 +62,26 @@ Composite, and Domain-specific.
 	type name & description \\
 	\hline
 	\hline
-	arrays & designating an array object, contains same type collections. \\
-	maps & contain key/value pairs of designated types \\
-	class & designating a class object definition \\
+	lst & designating an array type, contains same type collections. \\
+	tpl & basic typle type for simple groupings. \\
+	struct & designating a structure object definition for more complex data objects. \\
 	\hline
 \end{tabular}
 
 \subsection{Domain-Specific}
-There is nothing to note here right now. As Solace if flushed out more information will be added.
 Solace is meant to be general purpose at this point, so nothin domain specific will be listed.
 
 
 \section{Lexical Rules}
 Like in many languages, Solace has rules as to what constitutes legal syntax for things such as
-variable declarations, class naming, and function and method naming.
+variable declarations, function definitions, and naming criteria.
 
 Solace defines a number of reserved words that are used in defining types, function definitions,
-class definitions, data structures, and much more. The reserved words chosen for this language
-are meant to be similar to other languages, such as Python and C. A lot of those reserved words
-are defined for type declarations shown above, or the legal operators for the language defined
-below. The following are the reserved words for the language that do not fit in under the other
-sections, however, are just as crucial to the language definition.
+and data structures. The reserved words chosen for Solace are designed to be similar to
+other languages, such as Python and C, while taking a different approach. A lot of the
+reserved words are defined for type declarations shown above, or the legal operators for the 
+language that are defined below. The following are the reserved words for the language
+that do not fit in under the other sections.
 
 \subsection{Reserved Words}
 
@@ -82,7 +90,6 @@ Reserved word & description \\
 \hline
 \hline
 main & used to declare the main function of the program \\
-class & used to declare a class structure \\
 use & used to include packages/libraries \\
 module & used to define the module the file belongs to \\
 return & keyword used to return value(s) from function \\
@@ -97,15 +104,15 @@ The following showcase some of the legal oporators for Solace
 Oporator character(s) & description \\
 \hline
 \hline
-+ & addition operation \\
-- & subtraction operation \\
-* & multiplication operation \\
-/ & division operation \\
+$+$ & addition operation \\
+$-$ & subtraction operation \\
+$*$ & multiplication operation \\
+$/$ & division operation \\
 \% & modulo operation \\
-> & greater than comparison \\
-< & less than comparison \\
->= & greater than or equal to comparison \\
-<= & less than or equal to comparison \\
+$>$ & greater than comparison \\
+$<$ & less than comparison \\
+$>=$ & greater than or equal to comparison \\
+$<=$ & less than or equal to comparison \\
 == & equal to comparison \\
 != & not equal to comparison \\
 \hline
