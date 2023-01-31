@@ -3,45 +3,19 @@ module.Main
 // example of importing separate modules
 use Math
 
-main: void ()
+fn main int ()
 {
-    foo int = 0;
+    // variables are statically typed
+    foo int = 1;
     bar char = 'a';
-    a bool = true;
-    b bool = false;
-    c float = .5;
-    d string = "hello, world!";
 
-    // call a function
-    e = square(2);
-
-    // use a function from a different module
-    Math.Square(2);
-
-    // print a value to the console
-    log.print(e);
-
-    // simple math operations
-    x = 5.0;
-    y = 3.0;
-
-    x+y // 8.0
-    x-y // 2.0
-    x*y // 15.0
-    x/y // 1.6...
-    x%y // 2
-
-    x > y // true
-    x < y // false
-    x == y // false
-    x != y // true
-    x >= y // true
-    x <= y // false
+    // define multiple variables on single line
+    a, b float = 0.0, 1.0;
 }
 
 // define a function
 // returns are implicit for the last statement of a block
-square: int (x: int)
+fn square int (x int)
 {
-    x*x;
+   return x * x;
 }
