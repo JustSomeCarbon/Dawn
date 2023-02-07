@@ -1,9 +1,17 @@
+//
+// The following file is a showcase for a simple main function
+// implementation, along with variable definitions, and
+// separate function definitions. The main file must be defined
+// within the Main module, as that is what Solace will look for
+// when compiling the files.
+//
+
 module.Main
 
 // example of importing separate modules
 use Math
 
-fn main int ()
+func main int ()
 {
     // variables are statically typed
     foo int = 1;
@@ -13,9 +21,20 @@ fn main int ()
     a, b float = 0.0, 1.0;
 }
 
+
 // define a function
 // returns are implicit for the last statement of a block
-fn square int (x int)
+// return keyword can be used as well.
+
+func square int (x int)
 {
-   return x * x;
+    x * x;
+}
+
+func fib int (n int)
+{
+    if (n <= 1) {
+        n;
+    }
+    n + fib(n-1);
 }
