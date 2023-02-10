@@ -120,13 +120,36 @@ $<=$ & less than or equal to comparison \\
 
 
 \section{Syntax}
-This section outlines an overview on the basic syntax of the Solace language. The main goal of the syntax is to remain
-simple but flexible enough to build interesting programs. The following showcase a simple program that defines a
+This section outlines an overview on the basic syntax of the Solace language.
+The main goal of the syntax is to remain simple but flexible enough to build
+interesting programs. The following showcase a simple program that defines a 
 factorial function and the main function of the program.
 
-\begin{verbatim}
-things
+Solace will take an approach to syntax similar to C like syntax. Solace is a statically typed
+langauge, so variable types must be defined upon their declaration. Code blocks are defined
+through the use of brackets.
 
+The following is a showcase of a simple program:
+\begin{verbatim}
+module.Main
+
+func main int ()
+{
+	fprint("Hello, world!");
+	
+	out int = factorial(5);
+	fprint("\%d", out);
+	
+	ret 0;
+}
+
+func factorial int (n int)
+{
+	if (n <= 1) {
+		n;
+	}
+	n + factorial(n-1);
+}
 \end{verbatim}
 
 
