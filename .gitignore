@@ -1,5 +1,5 @@
-langSpec/lang-spec-src/*.log
-langSpec/lang-spec-src/Solace.log
-langSpec/lang-spec-src/Solace.aux
-langSpec/lang-spec-src/*.aux
+langSpec/spec-files/*.log
+langSpec/spec-files/Solace.log
+langSpec/spec-files/Solace.aux
+langSpec/spec-files/*.aux
 .DS_Store

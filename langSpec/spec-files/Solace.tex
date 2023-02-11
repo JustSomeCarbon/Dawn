@@ -2,6 +2,7 @@
 
 \usepackage{geometry}
 \geometry{margin=1in}
+\usepackage{listings}
 
 \title{
 	\vspace{2in}
@@ -130,7 +131,7 @@ langauge, so variable types must be defined upon their declaration. Code blocks 
 through the use of brackets.
 
 The following is a showcase of a simple program:
-\begin{verbatim}
+\begin{lstlisting}
 module.Main
 
 func main int ()
@@ -148,9 +149,9 @@ func factorial int (n int)
 	if (n <= 1) {
 		n;
 	}
-	n + factorial(n-1);
+	n * factorial(n-1);
 }
-\end{verbatim}
+\end{lstlisting}
 
 
 \section{Summary}
