@@ -10,7 +10,7 @@
 	\vspace{3in}
 }
 \author{No\'e Garcia}
-\date{12 November, 2022}
+\date{February, 2023}
 
 \begin{document}
 
@@ -123,12 +123,16 @@ $<=$ & less than or equal to comparison \\
 \section{Syntax}
 This section outlines an overview on the basic syntax of the Solace language.
 The main goal of the syntax is to remain simple but flexible enough to build
-interesting programs. The following showcase a simple program that defines a 
-factorial function and the main function of the program.
+interesting programs. This includes the ability for defining variables and functions,
+higher order functions, and establishing basic program workflow.
+The following showcase a simple program that defines a fibonacci function and 
+the main function of the program. The main function is necessary for the solace to
+run, similar to C type languages.
 
 Solace will take an approach to syntax similar to C like syntax. Solace is a statically typed
 langauge, so variable types must be defined upon their declaration. Code blocks are defined
-through the use of brackets.
+through the use of brackets. nested blocks can be defined within function definitions to
+
 
 The following is a showcase of a simple program:
 \begin{lstlisting}
@@ -136,23 +140,29 @@ module.Main
 
 func main int ()
 {
-	fprint("Hello, world!");
 	
-	out int = factorial(5);
-	fprint("\%d", out);
+	out int = fibonacci(7); // returns 13
 	
+	// there is a ret and return keyword, but is not needed.
+	// the last statement in a block will be returned.
 	ret 0;
 }
 
-func factorial int (n int)
+func fibonacci int (int n)
 {
-	if (n <= 1) {
-		n;
-	}
-	n * factorial(n-1);
+	// embedded blocks can be used when defining conditions
+	// and grouping functionality:
+	{ (n <= 1) -> 1; }
+	fibonacci(n-1) + fibonacci(n-2);
 }
 \end{lstlisting}
 
+In maintaining with the traditional functional language paradigm, all functions are
+designed to be pure. There are plans for the allowance of unpure function definitions
+in the future, but for now all functions are pure.
+
+Higher order functions are also a fundamental aspect to Solace. The following showcase
+how functions are used in the context of other functions.
 
 \section{Summary}
 Solace is a simple functional programming language built as a toy project language.
