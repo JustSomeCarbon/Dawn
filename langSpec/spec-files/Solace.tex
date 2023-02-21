@@ -148,12 +148,20 @@ func main int ()
 	ret 0;
 }
 
-func fibonacci int (int n)
+func fibonacci int (n int)
 {
-	// embedded blocks can be used when defining conditions
+	// embedded blocks can be used when pattern matching
 	// and grouping functionality:
 	{ (n <= 1) -> 1; }
 	fibonacci(n-1) + fibonacci(n-2);
+}
+
+func factorial int (n int)
+{
+	// when matching a single parameter, it is possible to
+	// omit the parameter for just the matched values.
+	{ (0) -> 1; }
+	n * factorial(n-1);
 }
 \end{lstlisting}
 
@@ -163,6 +171,13 @@ in the future, but for now all functions are pure.
 
 Higher order functions are also a fundamental aspect to Solace. The following showcase
 how functions are used in the context of other functions.
+
+\begin{lstlisting}
+func main int ()
+{
+	// things
+}
+\end{lstlisting}
 
 \section{Summary}
 Solace is a simple functional programming language built as a toy project language.
