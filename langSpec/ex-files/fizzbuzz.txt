@@ -1,6 +1,0 @@
-module:FizzBuzz
-
-func fizzbuzz string (n int)
-{
-    // things
-}
