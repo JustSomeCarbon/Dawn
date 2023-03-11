@@ -1,0 +1,148 @@
+\documentclass{article}
+
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{listings}
+
+\title{
+	\vspace{2in}
+	\textmd{\textbf{Solace Running Documentation}}
+	\vspace{3in}
+}
+\author{No\'e Garcia}
+\date{March, 2023}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\section{Introduction}
+
+This document is a running documentation for the Solace language. This documentation
+contains information regarding value types, and general syntax along with simple examples.
+
+\section{Types}
+
+Solace is a statically typed language. All values are also immutable. The following table
+contains all available types in Solace:
+
+\begin{center}
+\begin{tabular}{|r|l|}
+	\hline
+	Solace Type & Description \\
+	\hline
+	\hline
+	int & general integer \\
+	float & general floating point number \\
+	char & general character \\
+	string & general string value \\
+	bool & general boolean value \\
+	:sym & symbol value \\
+	func & function type \\
+	\hline
+\end{tabular}
+\end{center}
+
+\subsection{Integers and Floats}
+
+Built in number values are represented within Solace as integers or floats. Much like other
+languages, integers represent whole values, and floats represent floating point real values.
+integer values can be defined in the following manner:
+
+\begin{lstlisting}
+module:Main
+
+func main int()
+{
+	// Declare a to be an integer and b to be a float
+	a int = 1;
+	b float = 0.1;
+	
+	// values of the same type can be defined with the use of commas:
+	c, d int = 2, 3;
+	
+	0;
+}
+\end{lstlisting}
+
+There are a number of arithmetic operations that are available for both integers and floats.
+Like other languages, number values are able to be added, subtracted, multiplied, and divided.
+Numbers are also able to be compared between one another. The following table contains operators
+for number types in Solace:
+
+\begin{center}
+\begin{tabular}{|r|l|}
+	\hline
+	Operators & Description \\
+	\hline
+	\hline
+	$+$ & addition \\
+	$-$ & subtraction \\
+	$*$ & multiplication \\
+	$/$ & division \\
+	\hline
+	$=$ & value assignment \\
+	$==$ & equal to \\
+	$>$ & greater than \\
+	$<$ & less than \\
+	$>=$ & greater than or equal to \\
+	$<=$ & less than or equal to \\
+	$!=$ & not equal to \\
+	\hline
+\end{tabular}
+\end{center}
+
+Arithmetic and comparison operators are performed between two given values. The following
+is an example of each operator usage:
+
+\begin{lstlisting}
+module:Main
+
+fun main int ()
+{
+	// assume a and b are integers:
+	a, b int = 5, 10;
+	
+	// arithmetic can be performed
+	addition int = a + b;
+	subtraction int = b - a;
+	division int = a / b;
+	multiplication int = a * b;
+	
+	// numbers can also be compared:
+	a > b;  // false
+	a < b;  // true
+	a >= b; // false
+	a <= b; // true
+	a == b; // false
+	a != b; // true
+	
+	// The above can also be done with float type variables, or between integers
+	// and float variables.
+	
+	0;
+}
+\end{lstlisting}
+
+\subsection{Strings and Characters}
+
+things
+
+\subsection{Boleans and Symbols}
+
+things
+
+\subsection{functions}
+
+things
+
+\section{Complex Data Types}
+
+things
+
+\section{Controll Flow}
+
+things
+
+\end{document}
