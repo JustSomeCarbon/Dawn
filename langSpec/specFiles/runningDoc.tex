@@ -66,10 +66,10 @@ func main int()
 }
 \end{lstlisting}
 
-There are a number of arithmetic operations that are available for both integers and floats.
-Like other languages, number values are able to be added, subtracted, multiplied, and divided.
-Numbers are also able to be compared between one another. The following table contains operators
-for number types in Solace:
+There are a number of arithmetic and comparison operations that are available for both integers
+and floats. Like other languages, number values are able to be added, subtracted, multiplied,
+and divided. Numbers are also able to be compared between one another. The following table 
+contains operators for number types in Solace:
 
 \begin{center}
 \begin{tabular}{|r|l|}
@@ -127,11 +127,55 @@ fun main int ()
 
 \subsection{Strings and Characters}
 
-things
+Solace has two different types for handling raw text values: characters and strings. Characters
+represent a single character value, while strings represent a longer collection of character
+values in succession. Character variables and values can be compared between one another
+with the equality ($==$) operator. Strings can also be compared to one another in a
+similar way. Character values can be concatenated together to result in a new string value
+containing both character values. Strings can be concatenated together to result in a new
+string value containing both original strings.
+
+\begin{lstlisting}
+module:Main
+
+func main int ()
+{
+	// define character and string variables
+	a char = 'a';
+	b char = 'b';
+	c string = "hello,";
+	d string = " world!";
+	
+	// comparisons between character values
+	a == a; // true
+	a == b; // false
+	// comparisons between string values
+	c == c; // true
+	c == d; //false
+	
+	// concatenate values together
+	ab string = a | b; // "ab"
+	cd string = c | d; // "hello, world!"
+	
+	0;
+}
+\end{lstlisting}
 
 \subsection{Boleans and Symbols}
 
-things
+Boolean values can represent two different states: true and false. boolean values are
+able to be compared through the use of comparison operations. Symbols are a unique type
+as they represent defined names rather than raw values. There are two predefined symbols:
+$:ok$ and $:err$.
+
+\begin{lstlisting}
+module:Main
+
+func main int ()
+{
+	0;
+}
+\end{lstlisting}
 
 \subsection{functions}
 
