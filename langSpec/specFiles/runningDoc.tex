@@ -173,6 +173,58 @@ module:Main
 
 func main int ()
 {
+	// function call will return two values: a symbol and the original integer.
+	// the following will return (:ok, 4)
+	
+	evenResult :sym, val int = isEven(4);
+	
+	// function call will return a single boolean value: true or false.
+	// the following will return false
+	
+	oddResult = isOdd(6);
+	
+	0;
+}
+
+func isEven (:sym, int) (n int)
+{
+	{ (n%2 != 0) => (:err, n);}
+	(:ok, n);
+}
+
+func isOdd bool (n int)
+{
+	{ (n%2==0) -> false;}
+	true;
+}
+\end{lstlisting}
+
+Symbols are special values within Solace. Symbols aside from :ok and :err can be defined
+for furhter use. Symbols hold special value within programs as their values are directly
+tied to their name, and no other value. variables can contain symbol values.
+The following is a simple example of symbol definition and use.
+
+\begin{lstlisting}
+module:Main
+
+// define two new symbols
+:sym :apple
+:sym :orange
+
+func main int ()
+{
+	// define a symbol variable
+	apple :sym = :apple;
+	orange :sym = :orange;
+	
+	// symbols can be compared.
+	:orange == :apple; // false
+	:apple == :apple;  // true
+	
+	// symbol variables can also be compared
+	apple == orange;   // false
+	orange != apple;   // true
+	
 	0;
 }
 \end{lstlisting}
