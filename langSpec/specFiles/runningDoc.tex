@@ -93,6 +93,36 @@ contains operators for number types in Solace:
 \end{tabular}
 \end{center}
 
+There are a small number of special operators. 
+
+The concatenation operation takes two values
+on the left and right of the concatenation operator and returns a new single value with
+the left and right value concatenated together. Only values of the same type may be
+concatenated. The new value returned will be of the same type as the original values.
+There is a single case in which the concatenate returns a different value than that of the
+values given, and that is with the concatenation of characters. The concatenation of two
+character values together will result in a string.
+
+The ignore character operator functions exactly as its name implies. Values that are stored
+using the ignore chracter operator will be forgotten. This operator is utilized when a value
+is no longer necessary and can be safely forgotten.
+
+The action delegation arrow operator is a main tool utilized in the control flow of any
+Solace program.
+
+\begin{center}
+\begin{tabular}{|r|l|}
+	\hline
+	Special Operators & Description \\
+	\hline
+	\hline
+	$|$ & concatenation of left and right \\
+	\_ & value ignore character \\
+	$->$ & action delegation \\
+	\hline
+\end{tabular}
+\end{center}
+
 Arithmetic and comparison operators are performed between two given values. The following
 is an example of each operator usage:
 
@@ -188,7 +218,7 @@ func main int ()
 
 func isEven (:sym, int) (n int)
 {
-	{ (n%2 != 0) => (:err, n);}
+	{ (n%2 != 0) -> (:err, n);}
 	(:ok, n);
 }
 
@@ -231,9 +261,60 @@ func main int ()
 
 \subsection{functions}
 
-things
+Functions function like any other type in Solace. Unlike other types, functions are
+defined using the func keyword before the name of the function, not after. Functions
+can take multiple parameters but \textbf{must} return a sinle value. Functions cannot return
+no value, or more than one value. To return multiple values, tuples may be used to
+encapsulate all values to be returned.
+Functions, like any other type, can be passed into other functions as parameters.
+The following is an example of function definition and usage:
+
+\begin{lstlisting}
+module:Main
+
+func main int ()
+{
+	// call a function and store the results
+	result int = addTwo(2, 3);
+	
+	// call a function that returns another function and store it
+	// wthin a variable
+	f func = retFunc(); // prints: "Returning a function from a function"
+	f();		    // prints: "Function returned from another function"
+	
+	// define a function
+	func double int (n int) -> n+n;
+	
+	// call the function that applies the passed function argument
+	// on the given integer value
+	doubleResult int = applyGivenFunc(double, 5); // 10
+	
+	0;
+}
+
+func addTwo int (a int, b int)
+{
+	a+b;
+}
+
+func retFunc func ()
+{
+	print:out("Returning a function from a function");
+	
+	() :sym -> {print:out("Function returned from another function"); :ok;}
+}
+
+func applyGivenFunc int (f func, n int)
+{
+	f(n);
+}
+\end{lstlisting}
 
 \section{Complex Data Types}
+
+things
+
+\section{Variables and Naming}
 
 things
 
