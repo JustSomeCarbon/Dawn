@@ -25,7 +25,7 @@ contains information regarding value types, and general syntax along with simple
 \section{Types}
 
 Solace is a statically typed language. All values are also immutable. The following table
-contains all available types in Solace:
+contains all available atomic types in Solace:
 
 \begin{center}
 \begin{tabular}{|r|l|}
@@ -40,6 +40,21 @@ contains all available types in Solace:
 	bool & general boolean value \\
 	:sym & symbol value \\
 	func & function type \\
+	\hline
+\end{tabular}
+\end{center}
+
+There are a small number of composite types as well as the standard types listed above.
+The following table contains all available composite types in Solace:
+
+\begin{center}
+\begin{tabular}{|r|l|}
+	\hline
+	Solace Type & Description \\
+	\hline
+	tpl & tupple type utilized for grouping values of different types \\
+	array & array types utilized for grouping values of the same type \\
+	struct & structure types for more complex data and value groupings \\
 	\hline
 \end{tabular}
 \end{center}
@@ -312,11 +327,54 @@ func applyGivenFunc int (f func, n int)
 
 \section{Complex Data Types}
 
-things
+Among the basic types available in Solace, there are a small number of complex types. The inclusion
+of complex types enable efficient grouping and defining of the more simple types of Solace. This
+enables the construction of more interesting data values and interactions between information.
+
+Solace offers the use of structure types. Similar to structures seen in languages such as C, structures
+are defined using a special name and all included types in the structure as their signature. The 
+following is a simple showcase of how to define and use a structure in a Solace program.
+
+\begin{lstlisting}
+module:Main
+
+struct cake
+{
+	cakeType string;
+	icingType string;
+	candles int;
+};
+
+func main int ()
+{
+	// Define a new cake structure
+	// The new chocolateCake structure instance is a cake with
+	// the cakeType value as "chocolate", the icingType value as
+	// "vanilla", and the candles value as 12
+	chocolateCake cake = cake{"chocolate", "vanilla", 12};
+	
+	// Access the value fields of a structure instance
+	chocolateCake:cakeType; // returns "chocolate"
+	chocolateCake:candles;   // returns 12
+	
+	0;
+}
+
+\end{lstlisting}
 
 \section{Variables and Naming}
 
-things
+Variables are essential to Solace, and are a core functionality of the language. Variables have a broad
+naming convention, but there are a few restrictions on variable names.
+
+Variable and function names cannot begin with a number. Names such as "$1value$" are not allowed; however,
+numbers are viable anywhere else within a name, for example "$value2$" or "$here2there$" are viable 
+names. Variable and function names can begin with and contain upper case letters. Names such as "$Dataval$"
+and "$dataVal$" are both viable. Standard naming convention for variable and function names is camel case.
+Names cannot start with or contain any special characters with the exception of being able to 
+contain the underscore character: "\_". Names are able to utilize the underscore character within a name such
+as "$some\_var$". The underscore character holds a special meaning where any value bound to the variable
+whose name is soley the underscore character is dropped from memory.
 
 \section{Controll Flow}
 
