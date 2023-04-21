@@ -378,6 +378,66 @@ whose name is soley the underscore character is dropped from memory.
 
 \section{Controll Flow}
 
-things
+Solace defines its own control flow for program development. Rather than having if-else
+statements, Solace utilizes pattern matching code blocks. Control flow is defined and
+contained through the use of brackets, and the arrow operator. The following is an example
+of simple control flow:
+
+\begin{lstlisting}
+module:Main
+
+func main int ()
+{
+	// determine if an integer is even or odd
+	evenOrOdd(5); // odd
+	evenOrOdd(8); // even
+	
+	// function for a more complex control flow
+	groupFunc(8); // Mod4
+	groupFunc(9); // Mod2
+	groupFunc(7); // NoMod
+	
+	// control flow with default functionality
+	doubleIfEven(6); // 12
+	doubleIfEven(5); // 5
+	
+	0;
+}
+
+// This function takes an integer and returns the string
+// "even" if the integer is even and "odd" otherwise
+func evenOrOdd string (n int)
+{
+	// pattern matching block
+	// if n mod 2 is 0, do what is to right of arrow:
+	// return even
+	{(n%2 == 0) -> "even";}
+	
+	// otherwise return odd
+	"odd";
+}
+
+// This function takes an integer and returns a string
+// depending on if the integer is divisible by 4, 3, 2
+// or none.
+func groupFunc string (n int)
+{
+	// The control flow block. other patterns
+	// begin on a new line with a bar character: |
+	{(n%4 == 0) -> "Mod4";
+	|(n%3 == 0) -> "Mod3";
+	|(n%2 == 0) -> "Mod2";}
+	"NoMod";
+}
+
+func doubleIfEven int (n int)
+{
+	// The control flow block. The base case
+	// is defined with no pattern, just an arrow
+	{(n%2 == 0) -> n*2;
+	| -> n;}
+}
+
+\end{lstlisting}
 
 \end{document}
