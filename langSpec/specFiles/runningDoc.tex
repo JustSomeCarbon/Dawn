@@ -424,10 +424,10 @@ func evenOrOdd string (n int)
 func groupFunc string (n int)
 {
 	// The control flow block. other patterns
-	// begin on a new line with a bar character: |
+	// begin on a new line with a bar-arrow character: |>
 	{(n%4 == 0) -> "Mod4";
-	|(n%3 == 0) -> "Mod3";
-	|(n%2 == 0) -> "Mod2";}
+	|> (n%3 == 0) -> "Mod3";
+	|> (n%2 == 0) -> "Mod2";}
 	"NoMod";
 }
 
@@ -436,7 +436,7 @@ func doubleIfEven int (n int)
 	// The control flow block. The base case
 	// is defined with no pattern, just an arrow
 	{(n%2 == 0) -> n*2;
-	| -> n;}
+	|> -> n;}
 }
 
 \end{lstlisting}
