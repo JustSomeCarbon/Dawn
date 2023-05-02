@@ -1,4 +1,8 @@
-/**/
+/*
+ * file: tree.c
+ * author: Noe Garcia
+ * description: 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>

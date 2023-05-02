@@ -18,11 +18,31 @@
  *  binding and usage of the grammar and syntax files and functions.
  */
 
+// prototypes
+void check_extension(char* file);
+
 
 int main(int argc, char* argv[])
 {
-    printf("Solace compiler");
-    printf("  - version 0.0.1 pre-alpha");
+    // Solace compiler
+    //  - version 0.0.1 pre-alpha
+
+    if (argc == 0) {
+        // throw error
+        printf("No file was given:: file specification required\n");
+        printf("Example::  solace file.solace\n\n");
+        return 0;
+    }
+
+    // loop through arguments
+    int i = 0;
+    while (argv[i] != NULL) {
+        if (strcmp(argv[i], "-v") == 0) {
+            printf("Solace compiler\n   - version 0.0.1 prealpha\n");
+        } else {
+            // compile the source file
+        }
+    }
 
     return 0;
 }
