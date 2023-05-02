@@ -14,7 +14,7 @@
     #include "tree.h"
 %}
 
-ESC_CHAR \\(a|b|f|n+|r|t|v|0|x[h]+|u[h]+|\\|\'|\"|\?)
+ESC_CHAR \\(n|t|\\|\'|\"|\?)
 
 %%
 "/*"([^*]|"*"+[^/*])*"*"+"/"  { /* do nothing */ }
