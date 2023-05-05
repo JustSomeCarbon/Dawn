@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     //  - version 0.0.1 pre-alpha
 
     if (argc == 0) {
-        // throw error
+        // no file given :: throw error
         printf("No file was given:: file specification required\n");
         printf("Example::  solace file.solace\n\n");
         return 0;
@@ -45,4 +45,27 @@ int main(int argc, char* argv[])
     }
 
     return 0;
+}
+
+
+void check_extension(char* file)
+{
+    char* extension = strrchr(file, '.');
+    if (extension != NULL) {
+        if (strcmp(extension, "solace") != 0) {
+            printf("Error :: file given is not a solace source file!\n");
+            exit(-1); // !- source file access error -!
+        } else {
+            yyfile = (char *) calloc(strlen(file)+8, sizeof(char));
+            strncpy(yyfile, file, strlen(file)); // initialize yyfile
+            return;
+        }
+    }
+    // add the .solace extension
+    yyfile = (char *) calloc(strlen(file)+7, sizeof(char));
+    char* end = ".solace";
+    char a[strlen(file)+7];
+    strncat(a, file, strlen(file));
+    strncpy(yyfile, strncat(file, end, 7), strlen(file)+7);
+    return;
 }

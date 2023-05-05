@@ -8,6 +8,8 @@
  *  tree structures are defined.
  */
 
+extern char* yyfile; // !- contains file to compile -!
+
 enum sol_terms {
     FUNCTION_DECL=1001,
     FUNCTION_HEADER,
