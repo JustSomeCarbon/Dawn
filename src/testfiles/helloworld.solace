@@ -1,0 +1,7 @@
+Module:Main
+
+func main int ()
+{
+	IO:out("Hello, world!");
+	0;
+}

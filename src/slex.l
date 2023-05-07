@@ -31,6 +31,8 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "tpl"           {return alloc_token(8);}
 "struct"        {return alloc_token(9);}
 "module"        {return alloc_token(10);}
+"Main"          {return alloc_token(10);}
+"main"          {return alloc_token(10);}
 
 "+"             {return alloc_token(11);}
 "-"             {return alloc_token(12);}
