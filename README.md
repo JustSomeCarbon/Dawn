@@ -11,9 +11,15 @@ Solace is in its infancy and is a simple language. Solace is statically
 typed with immutable variable types. The specification list and language
 descriptions for Solace can be found in the langSpec/spec-file directory.
 
-## Dependencies
+## Build and Run
 Solace relies on the `clang` compiler, along with the Yacc and Flex tools,
 all of which must be installed.
 
 To compile Solace, clone the source directory, and perform `make` within
 the main `Solace/src` directory.
+
+To run the Solace compiler, run the resulting object file called `solace` 
+followed by the name of the source file to be compiled.
+~~~
+$ solace example_file.solace
+~~~
