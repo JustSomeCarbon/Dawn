@@ -63,6 +63,21 @@ int main(int argc, char* argv[])
                 exit(1);
             }
 
+            // create a new token
+            tltail->t = calloc(1, sizeof(struct token));
+            tltail->next = NULL;
+            if (tltail->t == NULL) {
+                printf("Error: token memory allocation failure\n\n");
+                exit(1);
+            }
+
+            int toklen = 0;
+            // lexer process ->
+            while (tokcat) {
+                toklen++;
+                tokcat = yylex();
+            }
+
         }
         i++;
     }

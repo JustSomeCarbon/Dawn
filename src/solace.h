@@ -6,42 +6,54 @@ extern FILE* yyin;
 enum lexcode {
     BOOLEAN=258,
     INT,
-    DOUBLE,         // 300
+    FLOAT,         // 300
     CHAR,
     STRING,
     SYMBOL,
+    LITERALBOOL,
+    LITERALINT,     // 305
+    LITERALHEX,
+    LITERALFLOAT,
+    LITERALCHAR,
+    LITERALSTRING,
+    LITERALSYMBOL,  // 310
     FUNCTION,
-    TUPPLE,         // 305
+    TUPPLE,
     ARRAY,
     STRUCT,
-    ADD,
+    ADD,            // 315
     SUBTRACT,
-    MULTIPLY,       // 310
+    MULTIPLY,
     DIVIDE,
     MODULO,
-    ASSIGNMENT,
+    ASSIGNMENT,     // 320
     CONCATENATION,
-    PATTERNMATCH,   // 315
+    PATTERNMATCH,
     CONDSTATEMENT,
     ARROWOP,
-    RETURN,
+    RETURN,         // 325
     EQUALTO,
-    NOTEQUAL,       // 320
-    LOGICALCOMPARISON,
+    NOTEQUAL,
+    COMPARISON,
     LBRACE,
-    RBRACE,
+    RBRACE,         // 330
     LPAREN,
-    RPAREN,         // 325
-    COMA,
+    RPAREN,
+    LBRACKET,
+    RBRACKET,
+    COMA,           // 335
     COLON,
     SEMICOLON,
+    MODULE,
+    MAINMOD,
+    MAINFUNC,       // 340
     IDENTIFIER,
-    DROPVAL,        // 330
+    DROPVAL,
     UNSUPPORTEDOP,
     UNSUPPORTEDKEY,
-    STRINGERR,
+    STRINGERR,      // 345
     CHARERR,
-    COMMENTERR,     // 335
+    COMMENTERR,
     ESCAPE
 };
 
