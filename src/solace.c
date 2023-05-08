@@ -10,10 +10,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "solace.h"
 #include "tree.h"
 
 // external and globals
 extern FILE* yyin;
+char* yyfile;
 
 // prototypes
 void check_extension(char* file);
@@ -41,7 +43,26 @@ int main(int argc, char* argv[])
             check_extension(argv[i]);
             
             // loop through parser: TEST
-            // things
+            yyin = fopen(yyfile, "r");
+            if (yyin == NULL) {
+                // file open error
+                printf("Error: unable to open file %s\n\n", yyfile);
+                fclose(yyin);
+                exit(1);
+            }
+
+            int tokcat = 1;
+            struct tokenlist* tl = NULL;
+            struct tokenlist* tltail = NULL;
+
+            tl = calloc(1, (sizeof(struct tokenlist)));
+            tltail = tl;
+            if (tl == NULL) {
+                printf("Error: unable to allocate memory for lexical tokenizer\n\n");
+                fclose(yyin);
+                exit(1);
+            }
+
         }
         i++;
     }
