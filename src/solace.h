@@ -1,57 +1,60 @@
 #include <stdio.h>
 
 extern FILE* yyin;
+extern char* yytext; // points to lexer pattern
+extern int yyleng;
+extern int yylineno; // holds source file line number
 
 // lexical value enumeration
 enum lexcode {
     BOOLEAN=258,
     INT,
-    FLOAT,         // 300
+    FLOAT,         // 260
     CHAR,
     STRING,
     SYMBOL,
     LITERALBOOL,
-    LITERALINT,     // 305
+    LITERALINT,     // 265
     LITERALHEX,
     LITERALFLOAT,
     LITERALCHAR,
     LITERALSTRING,
-    LITERALSYMBOL,  // 310
+    LITERALSYMBOL,  // 270
     FUNCTION,
     TUPPLE,
     ARRAY,
     STRUCT,
-    ADD,            // 315
+    ADD,            // 275
     SUBTRACT,
     MULTIPLY,
     DIVIDE,
     MODULO,
-    ASSIGNMENT,     // 320
+    ASSIGNMENT,     // 280
     CONCATENATION,
     PATTERNMATCH,
     CONDSTATEMENT,
     ARROWOP,
-    RETURN,         // 325
+    RETURN,         // 285
     EQUALTO,
     NOTEQUAL,
     COMPARISON,
     LBRACE,
-    RBRACE,         // 330
+    RBRACE,         // 290
     LPAREN,
     RPAREN,
     LBRACKET,
     RBRACKET,
-    COMA,           // 335
+    COMA,           // 295
     COLON,
     SEMICOLON,
     MODULE,
     MAINMOD,
-    MAINFUNC,       // 340
+    MAINFUNC,       // 300
     IDENTIFIER,
     DROPVAL,
     UNSUPPORTEDOP,
     UNSUPPORTEDKEY,
-    STRINGERR,      // 345
+    STRINGERR,      // 305
     CHARERR,
     COMMENTERR,
     ESCAPE
@@ -77,4 +80,5 @@ struct token {
 int yylex();
 int yylex_destroy();
 
+struct tokenlist* allocateToken();
 void printTokenList(struct tokenlist* tl);

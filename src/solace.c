@@ -35,6 +35,7 @@ int main(int argc, char* argv[])
 
     // loop through arguments
     int i = 0;
+    // parse each file::
     while (argv[i] != NULL) {
         if (strcmp(argv[i], "-v") == 0) {
             printf("Solace compiler\n   - version 0.0.1 pre-alpha\n");
@@ -76,12 +77,69 @@ int main(int argc, char* argv[])
             while (tokcat) {
                 toklen++;
                 tokcat = yylex();
+
+                tltail->t->category = tokcat;
+                tltail->t->text = strdup(yytext);
+                tltail->t->lineno = yylineno;
+                tltail->t->filename = argv[i];
+
+                switch (tokcat)
+                {
+                case LITERALINT:
+                    tltail->t->ival = atoi(yytext);
+                    break;
+                case LITERALHEX:
+                    tltail->t->ival = strtol(yytext+2, NULL, 16);
+                    break;
+                case LITERALFLOAT:
+                    tltail->t->dval = strtod(yytext, NULL);
+                    break;
+                case LITERALSTRING:
+                    tltail->t->sval = calloc(1, yyleng); // may be too long
+                    int walk = 1;
+                    while (*(yytext+walk) != '\0') {
+                        if (*(yytext+walk) == '\\') {
+                            // handle escape characters
+                            walk++;
+                            switch (*(tltail->t->text+walk))
+                            {
+                            case 'n':
+                                *(tltail->t->sval+walk) = 0x0a;
+                                break;
+                            case 't':
+                                *(tltail->t->sval+walk) = 0x09;
+                                break;
+                            case '\\':
+                                *(tltail->t->sval+walk) = 0x5c;
+                                break;
+                            case '\'':
+                                *(tltail->t->sval+walk) = 0x27;
+                                break;
+                            case '\"':
+                                *(tltail->t->sval+walk) = 0x22;
+                                break;
+                            default:
+                                break;
+                            }
+                        }
+                        *(tltail->t->sval+walk) = *(yytext+walk);
+                        walk++;
+                    }
+                    *(tltail->t->sval+walk) = '\0';
+                    break;
+                case LITERALCHAR:
+                    // TODO
+                    break;
+                default:
+                    break;
+                }
             }
-
         }
+        // move to next source file
         i++;
-    }
+    } // No more source files: end lexer
 
+    yylex_destroy();
     return 0;
 }
 

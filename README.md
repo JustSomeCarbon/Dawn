@@ -1,7 +1,7 @@
 # Solace
-Solace is a simple functional programming language developed as a hobby project. Solace is
-designed to be simple to read and write with. Source files will compile down
-to assembly. The goal for Solace is to be fast, reliable, and enjoyable
+Solace is a simple functional programming language developed as a hobby project.
+Solace is designed to be simple to read and write with. Source files will compile
+down to assembly. The goal for Solace is to be fast, reliable, and enjoyable
 to build with.
 
 ## About the language
@@ -16,7 +16,7 @@ Solace relies on the `clang` compiler, along with the Yacc and Flex tools,
 all of which must be installed.
 
 To compile Solace, clone the source directory, and perform `make` within
-the main `Solace/src` directory.
+the main `Solace/src` directory. Currently only tested on Linux/Unix systems.
 
 To run the Solace compiler, run the resulting object file called `solace` 
 followed by the name of the source file to be compiled.
