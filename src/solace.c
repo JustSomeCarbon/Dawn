@@ -34,14 +34,14 @@ int main(int argc, char* argv[])
     }
 
     // loop through arguments
-    int i = 0;
+    int filearg = 0;
     // parse each file::
-    while (argv[i] != NULL) {
-        if (strcmp(argv[i], "-v") == 0) {
+    while (argv[filearg] != NULL) {
+        if (strcmp(argv[filearg], "-v") == 0) {
             printf("Solace compiler\n   - version 0.0.1 pre-alpha\n");
         } else {
             // compile the source file
-            check_extension(argv[i]);
+            check_extension(argv[filearg]);
             
             // loop through parser: TEST
             yyin = fopen(yyfile, "r");
@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
                 tltail->t->category = tokcat;
                 tltail->t->text = strdup(yytext);
                 tltail->t->lineno = yylineno;
-                tltail->t->filename = argv[i];
+                tltail->t->filename = argv[filearg];
 
                 switch (tokcat)
                 {
@@ -119,26 +119,70 @@ int main(int argc, char* argv[])
                                 *(tltail->t->sval+walk) = 0x22;
                                 break;
                             default:
+                                printf("Error: Unsupported escape character %s at line %d in file %s\n\n", yytext, yylineno, argv[filearg]);
+                                fclose(yyin);
+                                exit(1);
                                 break;
                             }
+                        } else {
+                            *(tltail->t->sval+walk) = *(yytext+walk);
                         }
-                        *(tltail->t->sval+walk) = *(yytext+walk);
                         walk++;
                     }
                     *(tltail->t->sval+walk) = '\0';
                     break;
                 case LITERALCHAR:
-                    // TODO
+                    int walk = 1; // skip the single quote character
+                    if (*(yytext+walk) == '\\') {
+                        // handle escape characters
+                        walk++;
+                        switch (*(tltail->t->text+walk))
+                        {
+                        case 'n':
+                            tltail->t->ival = 0x0a;
+                            break;
+                        case 't':
+                            tltail->t->ival = 0x09;
+                            break;
+                        case '\\':
+                            tltail->t->ival = 0x5c;
+                            break;
+                        case '\'':
+                            tltail->t->ival = 0x27;
+                            break;
+                        case '\"':
+                            tltail->t->ival = 0x22;
+                            break;
+                        default:
+                            printf("Error: unsupported escape character %s at line %d in file %s\n\n", yytext, yylineno, argv[filearg]);
+                            break;
+                        }
+                    } else {
+                        tltail->t->ival = *(yytext+walk);
+                    }
                     break;
                 default:
                     break;
                 }
-            }
+
+                tltail->next = allocateToken();
+                if (tltail->next == NULL) {
+                    printf("Error: unable to allocate memory space for lexer token");
+                    fclose(yyin);
+                    exit(1);
+                }
+                tltail = tltail->next;
+            } // end of lexer while
+            fclose(yyin);
+
+            // print the token list
+            printTokenList(tl);
         }
         // move to next source file
-        i++;
+        filearg++;
     } // No more source files: end lexer
 
+    // END OF COMPILATION
     yylex_destroy();
     return 0;
 }

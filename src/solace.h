@@ -57,6 +57,7 @@ enum lexcode {
     STRINGERR,      // 305
     CHARERR,
     COMMENTERR,
+    BOOLERR,
     ESCAPE
 };
 

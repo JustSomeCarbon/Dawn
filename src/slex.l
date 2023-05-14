@@ -64,13 +64,14 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 
 [1-9][0-9]*     {return alloc_token(LITERALINT);}
 0               {return alloc_token(LITERALINT);}
-[0-9]+\.[0-9]+  {return alloc_token(LITERALFLOAT));}
+[0-9]+\.[0-9]+  {return alloc_token(LITERALFLOAT);}
 (true)|(false)  {return alloc_token(LITERALBOOL);}
 "0"[xX][0-9a-fA-F]+     {return alloc_token(LITERALHEX);}
 \"([^"|ESC_CHAR])*\"    {return alloc_token(LITERALSTRING);}
 \'([^'|ESC_CHAR])?\'    {return alloc_token(LITERALCHAR);}
 [a-zA-Z_][0-9a-zA-Z_]*  {return alloc_token(IDENTIFIER);}
 
+(True)|(False)  {return alloc_token(BOOLERR);}
 \"              {return alloc_token(STRINGERR);}
 \"[a-zA-Z0-9]*  {return alloc_token(STRINGERR);}
 \'[a-zA-Z0-9][a-zA-Z0-9]+\' {return alloc_token(CHARERR);}

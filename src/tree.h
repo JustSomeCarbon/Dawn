@@ -60,5 +60,3 @@ enum sol_terms {
     LEFT_HAND_SIDE,
     ASSIGN_OP,
 };
-
-int alloc_token(int code);
