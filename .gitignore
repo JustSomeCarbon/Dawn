@@ -1,3 +1,6 @@
 langSpec/specFiles/*.aux
 langSpec/specFiles/*.log
+src/*.o
+src/solx
+src/lex.yy.c
 .DS_Store

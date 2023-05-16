@@ -30,7 +30,7 @@ enum lexcode {
     DIVIDE,
     MODULO,
     ASSIGNMENT,     // 280
-    CONCATENATION,
+    BAR,
     PATTERNMATCH,
     CONDSTATEMENT,
     ARROWOP,
@@ -57,7 +57,6 @@ enum lexcode {
     STRINGERR,      // 305
     CHARERR,
     COMMENTERR,
-    BOOLERR,
     ESCAPE
 };
 

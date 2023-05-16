@@ -34,11 +34,12 @@ int main(int argc, char* argv[])
     }
 
     // loop through arguments
-    int filearg = 0;
+    int filearg = 1;
     // parse each file::
     while (argv[filearg] != NULL) {
         if (strcmp(argv[filearg], "-v") == 0) {
             printf("Solace compiler\n   - version 0.0.1 pre-alpha\n");
+            return 0;
         } else {
             // compile the source file
             check_extension(argv[filearg]);
@@ -86,7 +87,7 @@ int main(int argc, char* argv[])
                 switch (tokcat)
                 {
                 case LITERALINT:
-                    tltail->t->ival = atoi(yytext);
+                    tltail->t->ival = strtol(yytext, NULL, 10);
                     break;
                 case LITERALHEX:
                     tltail->t->ival = strtol(yytext+2, NULL, 16);
@@ -132,11 +133,9 @@ int main(int argc, char* argv[])
                     *(tltail->t->sval+walk) = '\0';
                     break;
                 case LITERALCHAR:
-                    int walk = 1; // skip the single quote character
-                    if (*(yytext+walk) == '\\') {
+                    if (*(yytext+1) == '\\') {
                         // handle escape characters
-                        walk++;
-                        switch (*(tltail->t->text+walk))
+                        switch (*(tltail->t->text+2))
                         {
                         case 'n':
                             tltail->t->ival = 0x0a;
@@ -158,7 +157,7 @@ int main(int argc, char* argv[])
                             break;
                         }
                     } else {
-                        tltail->t->ival = *(yytext+walk);
+                        tltail->t->ival = *(yytext+1);
                     }
                     break;
                 default:
@@ -192,8 +191,8 @@ void check_extension(char* file)
 {
     char* extension = strrchr(file, '.');
     if (extension != NULL) {
-        if (strcmp(extension, "solace") != 0) {
-            printf("Error :: file given is not a solace source file!\n");
+        if (strcmp(extension, ".solace") != 0) {
+            printf("Error :: file given is not a solace source file: %s\n\n", file);
             exit(-1); // !- source file access error -!
         } else {
             yyfile = (char *) calloc(strlen(file)+8, sizeof(char));

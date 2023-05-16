@@ -1,7 +1,11 @@
-Module:Main
+module:Main
 
+// this is a hello world test program
 func main int ()
 {
+	/* This is a test
+	hello,
+	world! */
 	IO:out("Hello, world!");
 	0;
 }

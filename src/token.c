@@ -49,13 +49,13 @@ void printTokenList(struct tokenlist* tl)
         // move pointer and free memory
         tl = tl->next;
         free(tmp->t->text);
-        free(tmp->t->filename);
+        //free(tmp->t->filename);
         free(tmp->t);
         free(tmp);
         tmp = tl;
     }
     free(tl->t->text);
-    free(tl->t->filename);
+    //free(tl->t->filename);
     free(tl->t);
     free(tl);
 

@@ -21,5 +21,5 @@ the main `Solace/src` directory. Currently only tested on Linux/Unix systems.
 To run the Solace compiler, run the resulting object file called `solace` 
 followed by the name of the source file to be compiled.
 ~~~
-$ solace example_file.solace
+$ solx example_file.solace
 ~~~

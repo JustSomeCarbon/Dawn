@@ -1,0 +1,17 @@
+module:Main
+
+func main int ()
+{
+	IO:out(isDivis(10));
+	IO:out(isDivis(9));
+	IO:out(isDivis(8));
+	IO:out(isDivis(7));
+	0;
+}
+
+func isDivis string (n int)
+{
+	{ (n%3 == 0) -> "div by 3";
+	|> (n%2 == 0) -> "div by 2";}
+	"not div by 3 or 2";
+}

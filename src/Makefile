@@ -2,8 +2,8 @@ CC=clang
 CFLAGS=-Wall
 OBJFLAG=-Wall -c
 
-solace: lex.yy.o solace.o
-	$(CC) $(CFLAGS) lex.yy.o solace.o token.o -o solace
+solx: solace.o lex.yy.o token.o
+	$(CC) $(CFLAGS) lex.yy.o solace.o token.o -o solx
 
 solace.o: solace.c
 	$(CC) $(OBJFLAG) solace.c
@@ -18,4 +18,4 @@ lex.yy.c: slex.l
 	flex slex.l
 
 clean:
-	rm lex.yy.c *.o
+	rm lex.yy.c *.o solx
