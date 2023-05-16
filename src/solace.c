@@ -73,10 +73,10 @@ int main(int argc, char* argv[])
                 exit(1);
             }
 
-            int toklen = 0;
+            //int toklen = 0;
             // lexer process ->
             while (tokcat) {
-                toklen++;
+                //toklen++;
                 tokcat = yylex();
 
                 tltail->t->category = tokcat;

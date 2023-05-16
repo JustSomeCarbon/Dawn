@@ -2,7 +2,7 @@
 
 extern FILE* yyin;
 extern char* yytext; // points to lexer pattern
-extern int yyleng;
+extern size_t yyleng;
 extern int yylineno; // holds source file line number
 
 // lexical value enumeration
