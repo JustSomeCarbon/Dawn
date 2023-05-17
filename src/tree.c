@@ -1,7 +1,8 @@
 /*
  * file: tree.c
  * author: Noe Garcia
- * description: 
+ * description: Contains all functions regarding the syntax tree construction
+ *  and traversal.
  */
 
 #include <stdio.h>
