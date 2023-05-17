@@ -1,4 +1,4 @@
-module:Main
+pack:Main
 
 // this is a hello world test program
 func main int ()

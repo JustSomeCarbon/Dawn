@@ -47,14 +47,15 @@ enum lexcode {
     COMA,           // 295
     COLON,
     SEMICOLON,
-    MODULE,
+    PACK,
     MAINMOD,
     MAINFUNC,       // 300
     IDENTIFIER,
+    USE,
     DROPVAL,
     UNSUPPORTEDOP,
-    UNSUPPORTEDKEY,
-    STRINGERR,      // 305
+    UNSUPPORTEDKEY, // 305
+    STRINGERR,
     CHARERR,
     COMMENTERR,
     ESCAPE

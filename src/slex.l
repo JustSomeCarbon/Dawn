@@ -31,7 +31,8 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 ":sym"          {return SYMBOL;}
 "tpl"           {return TUPPLE;}
 "struct"        {return STRUCT;}
-"module"        {return MODULE;}
+"use"           {return USE;}
+"pack"        {return PACK;}
 "Main"          {return MAINMOD;}
 "main"          {return MAINFUNC;}
 
@@ -66,11 +67,13 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 0               {return LITERALINT;}
 [0-9]+\.[0-9]+  {return LITERALFLOAT;}
 (true)|(false)  {return LITERALBOOL;}
-"0"[xX][0-9a-fA-F]+     {return LITERALHEX;}
+"0"[xX][0-9a-fA-F]+           {return LITERALHEX;}
 \"([^"]|ESC_CHAR|\w|\W)*\"    {return LITERALSTRING;}
 \'([^']|ESC_CHAR|\w|\W)?\'    {return LITERALCHAR;}
-[a-zA-Z_][0-9a-zA-Z_]*  {return IDENTIFIER;}
+[a-zA-Z_][0-9a-zA-Z_]*        {return IDENTIFIER;}
+":"[a-zA-Z_][0-9a-zA-Z_]*     {return LITERALSYMBOL;}
 
+\n              { /* do nothing */ }
 \"              {return STRINGERR;}
 \"[a-zA-Z0-9]*  {return STRINGERR;}
 \'[a-zA-Z0-9][a-zA-Z0-9]+\' {return CHARERR;}

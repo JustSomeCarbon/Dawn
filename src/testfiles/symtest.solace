@@ -1,0 +1,14 @@
+pack:Main
+
+// define a set of new symbols
+:sym {:apple, :banana}
+
+func main int ()
+{
+	/* compare symbols to one another and print comparisons */
+	IO:out(:apple == :apple);
+	IO:out(:banana == :banana);
+	IO:out(:apple == :banana);
+
+	0;
+}

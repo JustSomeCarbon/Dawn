@@ -1,4 +1,4 @@
-module:Main
+pack:Main
 
 func main int ()
 {

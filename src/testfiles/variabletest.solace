@@ -1,4 +1,4 @@
-module:Main
+pack:Main
 
 // global symbol definition
 :sym :glob
