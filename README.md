@@ -16,7 +16,8 @@ Solace relies on the `clang` compiler, along with the Yacc and Flex tools,
 all of which must be installed.
 
 To compile Solace, clone the source directory, and perform `make` within
-the main `Solace/src` directory. Currently only tested on Linux/Unix systems.
+the main `Solace/src` directory. Currently only tested on Linux/Unix and
+Apple silicon systems.
 
 To run the Solace compiler, run the resulting object file called `solace` 
 followed by the name of the source file to be compiled.
