@@ -67,8 +67,8 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 [0-9]+\.[0-9]+  {return LITERALFLOAT;}
 (true)|(false)  {return LITERALBOOL;}
 "0"[xX][0-9a-fA-F]+     {return LITERALHEX;}
-\"([^"|ESC_CHAR])*\"    {return LITERALSTRING;}
-\'([^'|ESC_CHAR])?\'    {return LITERALCHAR;}
+\"([^"]|ESC_CHAR|\w|\W)*\"    {return LITERALSTRING;}
+\'([^']|ESC_CHAR|\w|\W)?\'    {return LITERALCHAR;}
 [a-zA-Z_][0-9a-zA-Z_]*  {return IDENTIFIER;}
 
 \"              {return STRINGERR;}

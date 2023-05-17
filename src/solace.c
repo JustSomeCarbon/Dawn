@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
                     tltail->t->dval = strtod(yytext, NULL);
                     break;
                 case LITERALSTRING:
-                    tltail->t->sval = calloc(1, yyleng); // may be too long
+                    tltail->t->sval = calloc(1, strlen(yytext)); // may be too long, used yyleng
                     int walk = 1;
                     while (*(yytext+walk) != '\0') {
                         if (*(yytext+walk) == '\\') {
