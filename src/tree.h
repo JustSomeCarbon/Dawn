@@ -8,7 +8,12 @@
  *  tree structures are defined.
  */
 
-extern char* yyfile; // !- contains file to compile -!
+extern FILE* yyin; // !- contains file to compile -!
+extern char* yytext;
+extern int yylineno;
+extern char* yyfile;
+// contains the root of the tree generated from parsing
+extern struct tree* root;
 
 enum sol_terms {
     FUNCTION_DECL=1001,
@@ -36,27 +41,54 @@ enum sol_terms {
     STMT,
     EXPR_STMT,
     STMT_EXPR,          // 1025
+    PATTERN_BLOCK,
     IF_THEN_STMT,
     IF_THEN_ELSE_STMT,
     ELSE_IF_SEQ,
-    ELSE_IF_STMT,
-    BREAK_STMT,         // 1030
+    ELSE_IF_STMT,       // 1030
+    BREAK_STMT,
     RETURN_STMT,
     PRIMARY,
     LITERAL,
-    ARG_LIST,
-    FIELD_ACCESS,       // 1035
+    ARG_LIST,           // 1035
+    FIELD_ACCESS,
     POST_FIX_EXPR,
     UNARY_EXPR,
     MULT_EXPR,
-    ADD_EXPR,
-    REL_OP,             // 1040
+    ADD_EXPR,           // 1040
+    REL_OP,
     REL_EXPR,
     EQ_EXPR,
     COND_AND_EXPR,
-    COND_OR_EXPR,
-    EXPR,               // 1045
+    COND_OR_EXPR,       // 1045
+    EXPR,
     ASSIGN,
     LEFT_HAND_SIDE,
     ASSIGN_OP,
 };
+
+// Code Structures
+
+struct token {
+    int category;   // integer return code from yylex
+    char* text;     // raw string pattern
+    int lineno;     // token line number location
+    char* filename; // source file name
+    int ival;       // used for integer values
+    double dval;    // used for floating point values
+    char* sval;     // used for character and string values
+};
+
+struct tree {
+    int prodrule;
+    char* symbolname;
+    int nkids;
+    struct tree* kids[9]; // if nkids > 0
+    struct token* leaf;   // if nkids == 0; Null for ε productions
+};
+
+// Function Prototypes
+
+struct tree* allocTree(int code, char* symb, int numkids, ...);
+void printTree(struct tree* t, int depth);
+void freeTree(struct tree* t);

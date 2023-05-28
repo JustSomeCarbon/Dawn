@@ -2,7 +2,7 @@ CC=clang
 CFLAGS=-Wall
 OBJFLAG=-Wall -c
 
-solx: solace.o lex.yy.o token.o
+solx: solace.o lex.yy.o sgram.tab.o token.o
 	$(CC) $(CFLAGS) lex.yy.o solace.o token.o -o solx
 
 lex.yy.o: lex.yy.c
@@ -10,6 +10,12 @@ lex.yy.o: lex.yy.c
 
 lex.yy.c: slex.l
 	flex slex.l
+
+sgram.tab.o: sgram.tab.c
+	$(CC) $(OBJFLAG) sgram.tab.c
+
+sgram.tab.c sgram.tab.h: sgram.y
+	bison -d sgram.y
 
 solace.o: solace.c
 	$(CC) $(OBJFLAG) solace.c

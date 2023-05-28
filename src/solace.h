@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+// !! TODO: remove file after bison conversion.
+
 extern FILE* yyin;
 extern char* yytext; // points to lexer pattern
 //extern size_t yyleng; // CONFLICTING TYPES ON DIFFERENT PLATFORMS
@@ -61,7 +63,7 @@ enum lexcode {
     ESCAPE
 };
 
-
+/* -- Legacy: moved to tree.h -- */
 struct tokenlist {
     struct token* t;
     struct tokenlist* next;
@@ -76,6 +78,7 @@ struct token {
     double dval;    // used for floating point values
     char* sval;     // used for character and string values
 };
+/* -- Legacy -- */
 
 // LEXER PROTOTYPES
 int yylex();
