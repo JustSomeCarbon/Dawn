@@ -22,5 +22,5 @@ Apple silicon systems.
 To run the Solace compiler, run the resulting object file called `solace` 
 followed by the name of the source file to be compiled.
 ~~~
-$ solx example_file.solace
+$ ./solx example_file.solace
 ~~~
