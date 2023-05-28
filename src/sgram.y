@@ -24,57 +24,60 @@
 %token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL UNSUPPORTEDOP UNSUPPORTEDKEY
 %token <treeptr> STRINGERR CHARERR COMENTERR ESCAPE
 
-%type <treeptr> FUNCTION_DECL
-%type <treeptr> FUNCTION_HEADER
-%type <treeptr> FUNCTION_BODY
-%type <treeptr> FUNCTION_BODY_DECLS
-%type <treeptr> FUNCTION_BODY_DECL
-%type <treeptr> FUNCTION_RETURN_VAL
-%type <treeptr> FIELD_DECL
-%type <treeptr> TYPE
-%type <treeptr> NAME
-%type <treeptr> VAR_DECLS
-%type <treeptr> VAR_DECL
-%type <treeptr> FORMAL_PARAM_LIST_OPT
-%type <treeptr> FORMAL_PARAM_LIST
-%type <treeptr> FORMAL_PARAM
-%type <treeptr> ARG_LIST_OPT
-%type <treeptr> BLOCK
-%type <treeptr> BLOCK_STMTS_OPT
-%type <treeptr> BLOCK_STMTS
-%type <treeptr> BLOCK_STMT
-%type <treeptr> LOCAL_VAR_DECL_STMT
-%type <treeptr> LOCAL_VAR_DECL
-%type <treeptr> STMT_WT
-%type <treeptr> STMT
-%type <treeptr> EXPR_STMT
-%type <treeptr> STMT_EXPR
-%type <treeptr> IF_THEN_STMT
-%type <treeptr> IF_THEN_ELSE_STMT
-%type <treeptr> ELSE_IF_SEQ
-%type <treeptr> ELSE_IF_STMT
-%type <treeptr> BREAK_STMT
-%type <treeptr> RETURN_STMT
-%type <treeptr> PRIMARY
-%type <treeptr> LITERAL
-%type <treeptr> ARG_LIST
-%type <treeptr> FIELD_ACCESS
-%type <treeptr> UNARY_EXPR
-%type <treeptr> MULT_EXPR
-%type <treeptr> ADD_EXPR
-%type <treeptr> REL_OP
-%type <treeptr> REL_EXPR
-%type <treeptr> EQ_EXPR
-%type <treeptr> COND_AND_EXPR
-%type <treeptr> COND_OR_EXPR
-%type <treeptr> EXPR
-%type <treeptr> ASSIGN
-%type <treeptr> LEFT_HAND_SIDE
-%type <treeptr> ASSIGN_OP
+%type <treeptr> PackDecl
+%type <treeptr> FunctionDecl
+%type <treeptr> FunctionHeader
+%type <treeptr> FunctionBody
+%type <treeptr> FunctionBodyDecls
+%type <treeptr> FunctionBodyDecl
+%type <treeptr> FunctionReturnVal
+%type <treeptr> FieldDecl
+%type <treeptr> Type
+%type <treeptr> Name
+%type <treeptr> VarDecls
+%type <treeptr> VarDecl
+%type <treeptr> FormalParamListOpt
+%type <treeptr> FormalParamList
+%type <treeptr> FormalParam
+%type <treeptr> ArgListOpt
+%type <treeptr> Block
+%type <treeptr> BlockStmtsOpt
+%type <treeptr> BlockStmts
+%type <treeptr> BlockStmt
+%type <treeptr> LocalVarDeclsStmt
+%type <treeptr> LocalVarDecl
+%type <treeptr> Stmt_Wt
+%type <treeptr> Stmt
+%type <treeptr> ExprStmt
+%type <treeptr> StmtExpr
+%type <treeptr> IfThenStmt
+%type <treeptr> IfThenElseStmt
+%type <treeptr> ElseIfSeq
+%type <treeptr> ElseIfStmt
+%type <treeptr> BreakStmt
+%type <treeptr> ReturnStmt
+%type <treeptr> Primary
+%type <treeptr> Literal
+%type <treeptr> ArgList
+%type <treeptr> FieldAccess
+%type <treeptr> UnaryExpr
+%type <treeptr> MultExpr
+%type <treeptr> AddExpr
+%type <treeptr> RelOp
+%type <treeptr> RelExpr
+%type <treeptr> EqExpr
+%type <treeptr> CondAndExpr
+%type <treeptr> CondOrExpr
+%type <treeptr> Expr
+%type <treeptr> Assign
+%type <treeptr> LeftHandSide
+%type <treeptr> AssignOp
 
 %%
 
 /* Rules */
+
+sourceFile: PackDecl { root = $1; }
 
 %%
 
