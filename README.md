@@ -9,7 +9,7 @@ Solace is a compiled functional programming language developed with the C
 language utilizing Flex and Bison.
 Solace is in its infancy and is a simple language. Solace is statically
 typed with immutable variable types. The specification list and language
-descriptions for Solace can be found in the langSpec/spec-file directory.
+descriptions for Solace can be found in the langDocs/langSpec directory.
 
 ## Build and Run
 Solace relies on the `clang` compiler, along with the Yacc and Flex tools,
