@@ -7,6 +7,7 @@
  *  integer values corresponding to terminal values. Finally, all token and
  *  tree structures are defined.
  */
+#include <stdio.h>
 
 extern FILE* yyin; // !- contains file to compile -!
 extern char* yytext;
@@ -20,6 +21,11 @@ enum sol_terms {
     PACK_DECL,
     USE_DECLS,
     USE_DECL,
+    STRUCT_DECLS,
+    STRUCT_DECL,
+    STRUCT_BODY,
+    STRUCT_PARAMS,
+    STRUCT_PARAM,
     FUNCTION_DECLS,
     FUNCTION_DECL,
     FUNCTION_HEADER,

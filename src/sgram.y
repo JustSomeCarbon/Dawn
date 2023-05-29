@@ -21,14 +21,19 @@
 %token <treeptr> ASSIGNMENT BAR PATTERNMATCH CONDSTATEMENT ARROWOP RETURN
 %token <treeptr> EQUALTO NOTEQUAL COMPARISON LBRACE RBRACE LPAREN RPAREN
 %token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON PACK MAINPACK PACKNAME
-%token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL UNSUPPORTEDOP UNSUPPORTEDKEY
-%token <treeptr> STRINGERR CHARERR COMENTERR ESCAPE
+%token <treeptr> MAINFUNC IDENTIFIER RETURNTYPE USE DROPVAL UNSUPPORTEDOP
+%token <treeptr> UNSUPPORTEDKEY STRINGERR CHARERR COMENTERR ESCAPE
 
 %type <treeptr> SourcePack
 %type <treeptr> SourceFile
 %type <treeptr> PackDecl
 %type <treeptr> UseDecls
 %type <treeptr> UseDecl
+%type <treeptr> StructDecls
+%type <treeptr> StructDecl
+%type <treeptr> StructBody
+%type <treeptr> StructParams
+%type <treeptr> StructParam
 %type <treeptr> FunctionDecls
 %type <treeptr> FunctionDecl
 %type <treeptr> FunctionHeader
@@ -82,9 +87,54 @@
 
 /* Rules */
 
+/* -- Source File/Package -- */
 SourcePack: SourceFile { root = $1; };
-SourceFile: PackDecl UseDecls FunctionDecls
-    {}
+SourceFile: PackDecl UseDecls StructDecls FunctionDecls
+    {$$ = allocTree(SOURCE_FILE, "source_file", 4, $1, $2, $3, $4);}
+;
+PackDecl: PACK MAINPACK {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $2);}
+    | PACK PACKNAME     {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $2);}
+;
+UseDecls: UseDecls UseDecl  {$$ = allocTree(USE_DECLS, "use_decls", 2, $1, $2);}
+    | UseDecl               {$$ = allocTree(USE_DECLS, "use_decls", 1, $1);}
+;
+UseDecl: USE PACKNAME {$$ = allocTree(USE_DECL, "use_decl", 2, $1, $2);}
+;
+
+/* -- Structure Definitions -- */
+StructDecls: StructDecls StructDecl {$$ = allocTree(STRUCT_DECLS, "struct_decls", 2, $1, $2);}
+    | StructDecl {$$ = allocTree(STRUCT_DECLS, "struct_decls", 1, $1);}
+;
+StructDecl: STRCUCT IDENTIFIER LBRACE StructBody RBRACE SEMICOLON
+    {$$ = allocTree(STRUCT_DECL, "struct_decl", 3, $1, $2, $4);}
+;
+StructBody: StructParams StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 2, $1, $2);}
+    | StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 1, $1);}
+;
+StructParam: IDENTIFIER Type SEMICOLON {$$ = allocTree(STRUCT_PARAM, "struct_param", 2, $1, $2);}
+
+/* -- Function Definitions -- */
+FunctionDecls: FunctionDecls FunctionDecl
+    {$$ = allocTree(FUNCTION_DECLS, "function_decls", 2, $1, $2);}
+    | FunctionDecl {$$ = allocTree(FUNCTION_DECLS, "function_decls", 1, $1);}
+;
+FunctionDecl: FunctionHeader LBRACKET FunctionBody RBRACKET
+    {$$ = allocTree(FUNCTION_DECL, "function_decl", 2, $1, $3);}
+;
+FunctionHeader: FUNCTION IDENTIFIER RETURNTYPE LPAREN FormalParamListOpt RPAREN
+    {$$ = allocTree(FUNCTION_HEADER, "function_header", 4, $1, $2, $3, $5);}
+;
+FormalParamListOpt: FormalParamList
+    {$$ = allocTree(FORMAL_PARAM_LIST_OPT, "formal_param_list_opt", 1, $1);}
+;
+FormalParamList: FormalParam
+    {$$ = allocTree(FORMAL_PARAM_LIST, "formal_param_list", 1, $1);}
+    | FormalParamList COMA FormalParam  {$$ = allocTree(FORMAL_PARAM_LIST, "formal_param_list", 2, $1, $3);}
+;
+FormalParam: IDENTIFIER Type {$$ = allocTree(FORMAL_PARAM, "formal_param", 2, $1, $2);}
+
+/* -- Function Body Definitions -- */
+FunctionBody: FunctionReturnVal {}
 ;
 
 %%
