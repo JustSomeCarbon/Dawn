@@ -24,4 +24,4 @@ token.o: token.c
 	$(CC) $(OBJFLAG) token.c
 
 clean:
-	rm lex.yy.c *.o solx
+	rm lex.yy.c sgram.tab.c sgram.tab.h *.o solx

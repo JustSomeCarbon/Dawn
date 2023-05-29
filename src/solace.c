@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "solace.h"
 #include "tree.h"
 
 // external and globals
@@ -52,130 +51,8 @@ int main(int argc, char* argv[])
                 fclose(yyin);
                 exit(1);
             }
-
-            int tokcat = 1;
-            struct tokenlist* tl = NULL;
-            struct tokenlist* tltail = NULL;
-
-            tl = calloc(1, (sizeof(struct tokenlist)));
-            tltail = tl;
-            if (tl == NULL) {
-                printf("Error: unable to allocate memory for lexical tokenizer\n\n");
-                fclose(yyin);
-                exit(1);
-            }
-
-            // create a new token
-            tltail->t = calloc(1, sizeof(struct token));
-            tltail->next = NULL;
-            if (tltail->t == NULL) {
-                printf("Error: token memory allocation failure\n\n");
-                exit(1);
-            }
-
-            //int toklen = 0;
-            // lexer process ->
-            while (tokcat) {
-                //toklen++;
-                tokcat = yylex();
-
-                tltail->t->category = tokcat;
-                tltail->t->text = strdup(yytext);
-                tltail->t->lineno = yylineno;
-                tltail->t->filename = argv[filearg];
-
-                switch (tokcat)
-                {
-                case LITERALINT:
-                    tltail->t->ival = strtol(yytext, NULL, 10);
-                    break;
-                case LITERALHEX:
-                    tltail->t->ival = strtol(yytext+2, NULL, 16);
-                    break;
-                case LITERALFLOAT:
-                    tltail->t->dval = strtod(yytext, NULL);
-                    break;
-                case LITERALSTRING:
-                    tltail->t->sval = calloc(1, strlen(yytext)); // may be too long, used yyleng
-                    int walk = 1;
-                    while (*(yytext+walk) != '\0') {
-                        if (*(yytext+walk) == '\\') {
-                            // handle escape characters
-                            walk++;
-                            switch (*(tltail->t->text+walk))
-                            {
-                            case 'n':
-                                *(tltail->t->sval+walk) = 0x0a;
-                                break;
-                            case 't':
-                                *(tltail->t->sval+walk) = 0x09;
-                                break;
-                            case '\\':
-                                *(tltail->t->sval+walk) = 0x5c;
-                                break;
-                            case '\'':
-                                *(tltail->t->sval+walk) = 0x27;
-                                break;
-                            case '\"':
-                                *(tltail->t->sval+walk) = 0x22;
-                                break;
-                            default:
-                                printf("Error: Unsupported escape character %s at line %d in file %s\n\n", yytext, yylineno, argv[filearg]);
-                                fclose(yyin);
-                                exit(1);
-                                break;
-                            }
-                        } else {
-                            *(tltail->t->sval+walk) = *(yytext+walk);
-                        }
-                        walk++;
-                    }
-                    *(tltail->t->sval+walk) = '\0';
-                    break;
-                case LITERALCHAR:
-                    if (*(yytext+1) == '\\') {
-                        // handle escape characters
-                        switch (*(tltail->t->text+2))
-                        {
-                        case 'n':
-                            tltail->t->ival = 0x0a;
-                            break;
-                        case 't':
-                            tltail->t->ival = 0x09;
-                            break;
-                        case '\\':
-                            tltail->t->ival = 0x5c;
-                            break;
-                        case '\'':
-                            tltail->t->ival = 0x27;
-                            break;
-                        case '\"':
-                            tltail->t->ival = 0x22;
-                            break;
-                        default:
-                            printf("Error: unsupported escape character %s at line %d in file %s\n\n", yytext, yylineno, argv[filearg]);
-                            break;
-                        }
-                    } else {
-                        tltail->t->ival = *(yytext+1);
-                    }
-                    break;
-                default:
-                    break;
-                }
-
-                tltail->next = allocateToken();
-                if (tltail->next == NULL) {
-                    printf("Error: unable to allocate memory space for lexer token");
-                    fclose(yyin);
-                    exit(1);
-                }
-                tltail = tltail->next;
-            } // end of lexer while
+            // close the file
             fclose(yyin);
-
-            // print the token list
-            printTokenList(tl);
         }
         // move to next source file
         filearg++;

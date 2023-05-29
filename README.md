@@ -11,6 +11,10 @@ Solace is in its infancy and is a simple language. Solace is statically
 typed with immutable variable types. The specification list and language
 descriptions for Solace can be found in the langDocs/langSpec directory.
 
+## Current Progress
+Solace is in the very early stages of development. Current progress includes
+the lexer, and the parser is currently in active development.
+
 ## Build and Run
 Solace relies on the `clang` compiler, along with the Yacc and Flex tools,
 all of which must be installed.

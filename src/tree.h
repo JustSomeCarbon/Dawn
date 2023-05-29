@@ -16,51 +16,56 @@ extern char* yyfile;
 extern struct tree* root;
 
 enum sol_terms {
-    FUNCTION_DECL=1001,
+    SOURCE_FILE=1001,
+    PACK_DECL,
+    USE_DECLS,
+    USE_DECL,
+    FUNCTION_DECLS,
+    FUNCTION_DECL,
     FUNCTION_HEADER,
     FUNCTION_BODY,
     FUNCTION_BODY_DECLS,
-    FUNCTION_BODY_DECL, // 1005
+    FUNCTION_BODY_DECL,
     FUNCTION_RETURN_VAL,
     FIELD_DECL,
     TYPE,
     NAME,
-    VAR_DECLS,          // 1010
+    VAR_DECLS,
     VAR_DECL,
     FORMAL_PARAM_LIST_OPT,
     FORMAL_PARAM_LIST,
     FORMAL_PARAM,
-    ARG_LIST_OPT,       // 1015
+    ARG_LIST_OPT,
     BLOCK,
     BLOCK_STMTS_OPT,
     BLOCK_STMTS,
     BLOCK_STMT,
-    LOCAL_VAR_DECL_STMT,// 1020
+    LOCAL_VAR_DECL_STMT,
     LOCAL_VAR_DECL,
     STMT_WT,
     STMT,
     EXPR_STMT,
-    STMT_EXPR,          // 1025
+    STMT_EXPR,
     PATTERN_BLOCK,
     IF_THEN_STMT,
     IF_THEN_ELSE_STMT,
     ELSE_IF_SEQ,
-    ELSE_IF_STMT,       // 1030
+    ELSE_IF_STMT,
     BREAK_STMT,
     RETURN_STMT,
     PRIMARY,
     LITERAL,
-    ARG_LIST,           // 1035
+    ARG_LIST,
     FIELD_ACCESS,
     POST_FIX_EXPR,
     UNARY_EXPR,
     MULT_EXPR,
-    ADD_EXPR,           // 1040
+    ADD_EXPR,
     REL_OP,
     REL_EXPR,
     EQ_EXPR,
     COND_AND_EXPR,
-    COND_OR_EXPR,       // 1045
+    COND_OR_EXPR,
     EXPR,
     ASSIGN,
     LEFT_HAND_SIDE,
@@ -89,6 +94,7 @@ struct tree {
 
 // Function Prototypes
 
+int allocToken(int code);
 struct tree* allocTree(int code, char* symb, int numkids, ...);
 void printTree(struct tree* t, int depth);
 void freeTree(struct tree* t);

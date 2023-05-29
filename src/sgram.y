@@ -20,11 +20,16 @@
 %token <treeptr> ARRAY STRCUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
 %token <treeptr> ASSIGNMENT BAR PATTERNMATCH CONDSTATEMENT ARROWOP RETURN
 %token <treeptr> EQUALTO NOTEQUAL COMPARISON LBRACE RBRACE LPAREN RPAREN
-%token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON PACK MAINMOD
+%token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON PACK MAINPACK PACKNAME
 %token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL UNSUPPORTEDOP UNSUPPORTEDKEY
 %token <treeptr> STRINGERR CHARERR COMENTERR ESCAPE
 
+%type <treeptr> SourcePack
+%type <treeptr> SourceFile
 %type <treeptr> PackDecl
+%type <treeptr> UseDecls
+%type <treeptr> UseDecl
+%type <treeptr> FunctionDecls
 %type <treeptr> FunctionDecl
 %type <treeptr> FunctionHeader
 %type <treeptr> FunctionBody
@@ -77,7 +82,10 @@
 
 /* Rules */
 
-sourceFile: PackDecl { root = $1; }
+SourcePack: SourceFile { root = $1; };
+SourceFile: PackDecl UseDecls FunctionDecls
+    {}
+;
 
 %%
 
