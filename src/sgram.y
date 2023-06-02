@@ -44,7 +44,7 @@
 %type <treeptr> FunctionBodyDecls
 %type <treeptr> FunctionBodyDecl
 %type <treeptr> FunctionReturnVal
-%type <treeptr> FieldDecl
+%type <treeptr> FunctionCall
 %type <treeptr> Type
 %type <treeptr> Name
 %type <treeptr> VarDecls
@@ -138,8 +138,8 @@ FunctionDecls: FunctionDecls FunctionDecl
     {$$ = allocTree(FUNCTION_DECLS, "function_decls", 2, $1, $2);}
     | FunctionDecl {$$ = allocTree(FUNCTION_DECLS, "function_decls", 1, $1);}
 ;
-FunctionDecl: FunctionHeader LBRACKET FunctionBody RBRACKET
-    {$$ = allocTree(FUNCTION_DECL, "function_decl", 2, $1, $3);}
+FunctionDecl: FunctionHeader FunctionBody
+    {$$ = allocTree(FUNCTION_DECL, "function_decl", 2, $1, $2);}
 ;
 FunctionHeader: FUNCTION IDENTIFIER RETURNTYPE LPAREN FormalParamListOpt RPAREN
     {$$ = allocTree(FUNCTION_HEADER, "function_header", 4, $1, $2, $3, $5);}
@@ -155,7 +155,35 @@ FormalParam: IDENTIFIER Type {$$ = allocTree(FORMAL_PARAM, "formal_param", 2, $1
 
 
 /* -- Function Body Definitions -- */
-FunctionBody: FunctionReturnVal {}
+FunctionBody: LBRACKET FunctionBodyDecls RBRACKET
+    {$$ = allocTree(FUNCTIONBODY, "function_body", 1, $2);}
+    | LBRACKET RBRACKET {/* nothing in function */}
+;
+FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl
+    {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1, $2);}
+    | FunctionBodyDecl {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1);}
+;
+FunctionBodyDecl: FunctionReturnVal {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | VarDecls     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | FunctionCall {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+;
+
+
+/* -- Foundation Definitions -- */
+Type: INT     {$$ = allocTree(TYPE, "type", 1, $1);}
+    | FLOAT   {$$ = allocTree(TYPE, "type", 1, $1);}
+    | BOOLEAN {$$ = allocTree(TYPE, "type", 1, $1);}
+    | STRING  {$$ = allocTree(TYPE, "type", 1, $1);}
+    | CHAR    {$$ = allocTree(TYPE, "type", 1, $1);}
+    | SYMBOL  {$$ = allocTree(TYPE, "type", 1, $1);} //? may remove later
+;
+Literal: LITERALINT {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALBOOL   {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALFLOAT  {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALHEX    {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALSTRING {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALCHAR   {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALSYMBOL {$$ = allocTree(LITERAL, "literal", 1, $1);}
 ;
 
 %%

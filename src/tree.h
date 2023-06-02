@@ -36,7 +36,7 @@ enum sol_terms {
     FUNCTION_BODY_DECLS,
     FUNCTION_BODY_DECL,
     FUNCTION_RETURN_VAL,
-    FIELD_DECL,
+    FUNCTION_CALL,
     TYPE,
     NAME,
     VAR_DECLS,
