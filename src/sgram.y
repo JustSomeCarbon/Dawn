@@ -47,8 +47,8 @@
 %type <treeptr> FunctionCall
 %type <treeptr> Type
 %type <treeptr> Name
-%type <treeptr> VarDecls
 %type <treeptr> VarDecl
+%type <treeptr> VarIdentifiers
 %type <treeptr> FormalParamListOpt
 %type <treeptr> FormalParamList
 %type <treeptr> FormalParam
@@ -70,6 +70,10 @@
 %type <treeptr> BreakStmt
 %type <treeptr> ReturnStmt
 %type <treeptr> Primary
+%type <treeptr> TuppleType
+%type <treeptr> TuppleDecl
+%type <treeptr> TuppleConst
+%type <treeptr> Literals
 %type <treeptr> Literal
 %type <treeptr> ArgList
 %type <treeptr> FieldAccess
@@ -127,7 +131,9 @@ StructDecls: StructDecls StructDecl      {$$ = allocTree(STRUCT_DECLS, "struct_d
 StructDecl: STRCUCT IDENTIFIER LBRACE StructBody RBRACE SEMICOLON
     {$$ = allocTree(STRUCT_DECL, "struct_decl", 3, $1, $2, $4);}
 ;
-StructBody: StructParams StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 2, $1, $2);}
+StructBody: StructParams {$$ = allocTree(STRUCT_PARAMS, "struct_params", 1, $1);}
+;
+StructParams: StructParams StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 2, $1, $2);}
     | StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 1, $1);}
 ;
 StructParam: IDENTIFIER Type SEMICOLON {$$ = allocTree(STRUCT_PARAM, "struct_param", 2, $1, $2);}
@@ -164,18 +170,43 @@ FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl
     | FunctionBodyDecl {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1);}
 ;
 FunctionBodyDecl: FunctionReturnVal {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | VarDecls     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | VarDecl     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | FunctionCall {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+;
+FunctionReturnVal: IDENTIFIER SEMICOLON {$$ = allocTree();}
+    | Literal SEMICOLON {$$ = allocTree();} // ADD LOGICAL EXPRESSIONS !!!!!!!!!!!!!!!
 ;
 
 
-/* -- Foundation Definitions -- */
-Type: INT     {$$ = allocTree(TYPE, "type", 1, $1);}
-    | FLOAT   {$$ = allocTree(TYPE, "type", 1, $1);}
-    | BOOLEAN {$$ = allocTree(TYPE, "type", 1, $1);}
-    | STRING  {$$ = allocTree(TYPE, "type", 1, $1);}
-    | CHAR    {$$ = allocTree(TYPE, "type", 1, $1);}
-    | SYMBOL  {$$ = allocTree(TYPE, "type", 1, $1);} //? may remove later
+/* -- Variable Definitions -- */
+VarDecl: VarIdentifiers Type ASSIGNMENT Literals SEMICOLON {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
+;
+VarIdentifiers: VarIdentifiers COMA IDENTIFIER
+    {$$ = allocTree(VAR_IDENTIFIERS, "var_identifiers", 2, $1, $3);}
+    | IDENTIFIER {$$ = allocTree(VAR_IDENTIFIERS, "var_identifiers", 1, $1);}
+;
+
+/* -- Type Definitions -- */
+Type: INT      {$$ = allocTree(TYPE, "type", 1, $1);}
+    | FLOAT    {$$ = allocTree(TYPE, "type", 1, $1);}
+    | BOOLEAN  {$$ = allocTree(TYPE, "type", 1, $1);}
+    | STRING   {$$ = allocTree(TYPE, "type", 1, $1);}
+    | CHAR     {$$ = allocTree(TYPE, "type", 1, $1);}
+    | SYMBOL   {$$ = allocTree(TYPE, "type", 1, $1);}
+    | FUNCTION {$$ = allocTree(TYPE, "type", 1, $1);}
+    | LBRACKET Type RBRACKET {$$ = allocTree(TYPE, "type", 1, $2);}
+;
+TuppleType: LBRACE TuppleDecl RBRACE {$$ = allocTtree(TUPPLE_TYPE, "tupple_type", 1, $2);}
+;
+TuppleDecl: TuppleDecl COMA Literal {$$ = allocTtree(TUPPLE_DECL, "tupple_decl", 2, $1, $3);}
+    | TuppleDecl COMA IDENTIFIER    {$$ = allocTree(TUPPLE_DECL, "tupple_decl", 2, $1, $3);}
+    | Literal    {$$ = allocTree(TUPPLE_DECL, "tupple_decl", 1, $1);}
+    | IDENTIFIER {$$ = allocTree(TUPPLE_DECL, "tupple_decl", 1, $1);}
+;
+TuppleConst: TuppleConst COMA Type {$$ = allocTtree(TUPPLE_CONST, "tupple_const", 2, $1, $3);}
+;
+Literals: Literals Literal {$$ = allocTree(LITERALS, "literals", 2, $1, $2);}
+    | Literal              {$$ = allocTree(LITERALS, "literals", 1, $1);}
 ;
 Literal: LITERALINT {$$ = allocTree(LITERAL, "literal", 1, $1);}
     | LITERALBOOL   {$$ = allocTree(LITERAL, "literal", 1, $1);}

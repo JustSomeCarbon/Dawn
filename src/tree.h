@@ -41,6 +41,7 @@ enum sol_terms {
     NAME,
     VAR_DECLS,
     VAR_DECL,
+    VAR_IDENTIFIERS,
     FORMAL_PARAM_LIST_OPT,
     FORMAL_PARAM_LIST,
     FORMAL_PARAM,
@@ -63,6 +64,10 @@ enum sol_terms {
     BREAK_STMT,
     RETURN_STMT,
     PRIMARY,
+    TUPPLE_TYPE,
+    TUPPLE_DECL,
+    TUPPLE_CONST
+    LITERALS,
     LITERAL,
     ARG_LIST,
     FIELD_ACCESS,
