@@ -16,8 +16,8 @@
 
 %token <treeptr> BOOLEAN INT FLOAT CHAR STRING SYMBOL
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
-%token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION TUPPLE
-%token <treeptr> ARRAY STRCUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
+%token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION
+%token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
 %token <treeptr> ASSIGNMENT BAR PATTERNMATCH CONDSTATEMENT ARROWOP RETURN
 %token <treeptr> EQUALTO NOTEQUAL COMPARISON LBRACE RBRACE LPAREN RPAREN
 %token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON PACK MAINPACK PACKNAME
@@ -49,6 +49,8 @@
 %type <treeptr> Name
 %type <treeptr> VarDecl
 %type <treeptr> VarIdentifiers
+%type <treeptr> StructVarDecl
+%type <treeptr> StructVarParams
 %type <treeptr> FormalParamListOpt
 %type <treeptr> FormalParamList
 %type <treeptr> FormalParam
@@ -99,8 +101,8 @@ SourcePack: SourceFile { root = $1; };
 SourceFile: PackDecl UseDecls DataDefDecls FunctionDecls
     {$$ = allocTree(SOURCE_FILE, "source_file", 4, $1, $2, $3, $4);}
 ;
-PackDecl: PACK MAINPACK {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $2);}
-    | PACK PACKNAME     {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $2);}
+PackDecl: PACK COLON MAINPACK {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $3);}
+    | PACK COLON PACKNAME     {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $3);}
 ;
 UseDecls: UseDecls UseDecl  {$$ = allocTree(USE_DECLS, "use_decls", 2, $1, $2);}
     | UseDecl               {$$ = allocTree(USE_DECLS, "use_decls", 1, $1);}
@@ -128,7 +130,7 @@ StructDecls: StructDecls StructDecl      {$$ = allocTree(STRUCT_DECLS, "struct_d
     | StructDecls SymDefDecls StructDecl {$$ = allocTree(STRUCT_DECLS, "struct_decls", 3, $1, $2, $3);}
     | StructDecl {$$ = allocTree(STRUCT_DECLS, "struct_decls", 1, $1);}
 ;
-StructDecl: STRCUCT IDENTIFIER LBRACE StructBody RBRACE SEMICOLON
+StructDecl: STRUCT IDENTIFIER LBRACE StructBody RBRACE SEMICOLON
     {$$ = allocTree(STRUCT_DECL, "struct_decl", 3, $1, $2, $4);}
 ;
 StructBody: StructParams {$$ = allocTree(STRUCT_PARAMS, "struct_params", 1, $1);}
@@ -170,8 +172,9 @@ FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl
     | FunctionBodyDecl {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1);}
 ;
 FunctionBodyDecl: FunctionReturnVal {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | VarDecl     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | FunctionCall {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | VarDecl       {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | StructVarDecl {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | FunctionCall  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
 ;
 FunctionReturnVal: IDENTIFIER SEMICOLON {$$ = allocTree();}
     | Literal SEMICOLON {$$ = allocTree();} // ADD LOGICAL EXPRESSIONS !!!!!!!!!!!!!!!
@@ -184,6 +187,18 @@ VarDecl: VarIdentifiers Type ASSIGNMENT Literals SEMICOLON {$$ = allocTree(VAR_D
 VarIdentifiers: VarIdentifiers COMA IDENTIFIER
     {$$ = allocTree(VAR_IDENTIFIERS, "var_identifiers", 2, $1, $3);}
     | IDENTIFIER {$$ = allocTree(VAR_IDENTIFIERS, "var_identifiers", 1, $1);}
+;
+StructVarDecl: STRUCT IDENTIFIER EQUALTO LBRACKET StructVarParams RBRACKET
+    {$$ = allocTree(STRUCT_VAR_DECL, "struct_var_decl", 2, $2, $5);}
+;
+StructVarParams: StructVarParams COMA Literal {$$ = allocTree(STRUCT_VAR_PARAMS, "struct_var_params", 2, $1, $3);}
+    | StructVarParams COMA IDENTIFIER {$$ = allocTree(STRUCT_VAR_PARAMS, "struct_var_params", 2, $1, $3);}
+    | StructVarParams COMA IDENTIFIER EQUALTO Literal
+    {$$ = allocTree(STRUCT_VAR_PARAMS, "struct_var_params", 2, $1, $3);}
+    | StructVarParams COMA IDENTIFIER EQUALTO IDENTIFIER
+    {$$ = allocTree(STRUCT_VAR_PARAMS, "struct_var_params", 2, $1, $3);}
+    | Literal    {$$ = allocTree(STRUCT_VAR_PARAMS, "struct_var_params", 1, $1);}
+    | IDENTIFIER {$$ = allocTree(STRUCT_VAR_PARAMS, "struct_var_params", 1, $1);}
 ;
 
 /* -- Type Definitions -- */
