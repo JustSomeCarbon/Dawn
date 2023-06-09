@@ -45,6 +45,7 @@
 %type <treeptr> FunctionBodyDecl
 %type <treeptr> FunctionReturnVal
 %type <treeptr> FunctionCall
+%type <treeptr> PatternBlock
 %type <treeptr> Type
 %type <treeptr> Name
 %type <treeptr> VarDecl
@@ -163,9 +164,9 @@ FormalParam: IDENTIFIER Type {$$ = allocTree(FORMAL_PARAM, "formal_param", 2, $1
 
 
 /* -- Function Body Definitions -- */
-FunctionBody: LBRACKET FunctionBodyDecls RBRACKET
+FunctionBody: LBRACE FunctionBodyDecls RBRACE
     {$$ = allocTree(FUNCTIONBODY, "function_body", 1, $2);}
-    | LBRACKET RBRACKET {/* nothing in function */}
+    | LBRACE RBRACE {/* nothing in function */}
 ;
 FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl
     {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1, $2);}
@@ -178,6 +179,9 @@ FunctionBodyDecl: FunctionReturnVal {$$ = allocTree(FUNCTION_BODY_DECL, "functio
 ;
 FunctionReturnVal: IDENTIFIER SEMICOLON {$$ = allocTree();}
     | Literal SEMICOLON {$$ = allocTree();} // ADD LOGICAL EXPRESSIONS !!!!!!!!!!!!!!!
+;
+PatternBlock: LBRACE LPAREN Expr RPAREN ARROWOP FunctionBodyDecls RBRACE
+    {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $3, $6);}
 ;
 
 
@@ -200,6 +204,7 @@ StructVarParams: StructVarParams COMA Literal {$$ = allocTree(STRUCT_VAR_PARAMS,
     | Literal    {$$ = allocTree(STRUCT_VAR_PARAMS, "struct_var_params", 1, $1);}
     | IDENTIFIER {$$ = allocTree(STRUCT_VAR_PARAMS, "struct_var_params", 1, $1);}
 ;
+
 
 /* -- Type Definitions -- */
 Type: INT      {$$ = allocTree(TYPE, "type", 1, $1);}
