@@ -35,6 +35,8 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "pack"        {return PACK;}
 "Main"          {return MAINMOD;}
 "main"          {return MAINFUNC;}
+"head"          {return HEADVAR;}
+"tail"          {return TAILVAR;}
 
 "+"             {return ADD;}
 "-"             {return SUBTRACT;}
