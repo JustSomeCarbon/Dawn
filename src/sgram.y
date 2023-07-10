@@ -23,10 +23,12 @@
 %token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON PACK MAINPACK PACKNAME
 %token <treeptr> MAINFUNC IDENTIFIER RETURNTYPE USE DROPVAL UNSUPPORTEDOP
 %token <treeptr> UNSUPPORTEDKEY STRINGERR CHARERR COMENTERR ESCAPE
+%token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT
+%token <treeptr> GREATERTHANOREQUAL LESSTHANOREQUAL GREATERTHAN LESSTHAN
 
 %type <treeptr> SourcePack
 %type <treeptr> SourceFile
-%type <treeptr> PackDecl
+%type <treeptr> PakDecl
 %type <treeptr> UseDecls
 %type <treeptr> UseDecl
 %type <treeptr> DataDefDecls
@@ -46,6 +48,8 @@
 %type <treeptr> FunctionReturnVal
 %type <treeptr> FunctionCall
 %type <treeptr> PatternBlock
+%type <treeptr> PakNameCall
+%type <treeptr> PakCallUnwrap
 %type <treeptr> Type
 %type <treeptr> Name
 %type <treeptr> VarDecl
@@ -56,6 +60,8 @@
 %type <treeptr> FormalParamList
 %type <treeptr> FormalParam
 %type <treeptr> ArgListOpt
+%type <treeptr> ArgList
+%type <treeptr> ArgVal
 %type <treeptr> Block
 %type <treeptr> BlockStmtsOpt
 %type <treeptr> BlockStmts
@@ -78,8 +84,8 @@
 %type <treeptr> TuppleConst
 %type <treeptr> Literals
 %type <treeptr> Literal
-%type <treeptr> ArgList
 %type <treeptr> FieldAccess
+%type <treeptr> PostFixExpr
 %type <treeptr> UnaryExpr
 %type <treeptr> MultExpr
 %type <treeptr> AddExpr
@@ -88,6 +94,8 @@
 %type <treeptr> EqExpr
 %type <treeptr> CondAndExpr
 %type <treeptr> CondOrExpr
+%type <treeptr> ConcatExprs
+%type <treeptr> ConcatExpr
 %type <treeptr> Expr
 %type <treeptr> Assign
 %type <treeptr> LeftHandSide
@@ -99,11 +107,11 @@
 
 /* -- Source File/Package -- */
 SourcePack: SourceFile { root = $1; };
-SourceFile: PackDecl UseDecls DataDefDecls FunctionDecls
+SourceFile: PakDecl UseDecls DataDefDecls FunctionDecls
     {$$ = allocTree(SOURCE_FILE, "source_file", 4, $1, $2, $3, $4);}
 ;
-PackDecl: PACK COLON MAINPACK {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $3);}
-    | PACK COLON PACKNAME     {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $3);}
+PakDecl: PACK COLON MAINPACK {$$ = allocTree(PAK_DECL, "pack_decl", 2, $1, $3);}
+    | PACK COLON PACKNAME     {$$ = allocTree(PAK_DECL, "pack_decl", 2, $1, $3);}
 ;
 UseDecls: UseDecls UseDecl  {$$ = allocTree(USE_DECLS, "use_decls", 2, $1, $2);}
     | UseDecl               {$$ = allocTree(USE_DECLS, "use_decls", 1, $1);}
@@ -161,6 +169,17 @@ FormalParamList: FormalParam
     | FormalParamList COMA FormalParam  {$$ = allocTree(FORMAL_PARAM_LIST, "formal_param_list", 2, $1, $3);}
 ;
 FormalParam: IDENTIFIER Type {$$ = allocTree(FORMAL_PARAM, "formal_param", 2, $1, $2);}
+;
+ArgListOpt: ArgList {$$ = allocTree(ARG_LIST_OPT, "arg_list_opt", 1, $1);}
+    | {$$ = NULL;}
+;
+ArgList: ArgList COMA ArgVal {$$ = allocTree(ARG_LIST, "arg_list", 2, $1, $3);}
+    | ArgVal {$$ = allocTree(ARG_LIST, "arg_list", 1, $1);}
+;
+ArgVal: Expr     {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
+    | IDENTIFIER {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
+    | Literal    {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
+;
 
 
 /* -- Function Body Definitions -- */
@@ -176,17 +195,32 @@ FunctionBodyDecl: FunctionReturnVal {$$ = allocTree(FUNCTION_BODY_DECL, "functio
     | VarDecl       {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | StructVarDecl {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | FunctionCall  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | PakNameCall   {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
 ;
-FunctionReturnVal: IDENTIFIER SEMICOLON {$$ = allocTree();}
-    | Literal SEMICOLON {$$ = allocTree();} // ADD LOGICAL EXPRESSIONS !!!!!!!!!!!!!!!
+FunctionReturnVal: IDENTIFIER SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
+    | Literal SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
+    | Expr SEMICOLON    {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
+; // REWORK TO ENABLE RETURN OF NESTED FUNCTION CALLS; UNSURE RN?????
+FunctionCall: IDENTIFIER LPAREN ArgListOpt RPAREN SEMICOLON
+    {$$ = allocTree(FUNCTION_CALL, "function_call", 2, $1, $3);}
 ;
 PatternBlock: LBRACE LPAREN Expr RPAREN ARROWOP FunctionBodyDecls RBRACE
     {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $3, $6);}
 ;
+PakNameCall: PakNameCall COLON PakCallUnwrap ArgListOpt {$$ = allocTree(PAK_NAME_CALL, "pak_name_call", 3, $1, $3, $4);}
+    | PakCallUnwrap ArgListOpt {$$ = allocTree(PAK_NAME_CALL, "pak_name_call", 2, $1, $2);}
+;
+PakCallUnwrap: IDENTIFIER COLON IDENTIFIER {$$ = allocTree(PAK_CALL_UNWRAP, "pak_call_unwrap", 2, $1, $3);}
+;
 
 
-/* -- Variable Definitions -- */
+/* -- Variable Definitions & Assignments -- */
 VarDecl: VarIdentifiers Type ASSIGNMENT Literals SEMICOLON {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
+    | IDENTIFIER Type ASSIGNMENT FunctionCall     {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
+    | VarIdentifiers Type ASSIGNMENT FunctionCall {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
+    | IDENTIFIER Type ASSIGNMENT ConcatExprs      {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
+    | IDENTIFIER Type ASSIGNMENT PakNameCall      {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
+    | VarIdentifiers Type ASSIGNMENT PakNameCall  {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
 ;
 VarIdentifiers: VarIdentifiers COMA IDENTIFIER
     {$$ = allocTree(VAR_IDENTIFIERS, "var_identifiers", 2, $1, $3);}
@@ -203,6 +237,56 @@ StructVarParams: StructVarParams COMA Literal {$$ = allocTree(STRUCT_VAR_PARAMS,
     {$$ = allocTree(STRUCT_VAR_PARAMS, "struct_var_params", 2, $1, $3);}
     | Literal    {$$ = allocTree(STRUCT_VAR_PARAMS, "struct_var_params", 1, $1);}
     | IDENTIFIER {$$ = allocTree(STRUCT_VAR_PARAMS, "struct_var_params", 1, $1);}
+;
+
+
+/* -- Operation and Name Definitions -- */
+Name: IDENTIFIER    {$$ = allocTree(NAME, "name", 1, $1);}
+    | PakNameCall {$$ = allocTree(QUALIFIED_NAME, "qualified_name", 1, $1);}
+;
+CondOrExpr: CondAndExpr {$$ = allocTree(COND_OR_EXPR, "cond_or_expr", 1, $1);}
+    | CondOrExpr LOGICALOR CondAndExpr {$$ = allocTree(COND_OR_EXPR, "cond_or_expr", 2, $1, $3);}
+;
+CondAndExpr: EqExpr {$$ = allocTree(COND_AND_EXPR, "cond_and_expr", 1, $1);}
+    | CondAndExpr LOGICALAND EqExpr {$$ = allocTree(COND_AND_EXPR, "cond_and_expr", 2, $1, $3);}
+;
+EqExpr: RelExpr {$$ = allocTree(EQ_EXPR, "eq_expr", 1, $1);}
+    | EqExpr ISEQUALTO RelExpr  {$$ = allocTree(EQ_EXPR, "eq_expr", 2, $1, $3);}
+    | EqExpr NOTEQUALTO RelExpr {$$ = allocTree(EQ_EXPR, "eq_expr", 2, $1, $3);}
+;
+RelExpr: AddExpr {$$ = allocTree(REL_EXPR, "rel_expr", 1, $1);}
+    | RelExpr RelOp AddExpr {$$ = allocTree(REL_EXPR, "rel_expr", 3, $1, $2, $3);}
+;
+RelOp: LESSTHANOREQUAL   {$$ = allocTree(REL_OP, "rel_op", 1, $1);}
+    | GREATERTHANOREQUAL {$$ = allocTree(REL_OP, "rel_op", 1, $1);}
+    | LESSTHAN           {$$ = allocTree(REL_OP, "rel_op", 1, $1);}
+    | GREATERTHAN        {$$ = allocTree(REL_OP, "rel_op", 1, $1);}
+;
+AddExpr: MultExpr {$$ = allocTree(ADD_EXPR, "add_expr", 1, $1);}
+    | AddExpr ADD MultExpr      {$$ = allocTree(ADD_EXPR, "add_expr", 1, $1);}
+    | AddExpr SUBTRACT MultExpr {$$ = allocTree(ADD_EXPR, "add_expr", 1, $1);}
+;
+MultExpr: UnaryExpr {$$ = allocTree(MULT_EXPR, "mult_expr", 1, $1);}
+    | MultExpr MULTIPLY UnaryExpr {$$ = allocTree(MULT_EXPR, "mult_expr", 2, $1, $3);}
+    | MultExpr DIVIDE UnaryExpr   {$$ = allocTree(MULT_EXPR, "mult_expr", 2, $1, $3);}
+    | MultExpr MODULO UnaryExpr   {$$ = allocTree(MULT_EXPR, "mult_expr", 2, $1, $3);}
+;
+UnaryExpr: SUBTRACT UnaryExpr {$$ = allocTree(UNARY_EXPR, "unary_expr", 1, $2);}
+    | NOT UnaryExpr {$$ = allocTree(UNARY_EXPR, "unary_expr", 1, $2);}
+    | PostFixExpr   {$$ = allocTree(UNARY_EXPR, "unary_expr", 1, $1);}
+;
+PostFixExpr: Primary {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
+    | Name {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
+;
+ConcatExprs: ConcatExprs BAR ConcatExpr {$$ = allocTree(CONCAT_EXPRS, "concat_exprs", 2, $1, $3);}
+    | ConcatExpr {$$ = allocTree(CONCAT_EXPRS, "concat_exprs", 1, $1);}
+;
+ConcatExpr: LITERALSTRING BAR LITERALSTRING {$$ = allocTree(CONCATE_EXPR, "concat_expr", 2, $1, $3);}
+    | LITERALSTRING BAR LITERALCHAR {$$ = allocTree(CONCATE_EXPR, "concat_expr", 2, $1, $3);}
+    | LITERALCHAR BAR LITERALSTRING {$$ = allocTree(CONCATE_EXPR, "concat_expr", 2, $1, $3);}
+    | LITERALCHAR BAR LITERALCHAR   {$$ = allocTree(CONCATE_EXPR, "concat_expr", 2, $1, $3);}
+;
+Expr: CondOrExpr {$$ = allocTree(EXPR, "expr", 1, $1);}
 ;
 
 
@@ -240,3 +324,4 @@ Literal: LITERALINT {$$ = allocTree(LITERAL, "literal", 1, $1);}
 %%
 
 /* Auxiliary Routines  */
+// N/A
