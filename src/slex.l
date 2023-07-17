@@ -55,6 +55,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "_"             {return DROPVAL;}
 "->"            {return ARROWOP;}
 
+"."             {return DOT;}
 ","             {return COMA;}
 "{"             {return LBRACE;}
 "}"             {return RBRACE;}
@@ -63,6 +64,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "("             {return LPAREN;}
 ")"             {return RPAREN;}
 ":"             {return COLON;}
+"::"            {return SUBSCRIPT;}
 ";"             {return SEMICOLON;}
 
 [1-9][0-9]*     {return LITERALINT;}
