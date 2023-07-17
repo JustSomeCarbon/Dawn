@@ -47,6 +47,7 @@
 %type <treeptr> FunctionBodyDecl
 %type <treeptr> FunctionReturnVal
 %type <treeptr> FunctionCall
+%type <treeptr> PatternBlocks
 %type <treeptr> PatternBlock
 %type <treeptr> PackNameCall
 %type <treeptr> PackCallUnwrap
@@ -162,6 +163,8 @@ FormalParamList: FormalParam
     | FormalParamList COMA FormalParam  {$$ = allocTree(FORMAL_PARAM_LIST, "formal_param_list", 2, $1, $3);}
 ;
 FormalParam: IDENTIFIER Type {$$ = allocTree(FORMAL_PARAM, "formal_param", 2, $1, $2);}
+    | LBRACKET HEADVAR BAR TAILVAR RBRACKET Type
+    {$$ = allocTree(FORMAL_PARAM, "formal_param", 3, $2, $4, $6);}
 ;
 ArgListOpt: ArgList {$$ = allocTree(ARG_LIST_OPT, "arg_list_opt", 1, $1);}
     | {$$ = NULL;}
@@ -188,9 +191,10 @@ FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl
 FunctionBodyDecl: FunctionReturnVal {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | VarDecl       {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | StructVarDecl {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | PatternBlock  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | FunctionCall  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | PackNameCall  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | LBRACE PatternBlocks RBRACE
+    {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
 ;
 FunctionReturnVal: IDENTIFIER SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
     | Literal SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
@@ -199,10 +203,13 @@ FunctionReturnVal: IDENTIFIER SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "fu
 FunctionCall: IDENTIFIER LPAREN ArgListOpt RPAREN SEMICOLON
     {$$ = allocTree(FUNCTION_CALL, "function_call", 2, $1, $3);}
 ;
-PatternBlock: LBRACE LPAREN Expr RPAREN ARROWOP FunctionBodyDecls RBRACE
-    {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $3, $6);}
-    | LBRACE Expr ARROWOP FunctionBodyDecls RBRACE
-    {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $2, $4);}
+PatternBlocks: PatternBlock          {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 1, $1);}
+    | PatternBlocks BAR PatternBlock {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 2, $1, $3);}
+;
+PatternBlock: LPAREN Expr RPAREN ARROWOP FunctionBodyDecls
+    {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $2, $5);}
+    | Expr ARROWOP FunctionBodyDecls
+    {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $1, $3);}
 ;
 PackNameCall: PackNameCall SUBSCRIPT PackCallUnwrap ArgListOpt {$$ = allocTree(PACK_NAME_CALL, "pack_name_call", 3, $1, $3, $4);}
     | PackCallUnwrap ArgListOpt {$$ = allocTree(PACK_NAME_CALL, "pack_name_call", 2, $1, $2);}
