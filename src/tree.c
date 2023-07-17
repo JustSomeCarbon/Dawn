@@ -149,3 +149,8 @@ struct tree* allocTree(int code, char* symb, int numkids, ...)
 
     return tr;
 }
+
+void printTree(struct tree *t, int depth)
+{
+    return;
+}

@@ -5,6 +5,8 @@
     #include "tree.h"
     extern int yylex(void);
     extern void yyerror(char const *);
+
+    struct tree* root;
 %}
 
 %define parse.lac full      // required for verbose error reporting

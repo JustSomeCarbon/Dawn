@@ -11,10 +11,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tree.h"
+#include "sgram.tab.h"
 
 // external and globals
 extern FILE* yyin;
 char* yyfile;
+extern struct tree* root;
 
 // prototypes
 void check_extension(char* file);
@@ -51,6 +53,11 @@ int main(int argc, char* argv[])
                 fclose(yyin);
                 exit(1);
             }
+            // Parse the source file given
+            printf("File parse returns:: %d", yyparse());
+            printTree(root, 0);
+            freeTree(root);
+
             // close the file
             fclose(yyin);
         }

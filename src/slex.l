@@ -12,7 +12,7 @@
 %{
     // Includes
     #include "tree.h"
-    #include "solace.h"
+    #include "sgram.tab.h"
 %}
 
 ESC_CHAR \\(n|t|\\|\'|\"|\?)
