@@ -63,10 +63,6 @@
 %type <treeptr> ArgListOpt
 %type <treeptr> ArgList
 %type <treeptr> ArgVal
-%type <treeptr> Block
-%type <treeptr> BlockStmtsOpt
-%type <treeptr> BlockStmts
-%type <treeptr> BlockStmt
 %type <treeptr> Primary
 %type <treeptr> TuppleType
 %type <treeptr> TuppleDecl
