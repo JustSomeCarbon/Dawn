@@ -44,6 +44,8 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "/"             {return DIVIDE;}
 "%"             {return MODULO;}
 "="             {return ASSIGNMENT;}
+"+="            {return INCREMENT;}
+"-="            {return DECREMENT;}
 "=="            {return COMPARISON;}
 ">"             {return COMPARISON;}
 "<"             {return COMPARISON;}

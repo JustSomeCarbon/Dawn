@@ -23,7 +23,7 @@
 %token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON PACK MAINPACK PACKNAME
 %token <treeptr> MAINFUNC IDENTIFIER RETURNTYPE USE DROPVAL UNSUPPORTEDOP
 %token <treeptr> UNSUPPORTEDKEY STRINGERR CHARERR COMENTERR ESCAPE
-%token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT
+%token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT INCREMENT DECREMENT
 %token <treeptr> GREATERTHANOREQUAL LESSTHANOREQUAL GREATERTHAN LESSTHAN
 
 %type <treeptr> SourcePack
@@ -66,18 +66,6 @@
 %type <treeptr> BlockStmtsOpt
 %type <treeptr> BlockStmts
 %type <treeptr> BlockStmt
-%type <treeptr> LocalVarDeclsStmt
-%type <treeptr> LocalVarDecl
-%type <treeptr> Stmt_Wt
-%type <treeptr> Stmt
-%type <treeptr> ExprStmt
-%type <treeptr> StmtExpr
-%type <treeptr> IfThenStmt
-%type <treeptr> IfThenElseStmt
-%type <treeptr> ElseIfSeq
-%type <treeptr> ElseIfStmt
-%type <treeptr> BreakStmt
-%type <treeptr> ReturnStmt
 %type <treeptr> Primary
 %type <treeptr> TuppleType
 %type <treeptr> TuppleDecl
@@ -98,8 +86,8 @@
 %type <treeptr> ConcatExprs
 %type <treeptr> ConcatExpr
 %type <treeptr> Expr
-%type <treeptr> Assign
 %type <treeptr> LeftHandSide
+%type <treeptr> Assign
 %type <treeptr> AssignOp
 
 %%
@@ -303,6 +291,16 @@ ConcatExpr: LITERALSTRING BAR LITERALSTRING {$$ = allocTree(CONCATE_EXPR, "conca
     | LITERALCHAR BAR LITERALCHAR   {$$ = allocTree(CONCATE_EXPR, "concat_expr", 2, $1, $3);}
 ;
 Expr: CondOrExpr {$$ = allocTree(EXPR, "expr", 1, $1);}
+    | Assign {$$ = allocTree(EXPR, "expr", 1, $1);}
+;
+Assign: LeftHandSide AssignOp Expr {$$ = allocTree(ASSIGN, "assign", 3, $1, $2, $3);}
+;
+AssignOp: ASSIGN {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
+    | INCREMENT  {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
+    | DECREMENT  {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
+;
+LeftHandSide: Name {$$ = allocTree(LEFT_HAND_SIDE, "left_hand_side", 1, $1);}
+    | FieldAccess  {$$ = allocTree(LEFT_HAND_SIDE, "left_hand_side", 1, $1);}
 ;
 
 
