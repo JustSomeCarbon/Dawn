@@ -150,7 +150,58 @@ struct tree* allocTree(int code, char* symb, int numkids, ...)
     return tr;
 }
 
+/*
+ * Takes a tree pointer and prints all values stored within. Nested values are 
+ * printed with indentation to signify depth for easier viewing.
+ * Returns nothing.
+ */
 void printTree(struct tree *t, int depth)
 {
-    return;
+    // check if t is a leaf node
+    if (t->nkids == 0) {
+        // print leaf information
+        printf("LEAF %*s\t%d: %s\n", depth * 2, " ", t->leaf->category, t->leaf->text);
+        // If the ival/sval field is not NULL, print the value to standard output
+        if (t->leaf->sval != NULL) {
+            printf("%s", t->leaf->sval);
+            free(t->leaf->sval);
+        } else if (t->leaf->category == LITERALINT || t->leaf->category == LITERALFLOAT || t->leaf->category == LITERALCHAR) {
+            fprintf(stdout, "%d", t->leaf->ival);
+        }
+        free(t->leaf->text);
+        free(t->leaf);
+    } else {
+        // print the tree structure information
+        printf("TREE %*s %s: %d\n", depth * 2, " ", t->symbolname, t->prodrule);
+        // recursive call for each kid
+        for (int i = 0; i < t->nkids; i++) {
+            print_tree(t->kids[i], depth+1);
+        }
+    }
+    free(t);
+}
+
+/*
+ * Takes a tree pointer and frees the memory allocation for all data values within
+ * the given tree structure t.
+ * Returns nothing.
+ */
+void freeTree(struct tree* t)
+{
+    //check if t is a leaf node
+    if (t->nkids == 0) {
+        // free the leaf and tree structures
+        if (t->leaf->sval != NULL) {
+            free(t->leaf->sval);
+        }
+        free(t->leaf);
+        free(t);
+    } else {
+        // recursive call for each kid
+        for (int i = 0; i < t->nkids; i++) {
+            free_tree(t->kids[i]);
+        }
+        // free the local tree struct
+        free(t);
+    }
 }

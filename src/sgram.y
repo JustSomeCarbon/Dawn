@@ -195,8 +195,11 @@ FunctionBodyDecl: FunctionReturnVal {$$ = allocTree(FUNCTION_BODY_DECL, "functio
     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
 ;
 FunctionReturnVal: IDENTIFIER SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
-    | Literal SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
-    | Expr SEMICOLON    {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
+    | Literal SEMICOLON           {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
+    | Expr SEMICOLON              {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
+    | RETURN IDENTIFIER SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
+    | RETURN Literal SEMICOLON    {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
+    | RETURN Expr SEMICOLON       {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
 ;
 FunctionCall: IDENTIFIER LPAREN ArgListOpt RPAREN SEMICOLON
     {$$ = allocTree(FUNCTION_CALL, "function_call", 2, $1, $3);}
@@ -300,7 +303,7 @@ Expr: CondOrExpr {$$ = allocTree(EXPR, "expr", 1, $1);}
 ;
 Assign: LeftHandSide AssignOp Expr {$$ = allocTree(ASSIGN, "assign", 3, $1, $2, $3);}
 ;
-AssignOp: ASSIGN {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
+AssignOp: ASSIGNMENT {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
     | INCREMENT  {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
     | DECREMENT  {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
 ;

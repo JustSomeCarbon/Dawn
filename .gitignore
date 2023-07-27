@@ -6,3 +6,4 @@ src/lex.yy.c
 src/sgram.tab.c
 src/sgram.tab.h
 .DS_Store
+.vscode
