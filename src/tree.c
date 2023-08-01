@@ -43,77 +43,77 @@ int allocToken(int code)
     switch (code)
     {
         case LITERALINT:
-            yylval->treeptr->leaf->ival = strtol(yytext, NULL, 10);
+            yylval.treeptr->leaf->ival = strtol(yytext, NULL, 10);
             break;
         case LITERALHEX:
-            yylval->treeptr->leaf->ival = strtol(yytext+2, NULL, 16);
+            yylval.treeptr->leaf->ival = strtol(yytext+2, NULL, 16);
             break;
         case LITERALFLOAT:
-            yylval->treeptr->leaf->dval = strtod(yytext, NULL);
+            yylval.treeptr->leaf->dval = strtod(yytext, NULL);
             break;
         case LITERALSTRING:
-            yylval->treeptr->leaf->sval = calloc(1, strlen(yytext)); // may be too long, used yyleng
+            yylval.treeptr->leaf->sval = calloc(1, strlen(yytext)); // may be too long, used yyleng
             int walk = 1;
             while (*(yytext+walk) != '\0') {
                 if (*(yytext+walk) == '\\') {
                     // handle escape characters
                     walk++;
-                    switch (*(yylval->treeptr->leaf->text+walk))
+                    switch (*(yylval.treeptr->leaf->text+walk))
                     {
                     case 'n':
-                        *(yylval->treeptr->leaf->sval+walk) = 0x0a;
+                        *(yylval.treeptr->leaf->sval+walk) = 0x0a;
                         break;
                     case 't':
-                        *(yylval->treeptr->leaf->sval+walk) = 0x09;
+                        *(yylval.treeptr->leaf->sval+walk) = 0x09;
                         break;
                     case '\\':
-                        *(yylval->treeptr->leaf->sval+walk) = 0x5c;
+                        *(yylval.treeptr->leaf->sval+walk) = 0x5c;
                         break;
                     case '\'':
-                        *(yylval->treeptr->leaf->sval+walk) = 0x27;
+                        *(yylval.treeptr->leaf->sval+walk) = 0x27;
                         break;
                     case '\"':
-                        *(yylval->treeptr->leaf->sval+walk) = 0x22;
+                        *(yylval.treeptr->leaf->sval+walk) = 0x22;
                         break;
                     default:
-                        printf("Error: Unsupported escape character %s at line %d in file %s\n\n", yytext, yylineno, argv[filearg]);
+                        printf("Error: Unsupported escape character %s at line %d in file %s\n\n", yytext, yylineno, yyfile);
                         fclose(yyin);
                         exit(1);
                         break;
                     }
                 } else {
-                    *(yylval->treeptr->leaf->sval+walk) = *(yytext+walk);
+                    *(yylval.treeptr->leaf->sval+walk) = *(yytext+walk);
                 }
                 walk++;
             }
-            *(yylval->treeptr->leaf->sval+walk) = '\0';
+            *(yylval.treeptr->leaf->sval+walk) = '\0';
             break;
         case LITERALCHAR:
             if (*(yytext+1) == '\\') {
                 // handle escape characters
-                switch (*(yylval->treeptr->leaf->text+2))
+                switch (*(yylval.treeptr->leaf->text+2))
                 {
                 case 'n':
-                    yylval->treeptr->leaf->ival = 0x0a;
+                    yylval.treeptr->leaf->ival = 0x0a;
                     break;
                 case 't':
-                    yylval->treeptr->leaf->ival = 0x09;
+                    yylval.treeptr->leaf->ival = 0x09;
                     break;
                 case '\\':
-                    yylval->treeptr->leaf->ival = 0x5c;
+                    yylval.treeptr->leaf->ival = 0x5c;
                     break;
                 case '\'':
-                    yylval->treeptr->leaf->ival = 0x27;
+                    yylval.treeptr->leaf->ival = 0x27;
                     break;
                 case '\"':
-                    yylval->treeptr->leaf->ival = 0x22;
+                    yylval.treeptr->leaf->ival = 0x22;
                     break;
                 default:
-                    printf("Error: unsupported escape character %s at line %d in file %s\n\n", yytext, yylineno, argv[filearg]);
+                    printf("Error: unsupported escape character %s at line %d in file %s\n\n", yytext, yylineno, yyfile);
                     break;
                 }
             } else {
-                yylval->treeptr->leaf->ival = *(yytext+1);
+                yylval.treeptr->leaf->ival = *(yytext+1);
             }
             break;
         default:
@@ -175,7 +175,7 @@ void printTree(struct tree *t, int depth)
         printf("TREE %*s %s: %d\n", depth * 2, " ", t->symbolname, t->prodrule);
         // recursive call for each kid
         for (int i = 0; i < t->nkids; i++) {
-            print_tree(t->kids[i], depth+1);
+            printTree(t->kids[i], depth+1);
         }
     }
     free(t);
@@ -199,7 +199,7 @@ void freeTree(struct tree* t)
     } else {
         // recursive call for each kid
         for (int i = 0; i < t->nkids; i++) {
-            free_tree(t->kids[i]);
+            freeTree(t->kids[i]);
         }
         // free the local tree struct
         free(t);

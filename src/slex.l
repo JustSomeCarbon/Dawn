@@ -29,11 +29,10 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "string"        {return STRING;}
 "func"          {return FUNCTION;}
 ":sym"          {return SYMBOL;}
-"tpl"           {return TUPPLE;}
 "struct"        {return STRUCT;}
 "use"           {return USE;}
 "pack"        {return PACK;}
-"Main"          {return MAINMOD;}
+"Main"          {return MAINPACK;}
 "main"          {return MAINFUNC;}
 "head"          {return HEADVAR;}
 "tail"          {return TAILVAR;}

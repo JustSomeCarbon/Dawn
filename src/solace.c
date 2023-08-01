@@ -10,12 +10,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "tree.h"
 #include "sgram.tab.h"
+#include "tree.h"
 
 // external and globals
 extern FILE* yyin;
 char* yyfile;
+extern int yylex_destroy();
 extern struct tree* root;
 
 // prototypes

@@ -39,6 +39,7 @@ enum sol_terms {
     FUNCTION_CALL,
     PATTERN_BLOCKS,
     PATTERN_BLOCK,
+    PACK_NAME,
     PACK_NAME_CALL,
     PACK_CALL_UNWRAP,
     TYPE,
