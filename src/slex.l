@@ -45,12 +45,12 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "="             {return ASSIGNMENT;}
 "+="            {return INCREMENT;}
 "-="            {return DECREMENT;}
-"=="            {return COMPARISON;}
-">"             {return COMPARISON;}
-"<"             {return COMPARISON;}
-">="            {return COMPARISON;}
-"<="            {return COMPARISON;}
-"!="            {return NOTEQUAL;}
+"=="            {return ISEQUALTO;}
+">"             {return GREATERTHAN;}
+"<"             {return LESSTHAN;}
+">="            {return GREATERTHANOREQUAL;}
+"<="            {return LESSTHANOREQUAL;}
+"!="            {return NOTEQUALTO;}
 
 "|"             {return BAR;}
 "_"             {return DROPVAL;}

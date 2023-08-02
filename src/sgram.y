@@ -20,11 +20,11 @@
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION
 %token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
-%token <treeptr> ASSIGNMENT BAR CONDSTATEMENT ARROWOP RETURN SUBSCRIPT DOT
-%token <treeptr> EQUALTO NOTEQUAL COMPARISON LBRACE RBRACE LPAREN RPAREN
+%token <treeptr> ASSIGNMENT BAR ARROWOP RETURN SUBSCRIPT DOT
+%token <treeptr> EQUALTO LBRACE RBRACE LPAREN RPAREN
 %token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON PACK MAINPACK
-%token <treeptr> MAINFUNC IDENTIFIER RETURNTYPE USE DROPVAL UNSUPPORTEDOP
-%token <treeptr> UNSUPPORTEDKEY STRINGERR CHARERR COMMENTERR ESCAPE
+%token <treeptr> MAINFUNC IDENTIFIER RETURNTYPE USE DROPVAL
+%token <treeptr> STRINGERR CHARERR COMMENTERR
 %token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT INCREMENT DECREMENT
 %token <treeptr> GREATERTHANOREQUAL LESSTHANOREQUAL GREATERTHAN LESSTHAN
 
@@ -152,10 +152,13 @@ FunctionDecl: FunctionHeader FunctionBody
     {$$ = allocTree(FUNCTION_DECL, "function_decl", 2, $1, $2);}
 ;
 FunctionHeader: FUNCTION IDENTIFIER RETURNTYPE LPAREN FormalParamListOpt RPAREN
-    {$$ = allocTree(FUNCTION_HEADER, "function_header", 4, $1, $2, $3, $5);}
+    {$$ = allocTree(FUNCTION_HEADER, "function_header", 3, $2, $3, $5);}
+    | FUNCTION MAINFUNC RETURNTYPE LPAREN FormalParamListOpt RPAREN
+    {$$ = allocTree(FUNCTION_HEADER, "function_header", 2, $3, $5);}
 ;
 FormalParamListOpt: FormalParamList
     {$$ = allocTree(FORMAL_PARAM_LIST_OPT, "formal_param_list_opt", 1, $1);}
+    | {$$ = NULL;}
 ;
 FormalParamList: FormalParam
     {$$ = allocTree(FORMAL_PARAM_LIST, "formal_param_list", 1, $1);}
@@ -224,12 +227,15 @@ PackCallUnwrap: IDENTIFIER SUBSCRIPT IDENTIFIER {$$ = allocTree(PACK_CALL_UNWRAP
 
 /* -- Variable Definitions & Assignments -- */
 
-VarDecl: VarIdentifiers Type ASSIGNMENT Literals SEMICOLON {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
+VarDecl: VarIdentifiers Type ASSIGNMENT Literals SEMICOLON  {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
     | IDENTIFIER Type ASSIGNMENT FunctionCall     {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
     | VarIdentifiers Type ASSIGNMENT FunctionCall {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
-    | IDENTIFIER Type ASSIGNMENT ConcatExprs      {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
-    | IDENTIFIER Type ASSIGNMENT PackNameCall      {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
-    | VarIdentifiers Type ASSIGNMENT PackNameCall  {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
+    | IDENTIFIER Type ASSIGNMENT ConcatExprs SEMICOLON      {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
+    | IDENTIFIER Type ASSIGNMENT PackNameCall SEMICOLON     {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
+    | VarIdentifiers Type ASSIGNMENT PackNameCall SEMICOLON {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
+    | DROPVAL ASSIGNMENT Literals SEMICOLON       {$$ = allocTree(VAR_DECL, "var_decl", 1, $3);}
+    | DROPVAL ASSIGNMENT FunctionCall             {$$ = allocTree(VAR_DECL, "var_decl", 1, $3);}
+    | DROPVAL ASSIGNMENT PackNameCall SEMICOLON   {$$ = allocTree(VAR_DECL, "var_decl", 1, $3);}
 ;
 VarIdentifiers: VarIdentifiers COMA IDENTIFIER
     {$$ = allocTree(VAR_IDENTIFIERS, "var_identifiers", 2, $1, $3);}
