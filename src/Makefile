@@ -21,8 +21,8 @@ lex.yy.c: slex.l sgram.tab.c
 	flex slex.l
 
 sgram.tab.c sgram.tab.h: sgram.y
-	bison -d sgram.y
+	bison -d -Wother -v -Wcounterexample sgram.y
 
 
 clean:
-	rm lex.yy.c sgram.tab.c sgram.tab.h *.o solx
+	rm lex.yy.c sgram.tab.c sgram.tab.h *.o solx *.output

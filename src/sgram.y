@@ -24,7 +24,7 @@
 %token <treeptr> EQUALTO LBRACE RBRACE LPAREN RPAREN
 %token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON PACK MAINPACK
 %token <treeptr> MAINFUNC IDENTIFIER RETURNTYPE USE DROPVAL
-%token <treeptr> STRINGERR CHARERR COMMENTERR
+//%token <treeptr> STRINGERR CHARERR COMMENTERR
 %token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT INCREMENT DECREMENT
 %token <treeptr> GREATERTHANOREQUAL LESSTHANOREQUAL GREATERTHAN LESSTHAN
 
@@ -53,11 +53,10 @@
 %type <treeptr> PatternBlock
 %type <treeptr> PackName
 %type <treeptr> PackNameCall
-%type <treeptr> PackCallUnwrap
 %type <treeptr> Type
 %type <treeptr> Name
 %type <treeptr> VarDecl
-%type <treeptr> VarIdentifiers
+%type <treeptr> VarDeclHead
 %type <treeptr> StructVarDecl
 %type <treeptr> StructVarParams
 %type <treeptr> FormalParamListOpt
@@ -70,6 +69,7 @@
 %type <treeptr> TuppleType
 %type <treeptr> TuppleDecl
 %type <treeptr> TuppleConst
+%type <treeptr> TuppleConstVals
 %type <treeptr> Literals
 %type <treeptr> Literal
 %type <treeptr> FieldAccess
@@ -86,7 +86,6 @@
 %type <treeptr> ConcatExprs
 %type <treeptr> ConcatExpr
 %type <treeptr> Expr
-%type <treeptr> LeftHandSide
 %type <treeptr> Assign
 %type <treeptr> AssignOp
 
@@ -109,7 +108,6 @@ UseDecls: UseDecls UseDecl  {$$ = allocTree(USE_DECLS, "use_decls", 2, $1, $2);}
 UseDecl: USE PackName SEMICOLON {$$ = allocTree(USE_DECL, "use_decl", 2, $1, $2);}
 ;
 DataDefDecls: SymDefDecls StructDecls {$$ = allocTree(DATA_DEF_DECLS, "data_def_decl", 2, $1, $2);}
-    | StructDecls SymDefDecls         {$$ = allocTree(DATA_DEF_DECLS, "data_def_decls", 2, $1, $2);}
 ;
 
 
@@ -174,9 +172,10 @@ ArgListOpt: ArgList {$$ = allocTree(ARG_LIST_OPT, "arg_list_opt", 1, $1);}
 ArgList: ArgList COMA ArgVal {$$ = allocTree(ARG_LIST, "arg_list", 2, $1, $3);}
     | ArgVal {$$ = allocTree(ARG_LIST, "arg_list", 1, $1);}
 ;
-ArgVal: Expr     {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
-    | IDENTIFIER {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
-    | Literal    {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
+ArgVal: Expr      {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
+    | IDENTIFIER  {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
+    | Literal     {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
+    | TuppleConst {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
 ;
 
 
@@ -194,16 +193,17 @@ FunctionBodyDecl: FunctionReturnVal {$$ = allocTree(FUNCTION_BODY_DECL, "functio
     | VarDecl       {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | StructVarDecl {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | FunctionCall  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | PackNameCall  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | Expr          {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | LBRACE PatternBlocks RBRACE
     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
 ;
-FunctionReturnVal: IDENTIFIER SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
-    | Literal SEMICOLON           {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
-    | Expr SEMICOLON              {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
-    | RETURN IDENTIFIER SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
-    | RETURN Literal SEMICOLON    {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
-    | RETURN Expr SEMICOLON       {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
+FunctionReturnVal: Literal SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
+    | Expr SEMICOLON                 {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
+    | TuppleType SEMICOLON           {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
+    | RETURN IDENTIFIER SEMICOLON    {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
+    | RETURN Literal SEMICOLON       {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
+    | RETURN Expr SEMICOLON          {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
+    | RETURN TuppleType SEMICOLON    {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
 ;
 FunctionCall: IDENTIFIER LPAREN ArgListOpt RPAREN SEMICOLON
     {$$ = allocTree(FUNCTION_CALL, "function_call", 2, $1, $3);}
@@ -218,28 +218,23 @@ PatternBlock: LPAREN Expr RPAREN ARROWOP FunctionBodyDecls
 ;
 PackName: IDENTIFIER {$$ = allocTree(PACK_NAME, "pack_name", 1, $1);}
 ;
-PackNameCall: PackNameCall SUBSCRIPT PackCallUnwrap ArgListOpt {$$ = allocTree(PACK_NAME_CALL, "pack_name_call", 3, $1, $3, $4);}
-    | PackCallUnwrap ArgListOpt {$$ = allocTree(PACK_NAME_CALL, "pack_name_call", 2, $1, $2);}
-;
-PackCallUnwrap: IDENTIFIER SUBSCRIPT IDENTIFIER {$$ = allocTree(PACK_CALL_UNWRAP, "pack_call_unwrap", 2, $1, $3);}
+PackNameCall: PackNameCall SUBSCRIPT Name ArgListOpt {$$ = allocTree(PACK_NAME_CALL, "pack_name_call", 3, $1, $3, $4);}
+    | Name ArgListOpt {$$ = allocTree(PACK_NAME_CALL, "pack_name_call", 2, $1, $2);}
 ;
 
 
 /* -- Variable Definitions & Assignments -- */
 
-VarDecl: VarIdentifiers Type ASSIGNMENT Literals SEMICOLON  {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
-    | IDENTIFIER Type ASSIGNMENT FunctionCall     {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
-    | VarIdentifiers Type ASSIGNMENT FunctionCall {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
-    | IDENTIFIER Type ASSIGNMENT ConcatExprs SEMICOLON      {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
-    | IDENTIFIER Type ASSIGNMENT PackNameCall SEMICOLON     {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
-    | VarIdentifiers Type ASSIGNMENT PackNameCall SEMICOLON {$$ = allocTree(VAR_DECL, "var_decl", 3, $1, $2, $4);}
-    | DROPVAL ASSIGNMENT Literals SEMICOLON       {$$ = allocTree(VAR_DECL, "var_decl", 1, $3);}
-    | DROPVAL ASSIGNMENT FunctionCall             {$$ = allocTree(VAR_DECL, "var_decl", 1, $3);}
-    | DROPVAL ASSIGNMENT PackNameCall SEMICOLON   {$$ = allocTree(VAR_DECL, "var_decl", 1, $3);}
+VarDecl: VarDeclHead ASSIGNMENT Literals SEMICOLON   {$$ = allocTree(VAR_DECL, "var_decl", 2, $1, $3);}
+    | VarDeclHead ASSIGNMENT FunctionCall            {$$ = allocTree(VAR_DECL, "var_decl", 2, $1, $3);}
+    | VarDeclHead ASSIGNMENT ConcatExprs SEMICOLON   {$$ = allocTree(VAR_DECL, "var_decl", 2, $1, $3);}
+    | VarDeclHead ASSIGNMENT PackNameCall SEMICOLON  {$$ = allocTree(VAR_DECL, "var_decl", 2, $1, $3);}
+    | VarDeclHead ASSIGNMENT TuppleType SEMICOLON    {$$ = allocTree(VAR_DECL, "var_decl", 2, $1, $3);}
+    | DROPVAL ASSIGNMENT Literals SEMICOLON          {$$ = allocTree(VAR_DECL, "var_decl", 1, $3);}
+    | DROPVAL ASSIGNMENT FunctionCall                {$$ = allocTree(VAR_DECL, "var_decl", 1, $3);}
+    | DROPVAL ASSIGNMENT PackNameCall SEMICOLON      {$$ = allocTree(VAR_DECL, "var_decl", 1, $3);}
 ;
-VarIdentifiers: VarIdentifiers COMA IDENTIFIER
-    {$$ = allocTree(VAR_IDENTIFIERS, "var_identifiers", 2, $1, $3);}
-    | IDENTIFIER {$$ = allocTree(VAR_IDENTIFIERS, "var_identifiers", 1, $1);}
+VarDeclHead: IDENTIFIER Type {$$ = allocTree(VAR_DECL_HEAD. "var_decl_head", 2, $1, $2);}
 ;
 StructVarDecl: STRUCT IDENTIFIER EQUALTO LBRACKET StructVarParams RBRACKET
     {$$ = allocTree(STRUCT_VAR_DECL, "struct_var_decl", 2, $2, $5);}
@@ -258,7 +253,7 @@ StructVarParams: StructVarParams COMA Literal {$$ = allocTree(STRUCT_VAR_PARAMS,
 /* -- Operation and Name Definitions -- */
 
 Name: IDENTIFIER    {$$ = allocTree(NAME, "name", 1, $1);}
-    | PackNameCall {$$ = allocTree(NAME, "name", 1, $1);}
+    | FieldAccess   {$$ = allocTree(NAME, "name", 1, $1);}
 ;
 FieldAccess: Field          {$$ = allocTree(FIELD_ACCESS, "field_access", 1, $1);}
     | FieldAccess DOT Field {$$ = allocTree(FIELD_ACCESS, "field_access", 2, $1, $3);}
@@ -297,7 +292,6 @@ UnaryExpr: SUBTRACT UnaryExpr {$$ = allocTree(UNARY_EXPR, "unary_expr", 1, $2);}
     | PostFixExpr   {$$ = allocTree(UNARY_EXPR, "unary_expr", 1, $1);}
 ;
 PostFixExpr: Primary {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
-    | Name {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
 ;
 ConcatExprs: ConcatExprs BAR ConcatExpr {$$ = allocTree(CONCAT_EXPRS, "concat_exprs", 2, $1, $3);}
     | ConcatExpr {$$ = allocTree(CONCAT_EXPRS, "concat_exprs", 1, $1);}
@@ -310,14 +304,11 @@ ConcatExpr: LITERALSTRING BAR LITERALSTRING {$$ = allocTree(CONCAT_EXPR, "concat
 Expr: CondOrExpr {$$ = allocTree(EXPR, "expr", 1, $1);}
     | Assign {$$ = allocTree(EXPR, "expr", 1, $1);}
 ;
-Assign: LeftHandSide AssignOp Expr {$$ = allocTree(ASSIGN, "assign", 3, $1, $2, $3);}
+Assign: Name AssignOp Expr {$$ = allocTree(ASSIGN, "assign", 3, $1, $2, $3);}
 ;
 AssignOp: ASSIGNMENT {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
     | INCREMENT  {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
     | DECREMENT  {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
-;
-LeftHandSide: Name {$$ = allocTree(LEFT_HAND_SIDE, "left_hand_side", 1, $1);}
-    | FieldAccess  {$$ = allocTree(LEFT_HAND_SIDE, "left_hand_side", 1, $1);}
 ;
 
 
@@ -326,27 +317,29 @@ LeftHandSide: Name {$$ = allocTree(LEFT_HAND_SIDE, "left_hand_side", 1, $1);}
 Primary: Literal         {$$ = allocTree(PRIMARY, "primary", 1, $1);}
     | LPAREN Expr RPAREN {$$ = allocTree(PRIMARY, "primary", 1, $2);}
     | Name               {$$ = allocTree(PRIMARY, "primary", 1, $1);}
-    | PackNameCall       {$$ = allocTree(PRIMARY, "primary", 1, $1);}
-    | FunctionCall       {$$ = allocTree(PRIMARY, "primary", 1, $1);}
 ;
-Type: INT      {$$ = allocTree(TYPE, "type", 1, $1);}
-    | FLOAT    {$$ = allocTree(TYPE, "type", 1, $1);}
-    | BOOLEAN  {$$ = allocTree(TYPE, "type", 1, $1);}
-    | STRING   {$$ = allocTree(TYPE, "type", 1, $1);}
-    | CHAR     {$$ = allocTree(TYPE, "type", 1, $1);}
-    | SYMBOL   {$$ = allocTree(TYPE, "type", 1, $1);}
-    | FUNCTION {$$ = allocTree(TYPE, "type", 1, $1);}
-    | LBRACKET Type RBRACKET {$$ = allocTree(TYPE, "type", 1, $2);}
+Type: INT         {$$ = allocTree(TYPE, "type", 1, $1);}
+    | FLOAT       {$$ = allocTree(TYPE, "type", 1, $1);}
+    | BOOLEAN     {$$ = allocTree(TYPE, "type", 1, $1);}
+    | STRING      {$$ = allocTree(TYPE, "type", 1, $1);}
+    | CHAR        {$$ = allocTree(TYPE, "type", 1, $1);}
+    | SYMBOL      {$$ = allocTree(TYPE, "type", 1, $1);}
+    | FUNCTION    {$$ = allocTree(TYPE, "type", 1, $1);}
+    | TuppleConst {$$ = allocTree(TYPE, "type", 1, $1);}
+    | LBRACKET Type RBRACKET    {$$ = allocTree(TYPE, "type", 1, $2);}
 ;
-TuppleType: LBRACE TuppleDecl RBRACE {$$ = allocTtree(TUPPLE_TYPE, "tupple_type", 1, $2);}
+TuppleType: LBRACE TuppleDecl RBRACE {$$ = allocTree(TUPPLE_TYPE, "tupple_type", 1, $2);}
     | LBRACE RBRACE {/* nothing in function */}
 ;
-TuppleDecl: TuppleDecl COMA Literal {$$ = allocTtree(TUPPLE_DECL, "tupple_decl", 2, $1, $3);}
+TuppleDecl: TuppleDecl COMA Literal {$$ = allocTree(TUPPLE_DECL, "tupple_decl", 2, $1, $3);}
     | TuppleDecl COMA IDENTIFIER    {$$ = allocTree(TUPPLE_DECL, "tupple_decl", 2, $1, $3);}
     | Literal    {$$ = allocTree(TUPPLE_DECL, "tupple_decl", 1, $1);}
     | IDENTIFIER {$$ = allocTree(TUPPLE_DECL, "tupple_decl", 1, $1);}
 ;
-TuppleConst: TuppleConst COMA Type {$$ = allocTtree(TUPPLE_CONST, "tupple_const", 2, $1, $3);}
+TuppleConst: LPAREN TuppleConstVals RPAREN {$$ = allocTree(TUPPLE_CONST, "tupple_const", 1, $2);}
+;
+TuppleConstVals: TuppleConstVals COMA Type {$$ = allocTree(TUPPLE_CONST_VALS, "tupple_const_vals", 2, $1, $3);}
+    | Type    {$$ = allocTree(TUPPLE_CONST, "tupple_const", 1, $1);}
 ;
 Literals: Literals Literal {$$ = allocTree(LITERALS, "literals", 2, $1, $2);}
     | Literal              {$$ = allocTree(LITERALS, "literals", 1, $1);}
