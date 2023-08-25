@@ -21,9 +21,6 @@ enum sol_terms {
     PACK_DECL,
     USE_DECLS,
     USE_DECL,
-    DATA_DEF_DECLS,
-    SYM_DEF_DECLS,
-    SYM_LIT_LIST,
     STRUCT_DECLS,
     STRUCT_DECL,
     STRUCT_BODY,
@@ -43,8 +40,8 @@ enum sol_terms {
     PACK_NAME_CALL,
     TYPE,
     NAME,
-    VAR_DECLS,
     VAR_DECL,
+    VAR_DECL_HEAD,
     VAR_IDENTIFIERS,
     STRUCT_VAR_DECL,
     STRUCT_VAR_PARAMS,
@@ -59,7 +56,6 @@ enum sol_terms {
     TUPPLE_DECL,
     TUPPLE_CONST,
     TUPPLE_CONST_VALS,
-    LITERALS,
     LITERAL,
     FIELD_ACCESS,
     FIELD,
@@ -78,6 +74,7 @@ enum sol_terms {
     LEFT_HAND_SIDE,
     ASSIGN,
     ASSIGN_OP,
+    SYNTAX_ERROR,
 };
 
 // Code Structures
@@ -106,3 +103,4 @@ int allocToken(int code);
 struct tree* allocTree(int code, char* symb, int numkids, ...);
 void printTree(struct tree* t, int depth);
 void freeTree(struct tree* t);
+void returnOnError(int code, char* status, char* errType);

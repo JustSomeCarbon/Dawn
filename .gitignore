@@ -5,5 +5,6 @@ src/solx
 src/lex.yy.c
 src/sgram.tab.c
 src/sgram.tab.h
+src/*.output
 .DS_Store
 .vscode

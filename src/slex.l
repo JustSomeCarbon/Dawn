@@ -79,10 +79,11 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 ":"[a-zA-Z_][0-9a-zA-Z_]*     {return LITERALSYMBOL;}
 
 \n              { /* do nothing */ }
-\"              {return STRINGERR;}
-\"[a-zA-Z0-9]*  {return STRINGERR;}
-\'[a-zA-Z0-9][a-zA-Z0-9]+\' {return CHARERR;}
-\'[a-zA-Z0-9]   {return CHARERR;}
-[a-zA-Z0-9]\'   {return CHARERR;}
-\\"*".          {return COMMENTERR;}
+\"              {returnOnError(SYNTAX_ERROR, "syntax_error", "string_error");}
+\"[a-zA-Z0-9]*  {returnOnError(SYNTAX_ERROR, "syntax_error", "string_error");}
+\'[a-zA-Z0-9][a-zA-Z0-9]+\' {returnOnError(SYNTAX_ERROR, "syntax_error", "char_error");}
+\'[a-zA-Z0-9]   {returnOnError(SYNTAX_ERROR, "syntax_error", "char_error");}
+[a-zA-Z0-9]\'   {returnOnError(SYNTAX_ERROR, "syntax_error", "char_error");}
+"\\""*".        {returnOnError(SYNTAX_ERROR, "syntax_error", "comment_error");}
+."*""\\"        {returnOnError(SYNTAX_ERROR, "syntax_error", "comment_error");}
 %%
