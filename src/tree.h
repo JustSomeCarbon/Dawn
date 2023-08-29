@@ -40,6 +40,8 @@ enum sol_terms {
     PACK_NAME_CALL,
     TYPE,
     NAME,
+    NAME_ARG_LIST,
+    NAME_OP,
     VAR_DECL,
     VAR_DECL_HEAD,
     VAR_IDENTIFIERS,
@@ -74,7 +76,7 @@ enum sol_terms {
     LEFT_HAND_SIDE,
     ASSIGN,
     ASSIGN_OP,
-    SYNTAX_ERROR,
+    SYNTAX_ERROR, //1060
 };
 
 // Code Structures

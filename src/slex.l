@@ -11,8 +11,8 @@
 
 %{
     // Includes
-    #include "tree.h"
     #include "sgram.tab.h"
+    #include "tree.h"
 %}
 
 ESC_CHAR \\(n|t|\\|\'|\"|\?)

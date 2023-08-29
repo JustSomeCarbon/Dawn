@@ -12,7 +12,7 @@
 #include "sgram.tab.h"
 
 /*
- * Initialize and allocate a new token structure based on the given code value.
+ * Initialize and allocate a new token structure based on the defined integer code value.
  * When complete, returns the code as an integer.
  */
 int allocToken(int code)
@@ -204,4 +204,16 @@ void freeTree(struct tree* t)
         // free the local tree struct
         free(t);
     }
+}
+
+/*
+ * Takes a defined integer code, a status as a string, and an error type
+ * as a string. Logs the thrown error to the console before applying a safe exit
+ * from compiler current state.
+ * Returns nothing.
+ */
+void returnOnError(int code, char* status, char* errType) {
+    printf("Error::%d:: %s: %s", code, status, errType);
+    freeTree(root);
+    exit(1);
 }
