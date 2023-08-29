@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "sgram.tab.h"
+#include "y.tab.h"
 #include "tree.h"
 
 // external and globals

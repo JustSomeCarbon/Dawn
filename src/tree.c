@@ -8,8 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include "tree.h"
-#include "sgram.tab.h"
+#include "y.tab.h"
 
 /*
  * Initialize and allocate a new token structure based on the defined integer code value.
