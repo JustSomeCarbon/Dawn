@@ -11,7 +11,7 @@
 
 %{
     // Includes
-    #include "y.tab.h"
+    #include "sgram.tab.h"
     #include "tree.h"
 %}
 

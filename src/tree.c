@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include "tree.h"
-#include "y.tab.h"
+#include "sgram.tab.h"
 
 /*
  * Initialize and allocate a new token structure based on the defined integer code value.
@@ -217,4 +217,15 @@ void returnOnError(int code, char* status, char* errType) {
     printf("Error::%d:: %s: %s", code, status, errType);
     freeTree(root);
     exit(1);
+}
+
+/**
+ * The general implementation of yyerror as defined through bison. The function
+ * takes a string and prints an error to the standard error before exiting the program.
+ * TODO: Reformat so that any memory is safely freed before the exit.
+ */
+int yyerror(char *s) {
+    fprintf(stderr, "%s: %d: Syntax error %s\n", yyfile, yylineno, s);
+    // Return int value 2 for Syntax Error
+	exit(2);
 }
