@@ -106,3 +106,7 @@ struct tree* allocTree(int code, char* symb, int numkids, ...);
 void printTree(struct tree* t, int depth);
 void freeTree(struct tree* t);
 void returnOnError(int code, char* status, char* errType);
+
+// Dependant functions
+int yylex_destroy();
+extern int yyparse();
