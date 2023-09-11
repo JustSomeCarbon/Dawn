@@ -225,7 +225,7 @@ void returnOnError(int code, char* status, char* errType) {
  * TODO: Reformat so that any memory is safely freed before the exit.
  */
 int yyerror(char *s) {
-    fprintf(stderr, "%s: %d: Syntax error %s\n", yyfile, yylineno, s);
+    fprintf(stderr, "%s: %d: Error:: %s\n", yyfile, yylineno, s);
     // Return int value 2 for Syntax Error
 	exit(2);
 }

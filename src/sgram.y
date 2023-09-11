@@ -11,6 +11,7 @@
 
 //%define parse.lac full      // required for verbose error reporting
 //%define parse.error verbose // required for detailed error messages
+%error-verbose
 
 %union {
     struct tree* treeptr;
@@ -22,7 +23,7 @@
 %token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
 %token <treeptr> ASSIGNMENT BAR ARROWOP RETURN SUBSCRIPT DOT
 %token <treeptr> EQUALTO LBRACE RBRACE LPAREN RPAREN
-%token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON PACK MAINPACK
+%token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON PACK
 %token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL
 %token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT INCREMENT DECREMENT
 %token <treeptr> GREATERTHANOREQUAL LESSTHANOREQUAL GREATERTHAN LESSTHAN
@@ -43,7 +44,6 @@
 %type <treeptr> FunctionBody
 %type <treeptr> FunctionBodyDecls
 %type <treeptr> FunctionBodyDecl
-%type <treeptr> FunctionReturnVal
 %type <treeptr> FunctionCall
 %type <treeptr> PatternBlocks
 %type <treeptr> PatternBlock
@@ -93,15 +93,15 @@
 /* -- Source File/Package -- */
 
 SourcePack: SourceFile { root = $1; };
-SourceFile: PackDecl UseDecls StructDecls FunctionDecls
-    {$$ = allocTree(SOURCE_FILE, "source_file", 4, $1, $2, $3, $4);}
+SourceFile: SourceFile UseDecls {$$ = allocTree(SOURCE_FILE, "source_file", 2, $1, $2);}
+    | SourceFile StructDecls    {$$ = allocTree(SOURCE_FILE, "source_file", 2, $1, $2);}
+    | SourceFile FunctionDecls  {$$ = allocTree(SOURCE_FILE, "source_file", 2, $1, $2);}
+    | PackDecl                  {$$ = allocTree(SOURCE_FILE, "source_file", 1, $1);}
 ;
-PackDecl: PACK COLON MAINPACK {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $3);}
-    | PACK COLON PackName     {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $3);}
+PackDecl: PACK COLON PackName SEMICOLON {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $3);}
 ;
 UseDecls: UseDecls UseDecl  {$$ = allocTree(USE_DECLS, "use_decls", 2, $1, $2);}
     | UseDecl               {$$ = allocTree(USE_DECLS, "use_decls", 1, $1);}
-    | {$$ = NULL;}
 ;
 UseDecl: USE PackName SEMICOLON {$$ = allocTree(USE_DECL, "use_decl", 2, $1, $2);}
 ;
@@ -111,7 +111,6 @@ UseDecl: USE PackName SEMICOLON {$$ = allocTree(USE_DECL, "use_decl", 2, $1, $2)
 
 StructDecls: StructDecls StructDecl      {$$ = allocTree(STRUCT_DECLS, "struct_decls", 2, $1, $2);}
     | StructDecl {$$ = allocTree(STRUCT_DECLS, "struct_decls", 1, $1);}
-    | {$$ = NULL;}
 ;
 StructDecl: STRUCT IDENTIFIER LBRACE StructBody RBRACE SEMICOLON
     {$$ = allocTree(STRUCT_DECL, "struct_decl", 3, $1, $2, $4);}
@@ -129,7 +128,6 @@ StructParam: IDENTIFIER Type SEMICOLON {$$ = allocTree(STRUCT_PARAM, "struct_par
 FunctionDecls: FunctionDecls FunctionDecl
     {$$ = allocTree(FUNCTION_DECLS, "function_decls", 2, $1, $2);}
     | FunctionDecl {$$ = allocTree(FUNCTION_DECLS, "function_decls", 1, $1);}
-    | {$$ = NULL;}
 ;
 FunctionDecl: FunctionHeader FunctionBody
     {$$ = allocTree(FUNCTION_DECL, "function_decl", 2, $1, $2);}
@@ -172,16 +170,16 @@ FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl
     {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1, $2);}
     | FunctionBodyDecl {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1);}
 ;
-FunctionBodyDecl: FunctionReturnVal {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | VarDecl          {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | StructVarDecl    {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | Expr SEMICOLON   {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+FunctionBodyDecl:VarDecl     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | StructVarDecl          {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | Expr SEMICOLON         {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | TuppleConst SEMICOLON  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | PackNameCall SEMICOLON {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | LBRACE PatternBlocks RBRACE
     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
-;
-FunctionReturnVal: TuppleConst SEMICOLON {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $1);}
-    | RETURN Expr SEMICOLON          {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
-    | RETURN TuppleConst SEMICOLON    {$$ = allocTree(FUNCTION_RETURN_VAL, "function_return_val", 1, $2);}
+    | RETURN Expr SEMICOLON         {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
+    | RETURN TuppleConst SEMICOLON  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
+    | RETURN PackNameCall SEMICOLON {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
 ;
 FunctionCall: NameArgList SEMICOLON
     {$$ = allocTree(FUNCTION_CALL, "function_call", 1, $1);}

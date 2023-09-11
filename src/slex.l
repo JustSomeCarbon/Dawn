@@ -32,7 +32,6 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "struct"        {return STRUCT;}
 "use"           {return USE;}
 "pack"          {return PACK;}
-"Main"          {return MAINPACK;}
 "main"          {return MAINFUNC;}
 "head"          {return HEADVAR;}
 "tail"          {return TAILVAR;}
@@ -76,7 +75,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 \"([^"]|ESC_CHAR|\w|\W)*\"    {return LITERALSTRING;}
 \'([^']|ESC_CHAR|\w|\W)?\'    {return LITERALCHAR;}
 [a-zA-Z_][0-9a-zA-Z_]*        {return IDENTIFIER;}
-":"[a-zA-Z_][0-9a-zA-Z_]*     {return LITERALSYMBOL;}
+":"[a-zA-Z_][0-9a-zA-Z_]*":"  {return LITERALSYMBOL;}
 
 \n              { /* do nothing */ }
 \"              {returnOnError(SYNTAX_ERROR, "syntax_error", "string error");}

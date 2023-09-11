@@ -1,4 +1,4 @@
-pack:Main
+pack:Main;
 
 // this is a hello world test program
 func main int ()
@@ -6,6 +6,6 @@ func main int ()
 	/* This is a test
 	hello,
 	world! */
-	IO:out("Hello, world!");
+	IO::out("Hello, world!");
 	0;
 }
