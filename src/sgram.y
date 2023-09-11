@@ -101,6 +101,7 @@ PackDecl: PACK COLON MAINPACK {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $3)
 ;
 UseDecls: UseDecls UseDecl  {$$ = allocTree(USE_DECLS, "use_decls", 2, $1, $2);}
     | UseDecl               {$$ = allocTree(USE_DECLS, "use_decls", 1, $1);}
+    | {$$ = NULL;}
 ;
 UseDecl: USE PackName SEMICOLON {$$ = allocTree(USE_DECL, "use_decl", 2, $1, $2);}
 ;
@@ -110,6 +111,7 @@ UseDecl: USE PackName SEMICOLON {$$ = allocTree(USE_DECL, "use_decl", 2, $1, $2)
 
 StructDecls: StructDecls StructDecl      {$$ = allocTree(STRUCT_DECLS, "struct_decls", 2, $1, $2);}
     | StructDecl {$$ = allocTree(STRUCT_DECLS, "struct_decls", 1, $1);}
+    | {$$ = NULL;}
 ;
 StructDecl: STRUCT IDENTIFIER LBRACE StructBody RBRACE SEMICOLON
     {$$ = allocTree(STRUCT_DECL, "struct_decl", 3, $1, $2, $4);}
@@ -127,6 +129,7 @@ StructParam: IDENTIFIER Type SEMICOLON {$$ = allocTree(STRUCT_PARAM, "struct_par
 FunctionDecls: FunctionDecls FunctionDecl
     {$$ = allocTree(FUNCTION_DECLS, "function_decls", 2, $1, $2);}
     | FunctionDecl {$$ = allocTree(FUNCTION_DECLS, "function_decls", 1, $1);}
+    | {$$ = NULL;}
 ;
 FunctionDecl: FunctionHeader FunctionBody
     {$$ = allocTree(FUNCTION_DECL, "function_decl", 2, $1, $2);}
