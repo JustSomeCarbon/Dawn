@@ -19,14 +19,11 @@ extern struct tree* root;
 enum sol_terms {
     SOURCE_FILE=1001,
     PACK_DECL,
-    USE_DECLS,
     USE_DECL,
-    STRUCT_DECLS,        // 1005
     STRUCT_DECL,
     STRUCT_BODY,
     STRUCT_PARAMS,
     STRUCT_PARAM,
-    FUNCTION_DECLS,      // 1010
     FUNCTION_DECL,
     FUNCTION_HEADER,
     FUNCTION_BODY,
