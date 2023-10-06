@@ -41,17 +41,14 @@
 %type <treeptr> FunctionBody
 %type <treeptr> FunctionBodyDecls
 %type <treeptr> FunctionBodyDecl
-%type <treeptr> FunctionCall
+%type <treeptr> NameCall
 %type <treeptr> PatternBlocks
 %type <treeptr> PatternBlock
 %type <treeptr> PackName
-%type <treeptr> PackNameCall
 %type <treeptr> Type
 %type <treeptr> Name
-%type <treeptr> NameArgList
 %type <treeptr> NameOp
-%type <treeptr> VarDecl
-%type <treeptr> VarDeclHead
+%type <treeptr> VarAssignment
 %type <treeptr> StructVarDecl
 %type <treeptr> StructVarParams
 %type <treeptr> FormalParamListOpt
@@ -157,19 +154,21 @@ FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl
     {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1, $2);}
     | FunctionBodyDecl {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1);}
 ;
-FunctionBodyDecl:VarDecl     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | StructVarDecl          {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | Expr SEMICOLON         {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | TuppleDecl SEMICOLON  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | PackNameCall SEMICOLON {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+FunctionBodyDecl: StructVarDecl {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | Expr SEMICOLON            {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | TuppleType SEMICOLON      {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | NameCall SEMICOLON        {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
     | LBRACE PatternBlocks RBRACE
     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
-    | RETURN Expr SEMICOLON         {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
-    | RETURN TuppleDecl SEMICOLON  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
-    | RETURN PackNameCall SEMICOLON {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
+    | RETURN Expr SEMICOLON       {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
+    | RETURN TuppleType SEMICOLON {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
+    | RETURN NameCall SEMICOLON   {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
 ;
-FunctionCall: NameArgList SEMICOLON
-    {$$ = allocTree(FUNCTION_CALL, "function_call", 1, $1);}
+NameCall: NameCall SUBSCRIPT Name {$$ = allocTree(NAME_CALL, "name_call", 2, $1, $3);}
+    | Name ArgListOpt       {$$ = allocTree(NAME_CALL, "name_call", 2, $1, $2);}
+    | Name VarAssignment    {$$ = allocTree(NAME_CALL, "name_call", 2, $1, $2);}
+    | DROPVAL VarAssignment {$$ = allocTree(NAME_CALL, "name_call", 1, $2);}
+    | Name                  {$$ = allocTree(NAME_CALL, "name_call", 1, $1);}
 ;
 PatternBlocks: PatternBlock          {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 1, $1);}
     | PatternBlocks BAR PatternBlock {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 2, $1, $3);}
@@ -179,21 +178,14 @@ PatternBlock: Expr ARROWOP FunctionBodyDecls
 ;
 PackName: IDENTIFIER {$$ = allocTree(PACK_NAME, "pack_name", 1, $1);}
 ;
-PackNameCall: PackNameCall SUBSCRIPT FunctionCall {$$ = allocTree(PACK_NAME_CALL, "pack_name_call", 2, $1, $3);}
-    | FunctionCall {$$ = allocTree(PACK_NAME_CALL, "pack_name_call", 1, $1);}
-;
 
 
 /* -- Variable Definitions & Assignments -- */
 
-VarDecl: VarDeclHead ASSIGNMENT Literal SEMICOLON   {$$ = allocTree(VAR_DECL, "var_decl", 2, $1, $3);}
-    | VarDeclHead ASSIGNMENT ConcatExprs SEMICOLON   {$$ = allocTree(VAR_DECL, "var_decl", 2, $1, $3);}
-    | VarDeclHead ASSIGNMENT PackNameCall  {$$ = allocTree(VAR_DECL, "var_decl", 2, $1, $3);}
-    | VarDeclHead ASSIGNMENT TuppleConst SEMICOLON    {$$ = allocTree(VAR_DECL, "var_decl", 2, $1, $3);}
-    | DROPVAL ASSIGNMENT Literal SEMICOLON          {$$ = allocTree(VAR_DECL, "var_decl", 1, $3);}
-    | DROPVAL ASSIGNMENT PackNameCall      {$$ = allocTree(VAR_DECL, "var_decl", 1, $3);}
-;
-VarDeclHead: Name Type {$$ = allocTree(VAR_DECL_HEAD, "var_decl_head", 2, $1, $2);}
+VarAssignment: ASSIGNMENT Literal {$$ = allocTree(VAR_ASSIGNMENT, "var_assignment", 1, $2);}
+    | ASSIGNMENT ConcatExprs      {$$ = allocTree(VAR_ASSIGNMENT, "var_assignment", 1, $2);}
+    | ASSIGNMENT NameCall         {$$ = allocTree(VAR_ASSIGNMENT, "var_assignment", 1, $2);}
+    | ASSIGNMENT TuppleType       {$$ = allocTree(VAR_ASSIGNMENT, "var_assignment", 1, $2);}
 ;
 StructVarDecl: STRUCT IDENTIFIER EQUALTO LBRACKET StructVarParams RBRACKET SEMICOLON
     {$$ = allocTree(STRUCT_VAR_DECL, "struct_var_decl", 2, $2, $5);}
@@ -212,8 +204,6 @@ StructVarParams: StructVarParams COMA Literal {$$ = allocTree(STRUCT_VAR_PARAMS,
 /* -- Operation and Name Definitions -- */
 
 Name: FieldAccess {$$ = allocTree(NAME, "name", 1, $1);}
-;
-NameArgList: IDENTIFIER ArgListOpt {$$ = allocTree(NAME_ARG_LIST, "name_arg_list", 2, $1, $2);}
 ;
 NameOp: Field AssignOp {$$ = allocTree(NAME_OP, "name_op", 2, $1, $2);}
 ;
@@ -254,7 +244,6 @@ UnaryExpr: SUBTRACT UnaryExpr {$$ = allocTree(UNARY_EXPR, "unary_expr", 1, $2);}
     | PostFixExpr   {$$ = allocTree(UNARY_EXPR, "unary_expr", 1, $1);}
 ;
 PostFixExpr: Primary {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
-    | Name           {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
 ;
 ConcatExprs: ConcatExprs BAR ConcatExpr {$$ = allocTree(CONCAT_EXPRS, "concat_exprs", 2, $1, $3);}
     | ConcatExpr {$$ = allocTree(CONCAT_EXPRS, "concat_exprs", 1, $1);}
@@ -286,7 +275,7 @@ Type: INT         {$$ = allocTree(TYPE, "type", 1, $1);}
     | STRING      {$$ = allocTree(TYPE, "type", 1, $1);}
     | CHAR        {$$ = allocTree(TYPE, "type", 1, $1);}
     | SYMBOL      {$$ = allocTree(TYPE, "type", 1, $1);}
-    | TuppleType  {$$ = allocTree(TYPE, "type", 1, $1);}
+    | TuppleConst {$$ = allocTree(TYPE, "type", 1, $1);}
     | FUNCTION    {$$ = allocTree(TYPE, "type", 1, $1);}
     | LBRACKET Type RBRACKET    {$$ = allocTree(TYPE, "type", 1, $2);}
 ;
