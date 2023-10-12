@@ -64,7 +64,6 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "("             {return LPAREN;}
 ")"             {return RPAREN;}
 ":"             {return COLON;}
-"::"            {return SUBSCRIPT;}
 ";"             {return SEMICOLON;}
 
 [1-9][0-9]*     {return LITERALINT;}

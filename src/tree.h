@@ -29,13 +29,13 @@ enum sol_terms {
     FUNCTION_BODY,
     FUNCTION_BODY_DECLS,
     FUNCTION_BODY_DECL,  // 1015
-    NAME_CALL,
+    LOCAL_NAME_CALL,
+    LOCAL_NAME_DECL,
     PATTERN_BLOCKS,
     PATTERN_BLOCK,
     PACK_NAME,            // 1020
     TYPE,
     NAME,
-    NAME_OP,              // 1025
     VAR_ASSIGNMENT,
     STRUCT_VAR_DECL,
     STRUCT_VAR_PARAMS,    // 1030
@@ -66,7 +66,6 @@ enum sol_terms {
     CONCAT_EXPR,          // 1055
     EXPR,
     LEFT_HAND_SIDE,
-    ASSIGN,
     ASSIGN_OP,
     SYNTAX_ERROR,         // 1060
 };
