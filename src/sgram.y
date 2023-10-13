@@ -131,6 +131,7 @@ FormalParamList: FormalParam
     | FormalParamList COMA FormalParam  {$$ = allocTree(FORMAL_PARAM_LIST, "formal_param_list", 2, $1, $3);}
 ;
 FormalParam: IDENTIFIER Type {$$ = allocTree(FORMAL_PARAM, "formal_param", 2, $1, $2);}
+    | IDENTIFIER Name        {$$ = allocTree(FORMAL_PARAM, "formal_param", 2, $1, $2);}
     | LBRACKET HEADVAR BAR TAILVAR RBRACKET Type
     {$$ = allocTree(FORMAL_PARAM, "formal_param", 3, $2, $4, $6);}
 ;
@@ -142,6 +143,7 @@ ArgList: ArgList COMA ArgVal {$$ = allocTree(ARG_LIST, "arg_list", 2, $1, $3);}
 ;
 ArgVal: Expr      {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
     | Name        {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
+    | Name Name   {$$ = allocTree(ARG_VAL, "arg_val", 2, $1, $2);}
     | TuppleConst {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
 ;
 
