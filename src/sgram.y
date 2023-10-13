@@ -32,6 +32,7 @@
 %type <treeptr> SourceFile
 %type <treeptr> ModDecl
 %type <treeptr> UseDecl
+%type <treeptr> ImportList
 %type <treeptr> StructDecl
 %type <treeptr> StructBody
 %type <treeptr> StructParams
@@ -95,7 +96,12 @@ SourceFile: SourceFile UseDecl {$$ = allocTree(SOURCE_FILE, "source_file", 2, $1
 ;
 ModDecl: MODSPACE COLON ModName SEMICOLON {$$ = allocTree(MOD_DECL, "mod_decl", 2, $1, $3);}
 ;
-UseDecl: USE ModName SEMICOLON {$$ = allocTree(USE_DECL, "use_decl", 2, $1, $2);}
+UseDecl: USE ModName SEMICOLON {$$ = allocTree(USE_DECL, "use_decl", 1, $2);}
+    | USE ModName COLON LBRACE ImportList RBRACE SEMICOLON
+    {$$ = allocTree(USE_DECL, "use_decl", 2, $2, $5);}
+;
+ImportList: ImportList COMA IDENTIFIER {$$ = allocTree(IMPORT_LIST, "import_list", 2, $1, $3);}
+    | IDENTIFIER {$$ = allocTree(IMPORT_LIST, "import_list", 1, $1);}
 ;
 
 

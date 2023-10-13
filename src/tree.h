@@ -17,58 +17,59 @@ extern char* yyfile;
 extern struct tree* root;
 
 enum sol_terms {
-    SOURCE_FILE=1001,
+    SOURCE_FILE=1001,       // 1001
     MOD_DECL,
     USE_DECL,
-    STRUCT_DECL,
+    IMPORT_LIST,
+    STRUCT_DECL,            // 1005
     STRUCT_BODY,
     STRUCT_PARAMS,
     STRUCT_PARAM,
     FUNCTION_DECL,
-    FUNCTION_HEADER,
+    FUNCTION_HEADER,        // 1010
     FUNCTION_BODY,
     FUNCTION_BODY_DECLS,
-    FUNCTION_BODY_DECL,  // 1015
+    FUNCTION_BODY_DECL,
     LOCAL_NAME_CALL,
-    LOCAL_NAME_DECL,
+    LOCAL_NAME_DECL,        // 1015
     SPACE_FUNC_CALL,
     PATTERN_BLOCKS,
     PATTERN_BLOCK,
-    MOD_NAME,            // 1020
-    TYPE,
+    MOD_NAME,
+    TYPE,                   // 1020
     NAME,
     VAR_ASSIGNMENT,
     STRUCT_VAR_DECL,
-    STRUCT_VAR_PARAMS,    // 1030
-    FORMAL_PARAM_LIST_OPT,
+    STRUCT_VAR_PARAMS,
+    FORMAL_PARAM_LIST_OPT,  // 1025
     FORMAL_PARAM_LIST,
     FORMAL_PARAM,
     ARG_LIST_OPT,
-    ARG_LIST,             // 1035
-    ARG_VAL,
+    ARG_LIST,
+    ARG_VAL,                // 1030
     PRIMARY,
     TUPPLE_TYPE,
     TUPPLE_DECL,
-    TUPPLE_CONST,         // 1040
-    TUPPLE_CONST_VALS,
+    TUPPLE_CONST,
+    TUPPLE_CONST_VALS,      // 1035
     LITERAL,
     FIELD_ACCESS,
     FIELD,
-    POST_FIX_EXPR,        // 1045
-    UNARY_EXPR,
+    POST_FIX_EXPR,
+    UNARY_EXPR,             // 1040
     MULT_EXPR,
     ADD_EXPR,
     REL_OP,
-    REL_EXPR,             // 1050
-    EQ_EXPR,
+    REL_EXPR,
+    EQ_EXPR,                // 1045
     COND_AND_EXPR,
     COND_OR_EXPR,
     CONCAT_EXPRS,
-    CONCAT_EXPR,          // 1055
-    EXPR,
+    CONCAT_EXPR,
+    EXPR,                   // 1050
     LEFT_HAND_SIDE,
     ASSIGN_OP,
-    SYNTAX_ERROR,         // 1060
+    SYNTAX_ERROR,           // 1053
 };
 
 // Code Structures
