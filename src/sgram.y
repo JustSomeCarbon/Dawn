@@ -141,6 +141,7 @@ ArgList: ArgList COMA ArgVal {$$ = allocTree(ARG_LIST, "arg_list", 2, $1, $3);}
     | ArgVal {$$ = allocTree(ARG_LIST, "arg_list", 1, $1);}
 ;
 ArgVal: Expr      {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
+    | Name        {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
     | TuppleConst {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
 ;
 
@@ -172,7 +173,7 @@ LocalNameDecl: Name VarAssignment {$$ = allocTree(LOCAL_NAME_DECL, "local_name_d
     | DROPVAL VarAssignment       {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 1, $2);}
     | Name Name StructVarDecl     {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 3, $1, $2, $3);}
 ;
-SpaceFuncCall: COLON Name {$$ = allocTree(SPACE_FUNC_CALL, "space_func_call", 1, $2);}
+SpaceFuncCall: COLON LocalNameCall {$$ = allocTree(SPACE_FUNC_CALL, "space_func_call", 1, $2);}
 ;
 PatternBlocks: PatternBlock          {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 1, $1);}
     | PatternBlocks BAR PatternBlock {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 2, $1, $3);}
