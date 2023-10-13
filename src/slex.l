@@ -31,7 +31,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 ":sym"          {return SYMBOL;}
 "struct"        {return STRUCT;}
 "use"           {return USE;}
-"pack"          {return PACK;}
+"space"         {return MODSPACE;}
 "main"          {return MAINFUNC;}
 "head"          {return HEADVAR;}
 "tail"          {return TAILVAR;}

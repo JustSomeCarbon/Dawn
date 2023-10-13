@@ -23,14 +23,14 @@
 %token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
 %token <treeptr> ASSIGNMENT BAR ARROWOP RETURN DOT
 %token <treeptr> EQUALTO LBRACE RBRACE LPAREN RPAREN
-%token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON PACK
+%token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON MODSPACE
 %token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL
 %token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT INCREMENT DECREMENT
 %token <treeptr> GREATERTHANOREQUAL LESSTHANOREQUAL GREATERTHAN LESSTHAN
 
-%type <treeptr> SourcePack
+%type <treeptr> SourceSpace
 %type <treeptr> SourceFile
-%type <treeptr> PackDecl
+%type <treeptr> ModDecl
 %type <treeptr> UseDecl
 %type <treeptr> StructDecl
 %type <treeptr> StructBody
@@ -43,9 +43,10 @@
 %type <treeptr> FunctionBodyDecl
 %type <treeptr> LocalNameCall
 %type <treeptr> LocalNameDecl
+%type <treeptr> SpaceFuncCall
 %type <treeptr> PatternBlocks
 %type <treeptr> PatternBlock
-%type <treeptr> PackName
+%type <treeptr> ModName
 %type <treeptr> Type
 %type <treeptr> Name
 %type <treeptr> VarAssignment
@@ -85,15 +86,16 @@
 
 /* -- Source File/Package -- */
 
-SourcePack: SourceFile { root = $1; };
+SourceSpace: SourceFile { root = $1; }
+;
 SourceFile: SourceFile UseDecl {$$ = allocTree(SOURCE_FILE, "source_file", 2, $1, $2);}
     | SourceFile StructDecl    {$$ = allocTree(SOURCE_FILE, "source_file", 2, $1, $2);}
     | SourceFile FunctionDecl  {$$ = allocTree(SOURCE_FILE, "source_file", 2, $1, $2);}
-    | PackDecl                 {$$ = allocTree(SOURCE_FILE, "source_file", 1, $1);}
+    | ModDecl                  {$$ = allocTree(SOURCE_FILE, "source_file", 1, $1);}
 ;
-PackDecl: PACK COLON PackName SEMICOLON {$$ = allocTree(PACK_DECL, "pack_decl", 2, $1, $3);}
+ModDecl: MODSPACE COLON ModName SEMICOLON {$$ = allocTree(MOD_DECL, "mod_decl", 2, $1, $3);}
 ;
-UseDecl: USE PackName SEMICOLON {$$ = allocTree(USE_DECL, "use_decl", 2, $1, $2);}
+UseDecl: USE ModName SEMICOLON {$$ = allocTree(USE_DECL, "use_decl", 2, $1, $2);}
 ;
 
 
@@ -153,21 +155,24 @@ FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl
     {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1, $2);}
     | FunctionBodyDecl {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1);}
 ;
-FunctionBodyDecl: Expr SEMICOLON  {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | TuppleType SEMICOLON        {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | LocalNameCall SEMICOLON     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
-    | LBRACE PatternBlocks RBRACE {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
-    | RETURN Expr SEMICOLON       {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
-    | RETURN TuppleType SEMICOLON {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
-    | RETURN LocalNameCall SEMICOLON   {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
+FunctionBodyDecl: Expr SEMICOLON     {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | TuppleType SEMICOLON           {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | LocalNameCall SEMICOLON        {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $1);}
+    | LBRACE PatternBlocks RBRACE    {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
+    | RETURN Expr SEMICOLON          {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
+    | RETURN TuppleType SEMICOLON    {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
+    | RETURN LocalNameCall SEMICOLON {$$ = allocTree(FUNCTION_BODY_DECL, "function_body_decl", 1, $2);}
 ;
-LocalNameCall: Name ArgListOpt {$$ = allocTree(LOCAL_NAME_CALL, "name_call", 2, $1, $2);}
-    | LocalNameDecl            {$$ = allocTree(LOCAL_NAME_CALL, "name_call", 1, $1);}
-    | Name                     {$$ = allocTree(LOCAL_NAME_CALL, "name_call", 1, $1);}
+LocalNameCall: Name ArgListOpt {$$ = allocTree(LOCAL_NAME_CALL, "local_name_call", 2, $1, $2);}
+    | Name SpaceFuncCall       {$$ = allocTree(LOCAL_NAME_CALL, "local_name_call", 2, $1, $2);}
+    | LocalNameDecl            {$$ = allocTree(LOCAL_NAME_CALL, "local_name_call", 1, $1);}
+    | Name                     {$$ = allocTree(LOCAL_NAME_CALL, "local_name_call", 1, $1);}
 ;
 LocalNameDecl: Name VarAssignment {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 1, $1);}
     | DROPVAL VarAssignment       {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 1, $2);}
     | Name Name StructVarDecl     {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 3, $1, $2, $3);}
+;
+SpaceFuncCall: COLON Name {$$ = allocTree(SPACE_FUNC_CALL, "space_func_call", 1, $2);}
 ;
 PatternBlocks: PatternBlock          {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 1, $1);}
     | PatternBlocks BAR PatternBlock {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 2, $1, $3);}
@@ -175,7 +180,7 @@ PatternBlocks: PatternBlock          {$$ = allocTree(PATTERN_BLOCKS, "pattern_bl
 PatternBlock: Expr ARROWOP FunctionBodyDecls
     {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $1, $3);}
 ;
-PackName: IDENTIFIER {$$ = allocTree(PACK_NAME, "pack_name", 1, $1);}
+ModName: IDENTIFIER {$$ = allocTree(MOD_NAME, "mod_name", 1, $1);}
 ;
 
 
