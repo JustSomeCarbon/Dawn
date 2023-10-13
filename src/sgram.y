@@ -177,11 +177,12 @@ LocalNameCall: Name ArgListOpt {$$ = allocTree(LOCAL_NAME_CALL, "local_name_call
     | LocalNameDecl            {$$ = allocTree(LOCAL_NAME_CALL, "local_name_call", 1, $1);}
     | Name                     {$$ = allocTree(LOCAL_NAME_CALL, "local_name_call", 1, $1);}
 ;
-LocalNameDecl: Name VarAssignment {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 1, $1);}
-    | DROPVAL VarAssignment       {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 1, $2);}
-    | Name Name StructVarDecl     {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 3, $1, $2, $3);}
+LocalNameDecl: Name Type VarAssignment {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 1, $1);}
+    | DROPVAL Type VarAssignment       {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 1, $2);}
+    | Name Type StructVarDecl          {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 3, $1, $2, $3);}
 ;
-SpaceFuncCall: COLON LocalNameCall {$$ = allocTree(SPACE_FUNC_CALL, "space_func_call", 1, $2);}
+SpaceFuncCall: COLON Name   {$$ = allocTree(SPACE_FUNC_CALL, "space_func_call", 1, $2);}
+    | COLON Name ArgListOpt {$$ = allocTree(SPACE_FUNC_CALL, "space_func_call", 2, $2, $3);}
 ;
 PatternBlocks: PatternBlock          {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 1, $1);}
     | PatternBlocks BAR PatternBlock {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 2, $1, $3);}
@@ -277,15 +278,17 @@ AssignOp: ASSIGNMENT {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
 Primary: Literal         {$$ = allocTree(PRIMARY, "primary", 1, $1);}
     | LPAREN Expr RPAREN {$$ = allocTree(PRIMARY, "primary", 1, $2);}
 ;
-Type: INT         {$$ = allocTree(TYPE, "type", 1, $1);}
-    | FLOAT       {$$ = allocTree(TYPE, "type", 1, $1);}
-    | BOOLEAN     {$$ = allocTree(TYPE, "type", 1, $1);}
-    | STRING      {$$ = allocTree(TYPE, "type", 1, $1);}
-    | CHAR        {$$ = allocTree(TYPE, "type", 1, $1);}
-    | SYMBOL      {$$ = allocTree(TYPE, "type", 1, $1);}
-    | TuppleConst {$$ = allocTree(TYPE, "type", 1, $1);}
-    | FUNCTION    {$$ = allocTree(TYPE, "type", 1, $1);}
-    | LBRACKET Type RBRACKET    {$$ = allocTree(TYPE, "type", 1, $2);}
+Type: INT                    {$$ = allocTree(TYPE, "type", 1, $1);}
+    | FLOAT                  {$$ = allocTree(TYPE, "type", 1, $1);}
+    | BOOLEAN                {$$ = allocTree(TYPE, "type", 1, $1);}
+    | STRING                 {$$ = allocTree(TYPE, "type", 1, $1);}
+    | CHAR                   {$$ = allocTree(TYPE, "type", 1, $1);}
+    | SYMBOL                 {$$ = allocTree(TYPE, "type", 1, $1);}
+    | IDENTIFIER             {$$ = allocTree(TYPE, "type", 1, $1);}
+    | IDENTIFIER IDENTIFIER  {$$ = allocTree(TYPE, "type", 2, $1, $2);}
+    | TuppleConst            {$$ = allocTree(TYPE, "type", 1, $1);}
+    | FUNCTION               {$$ = allocTree(TYPE, "type", 1, $1);}
+    | LBRACKET Type RBRACKET {$$ = allocTree(TYPE, "type", 1, $2);}
 ;
 TuppleType: LBRACE TuppleDecl RBRACE {$$ = allocTree(TUPPLE_TYPE, "tupple_type", 1, $2);}
     | LBRACE RBRACE {/* nothing in function */}

@@ -18,8 +18,8 @@
  */
 int allocToken(int code)
 {
-    // initialize the memory for a new tree-leaf node
-    yylval.treeptr = calloc(1, sizeof(struct tree));
+    // initialize the memory for a new tree-with-leaf node
+    yylval.treeptr = (struct tree*) calloc(1, sizeof(struct tree));
     if (!yylval.treeptr) {
         printf("Error: memory allocation for tree node failed.\n\n");
         exit(1);
@@ -143,9 +143,12 @@ struct tree* allocTree(int code, char* symb, int numkids, ...)
 
     va_list ap;
     va_start(ap, numkids);
-    for (int i=0; i < numkids; i++) {
-        // max of 9 kids
-        tr->kids[i] = va_arg(ap, struct tree*);
+
+    if (numkids > 0) {
+        for (int i=0; i < numkids; i++) {
+            // max of 9 kids
+            tr->kids[i] = va_arg(ap, struct tree*);
+        }
     }
 
     return tr;
@@ -154,23 +157,25 @@ struct tree* allocTree(int code, char* symb, int numkids, ...)
 /*
  * Takes a tree pointer and prints all values stored within. Nested values are 
  * printed with indentation to signify depth for easier viewing.
- * Returns nothing.
+ * Returns nothing.  -- WHY WAS IT FREEING VALUES??
  */
 void printTree(struct tree *t, int depth)
 {
+    // if there is no tree structure, return
+    if (t == NULL) {
+        return;
+    }
+
     // check if t is a leaf node
     if (t->nkids == 0) {
         // print leaf information
-        printf("LEAF %*s\t%d: %s\n", depth * 2, " ", t->leaf->category, t->leaf->text);
+        printf("LEAF %*s\t%d: %s  ", depth * 2, " ", t->leaf->category, t->leaf->text);
         // If the ival/sval field is not NULL, print the value to standard output
         if (t->leaf->sval != NULL) {
-            printf("%s", t->leaf->sval);
-            free(t->leaf->sval);
+            printf("%s\n", t->leaf->sval);
         } else if (t->leaf->category == LITERALINT || t->leaf->category == LITERALFLOAT || t->leaf->category == LITERALCHAR) {
-            fprintf(stdout, "%d", t->leaf->ival);
+            fprintf(stdout, "%d\n", t->leaf->ival);
         }
-        free(t->leaf->text);
-        free(t->leaf);
     } else {
         // print the tree structure information
         printf("TREE %*s %s: %d\n", depth * 2, " ", t->symbolname, t->prodrule);
@@ -179,7 +184,6 @@ void printTree(struct tree *t, int depth)
             printTree(t->kids[i], depth+1);
         }
     }
-    free(t);
 }
 
 /*
@@ -189,6 +193,11 @@ void printTree(struct tree *t, int depth)
  */
 void freeTree(struct tree* t)
 {
+    // if there is no tree structure, return
+    if (t == NULL) {
+        return;
+    }
+
     //check if t is a leaf node
     if (t->nkids == 0) {
         // free the leaf and tree structures

@@ -6,6 +6,7 @@ func main int ()
 	/* This is a test
 	hello,
 	world! */
+	
 	IO:out("Hello, world!");
 	0;
 }
