@@ -15,14 +15,14 @@
     struct tree* treeptr;
 }
 
+%token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON MODSPACE
+%token <treeptr> EQUALTO LBRACE RBRACE LPAREN RPAREN
+%token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL
 %token <treeptr> BOOLEAN INT FLOAT CHAR STRING SYMBOL HEADVAR TAILVAR
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION
 %token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
 %token <treeptr> ASSIGNMENT BAR ARROWOP RETURN DOT
-%token <treeptr> EQUALTO LBRACE RBRACE LPAREN RPAREN
-%token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON MODSPACE
-%token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL
 %token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT INCREMENT DECREMENT
 %token <treeptr> GREATERTHANOREQUAL LESSTHANOREQUAL GREATERTHAN LESSTHAN
 
@@ -37,8 +37,13 @@
 %type <treeptr> ParameterListOpt
 %type <treeptr> ParameterList
 %type <treeptr> FunctionBody
+%type <treeptr> FunctionBodyDecls
+%type <treeptr> FunctionBodyDecl
+
+%type <treeptr> Expr
 
 %type <treeptr> Type
+%type <treeptr> Literal
 
 %%
 
@@ -87,13 +92,38 @@ ParameterListOpt: LPAREN ParameterList RPAREN {$$ = allocTree();}
 ParameterList: ParameterList COMA IDENTIFIER Type {$$ = allocTree();}
     | IDENTIFIER Type {$$ = allocTree();}
 ;
-FunctionBody:
+FunctionBody: LBRACE FunctionBodyDecls RBRACE {$$ = allocTree();}
+    | LBRACE RBRACE {/* - NO VALUE - */}
+;
+FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl {$$ = allocTree();}
+    | FunctionBodyDecl {$$ = allocTree();}
+;
+FunctionBodyDecl: Expr {$$ = allocTree();}
 ;
 
 
-/*  -- TYPE GRAMAR DEFINITIONS --  */
+/* -- EXPRESSION GRAMAR DEFINITIONS -- */
 
-Type:
+Expr:
+;
+
+
+/*  -- TYPES AND LITERALS GRAMAR DEFINITIONS --  */
+
+Type: BOOLEAN {$$ = allocTree();}
+    | INT     {$$ = allocTree();}
+    | FLOAT   {$$ = allocTree();}
+    | CHAR    {$$ = allocTree();}
+    | STRING  {$$ = allocTree();}
+    | SYMBOL  {$$ = allocTree();}
+;
+Literal: LITERALBOOL {$$ = allocTree();}
+    | LITERALINT     {$$ = allocTree();}
+    | LITERALFLOAT   {$$ = allocTree();}
+    | LITERALCHAR    {$$ = allocTree();}
+    | LITERALSTRING  {$$ = allocTree();}
+    | LITERALSYMBOL  {$$ = allocTree();}
+    | LITERALHEX     {$$ = allocTree();}
 ;
 
 %%

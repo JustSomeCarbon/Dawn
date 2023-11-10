@@ -1,7 +1,4 @@
-pack:Main
-
-// define a set of new symbols
-:sym {:apple, :banana}
+space:Main
 
 func main int ()
 {

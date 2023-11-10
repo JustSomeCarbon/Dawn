@@ -1,4 +1,4 @@
-pack:Main
+space:Main
 
 /* define a new structure to use */
 struct example {
