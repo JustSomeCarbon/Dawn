@@ -121,7 +121,8 @@ int allocToken(int code)
             break;
     }
 
-    return 0;
+    // return the code of the token for the parser
+    return code;
 }
 
 
@@ -169,7 +170,7 @@ void printTree(struct tree *t, int depth)
     // check if t is a leaf node
     if (t->nkids == 0) {
         // print leaf information
-        printf("LEAF %*s\t%d: %s  ", depth * 2, " ", t->leaf->category, t->leaf->text);
+        printf("LEAF %*s\t%d: %s  \n", depth * 3, " ", t->leaf->category, t->leaf->text);
         // If the ival/sval field is not NULL, print the value to standard output
         if (t->leaf->sval != NULL) {
             printf("%s\n", t->leaf->sval);
@@ -178,12 +179,13 @@ void printTree(struct tree *t, int depth)
         }
     } else {
         // print the tree structure information
-        printf("TREE %*s %s: %d\n", depth * 2, " ", t->symbolname, t->prodrule);
+        printf("TREE %*s %s: %d   %d\n", depth * 3, " ", t->symbolname, t->prodrule, t->nkids);
         // recursive call for each kid
         for (int i = 0; i < t->nkids; i++) {
             printTree(t->kids[i], depth+1);
         }
     }
+    return;
 }
 
 /*

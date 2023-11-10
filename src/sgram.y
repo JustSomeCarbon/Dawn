@@ -130,7 +130,7 @@ FunctionHeader: FUNCTION IDENTIFIER Type LPAREN FormalParamListOpt RPAREN
 ;
 FormalParamListOpt: FormalParamList
     {$$ = allocTree(FORMAL_PARAM_LIST_OPT, "formal_param_list_opt", 1, $1);}
-    | {$$ = NULL;}
+    | { /* store nothing */ }
 ;
 FormalParamList: FormalParam
     {$$ = allocTree(FORMAL_PARAM_LIST, "formal_param_list", 1, $1);}
@@ -142,7 +142,7 @@ FormalParam: IDENTIFIER Type {$$ = allocTree(FORMAL_PARAM, "formal_param", 2, $1
     {$$ = allocTree(FORMAL_PARAM, "formal_param", 3, $2, $4, $6);}
 ;
 ArgListOpt: LPAREN ArgList RPAREN {$$ = allocTree(ARG_LIST_OPT, "arg_list_opt", 1, $2);}
-    | LPAREN RPAREN {$$ = NULL;}
+    | LPAREN RPAREN { /* store nothing */ }
 ;
 ArgList: ArgList COMA ArgVal {$$ = allocTree(ARG_LIST, "arg_list", 2, $1, $3);}
     | ArgVal {$$ = allocTree(ARG_LIST, "arg_list", 1, $1);}
@@ -157,7 +157,7 @@ ArgVal: Expr      {$$ = allocTree(ARG_VAL, "arg_val", 1, $1);}
 
 FunctionBody: LBRACE FunctionBodyDecls RBRACE
     {$$ = allocTree(FUNCTION_BODY, "function_body", 1, $2);}
-    | LBRACE RBRACE { $$ = NULL; }
+    | LBRACE RBRACE { /* store nothing */ }
 ;
 FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl
     {$$ = allocTree(FUNCTION_BODY_DECLS, "function_body_decls", 2, $1, $2);}
@@ -183,8 +183,7 @@ LocalNameDecl: Type VarAssignment {$$ = allocTree(LOCAL_NAME_DECL, "local_name_d
     | IDENTIFIER COLON IDENTIFIER StructVarDecl
     {$$ = allocTree(LOCAL_NAME_DECL, "local_name_decl", 3, $1, $3, $4);}
 ;
-SpaceFuncCall: COLON Name   {$$ = allocTree(SPACE_FUNC_CALL, "space_func_call", 1, $2);}
-    | COLON Name ArgListOpt {$$ = allocTree(SPACE_FUNC_CALL, "space_func_call", 2, $2, $3);}
+SpaceFuncCall: COLON Name ArgListOpt {$$ = allocTree(SPACE_FUNC_CALL, "space_func_call", 2, $2, $3);}
 ;
 PatternBlocks: PatternBlock          {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 1, $1);}
     | PatternBlocks BAR PatternBlock {$$ = allocTree(PATTERN_BLOCKS, "pattern_blocks", 2, $1, $3);}
@@ -225,6 +224,8 @@ FieldAccess: Field               {$$ = allocTree(FIELD_ACCESS, "field_access", 1
     | FieldAccess DOT IDENTIFIER {$$ = allocTree(FIELD_ACCESS, "field_access", 2, $1, $3);}
 ;
 Field: IDENTIFIER {$$ = allocTree(FIELD, "field", 1, $1);}
+;
+Expr: CondOrExpr {$$ = allocTree(EXPR, "expr", 1, $1);}
 ;
 CondOrExpr: CondAndExpr {$$ = allocTree(COND_OR_EXPR, "cond_or_expr", 1, $1);}
     | CondOrExpr LOGICALOR CondAndExpr {$$ = allocTree(COND_OR_EXPR, "cond_or_expr", 2, $1, $3);}
@@ -267,8 +268,6 @@ ConcatExpr: LITERALSTRING BAR LITERALSTRING {$$ = allocTree(CONCAT_EXPR, "concat
     | LITERALCHAR BAR LITERALSTRING {$$ = allocTree(CONCAT_EXPR, "concat_expr", 2, $1, $3);}
     | LITERALCHAR BAR LITERALCHAR   {$$ = allocTree(CONCAT_EXPR, "concat_expr", 2, $1, $3);}
 ;
-Expr: CondOrExpr {$$ = allocTree(EXPR, "expr", 1, $1);}
-;
 AssignOp: ASSIGNMENT {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
     | INCREMENT  {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
     | DECREMENT  {$$ = allocTree(ASSIGN_OP, "assign_op", 1, $1);}
@@ -291,7 +290,7 @@ Type: INT                    {$$ = allocTree(TYPE, "type", 1, $1);}
     | LBRACKET Type RBRACKET {$$ = allocTree(TYPE, "type", 1, $2);}
 ;
 TuppleType: LBRACE TuppleDecl RBRACE {$$ = allocTree(TUPPLE_TYPE, "tupple_type", 1, $2);}
-    | LBRACE RBRACE { $$ = NULL; }
+    | LBRACE RBRACE { /* store nothing */ }
 ;
 TuppleDecl: TuppleDecl COMA Literal {$$ = allocTree(TUPPLE_DECL, "tupple_decl", 2, $1, $3);}
     | TuppleDecl COMA IDENTIFIER    {$$ = allocTree(TUPPLE_DECL, "tupple_decl", 2, $1, $3);}

@@ -58,6 +58,7 @@ int main(int argc, char* argv[])
             printf("File parse returns:: %d\n\n", yyparse());
             printTree(root, 0);
 
+            printf("Freeing source file...");
             freeTree(root);
 
             // close the file
