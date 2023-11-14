@@ -23,15 +23,18 @@
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION
 %token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
 %token <treeptr> ASSIGNMENT BAR ARROWOP RETURN DOT
-%token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT INCREMENT DECREMENT
+%token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT
 %token <treeptr> GREATERTHANOREQUAL LESSTHANOREQUAL GREATERTHAN LESSTHAN
 
 %type <treeptr> FileRoot
 %type <treeptr> SourceSpace
 %type <treeptr> FileDefinitions
+
 %type <treeptr> UseDefinition
 %type <treeptr> ImportList
+
 %type <treeptr> StructDefinition
+
 %type <treeptr> FunctionDefinition
 %type <treeptr> FunctionHeader
 %type <treeptr> ParameterListOpt
@@ -55,6 +58,10 @@
 
 %type <treeptr> Name
 %type <treeptr> Primary
+%type <treeptr> FunctionCall
+%type <treeptr> ArgumentListOpt
+%type <treeptr> ArgumentList
+
 %type <treeptr> RelationOp
 %type <treeptr> Type
 %type <treeptr> Literal
@@ -94,7 +101,7 @@ StructDefinition: STRUCT Name LBRACE ParameterList RBRACE {$$ = allocTree();}
 ;
 
 
-/*  -- FUNCTION GRAMAR DEFINITIONS -- */
+/*  -- FUNCTION DECLARATION GRAMAR DEFINITIONS -- */
 
 FunctionDefinition: FunctionHeader FunctionBody {$$ = allocTree();}
 ;
@@ -147,7 +154,8 @@ UnaryExpr: NOT UnaryExpr {$$ = allocTree();}
     | SUBTRACT UnaryExpr {$$ = allocTree();}
     | PostFixExpr        {$$ = allocTree();}
 ;
-PostFixExpr:
+PostFixExpr: Primary {$$ = allocTree();}
+    | Name           {$$ = allocTree();}
 ;
 
 
@@ -158,23 +166,39 @@ LeftHandSide: Name Type {$$ = allocTree();}
 ;
 
 
+/* -- NAMES AND FUNCTION CALLS GRAMMAR DEFINITIONS -- */
+
+Name: Name COLON IDENTIFIER {$$ = allocTree();}
+    | IDENTIFIER            {$$ = allocTree();}
+;
+Primary: Literal         {$$ = allocTree();}
+    | LPAREN Expr RPAREN {$$ = allocTree();}
+    | FunctionCall       {$$ = allocTree();}
+;
+FunctionCall: Name ArgumentListOpt {$$ = allocTree();}
+;
+ArgumentListOpt: LPAREN ArgumentList RPAREN {$$ = allocTree();}
+    | LPAREN RPAREN {/* - NO VALUE - */}
+;
+ArgumentList: ArgumentList COMA Expr {$$ = allocTree();}
+    | Expr {$$ = allocTree();}
+;
+
+
 /*  -- TYPES AND LITERALS GRAMAR DEFINITIONS --  */
 
-Name: IDENTIFIER {$$ = allocTree();}
-;
-Primary:
-;
 RelationOp: GREATERTHAN  {$$ = allocTree();}
     | GREATERTHANOREQUAL {$$ = allocTree();}
     | LESSTHAN           {$$ = allocTree();}
     | LESSTHANOREQUAL    {$$ = allocTree();}
 ;
-Type: BOOLEAN {$$ = allocTree();}
-    | INT     {$$ = allocTree();}
-    | FLOAT   {$$ = allocTree();}
-    | CHAR    {$$ = allocTree();}
-    | STRING  {$$ = allocTree();}
-    | SYMBOL  {$$ = allocTree();}
+Type: BOOLEAN  {$$ = allocTree();}
+    | INT      {$$ = allocTree();}
+    | FLOAT    {$$ = allocTree();}
+    | CHAR     {$$ = allocTree();}
+    | STRING   {$$ = allocTree();}
+    | SYMBOL   {$$ = allocTree();}
+    | FUNCTION {$$ = allocTree();}
 ;
 Literal: LITERALBOOL {$$ = allocTree();}
     | LITERALINT     {$$ = allocTree();}

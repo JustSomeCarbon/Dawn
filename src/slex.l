@@ -42,8 +42,6 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "/"             {return allocToken(DIVIDE);}
 "%"             {return allocToken(MODULO);}
 "="             {return allocToken(ASSIGNMENT);}
-"+="            {return allocToken(INCREMENT);}
-"-="            {return allocToken(DECREMENT);}
 "=="            {return allocToken(ISEQUALTO);}
 ">"             {return allocToken(GREATERTHAN);}
 "<"             {return allocToken(LESSTHAN);}
