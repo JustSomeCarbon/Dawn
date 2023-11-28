@@ -73,6 +73,7 @@
 /* -- SOURCE FILE DEFINITION -- */
 
 FileRoot: SourceSpace FileDefinitions {$$ = allocTree(FILE_ROOT, "file_root", 2, $1, $2);}
+    | SourceSpace                     {$$ = allocTree(FILE_ROOT, "file_root", 1, $1);}
 ;
 SourceSpace: MODSPACE COLON Name {$$ = allocTree(SOURCE_SPACE, "source_space", 2, $1, $3);}
 ;
@@ -82,7 +83,6 @@ FileDefinitions: FileDefinitions StructDefinition {$$ = allocTree(FILE_DEFINITIO
     | UseDefinition      {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 1, $1);}
     | StructDefinition   {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 1, $1);}
     | FunctionDefinition {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 1, $1);}
-    | {/* - NO VALUE - */}
 ;
 
 /*  -- USE GRAMAR DEFINITIONS -- */
