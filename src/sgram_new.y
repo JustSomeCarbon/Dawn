@@ -17,7 +17,7 @@
 
 %token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON MODSPACE
 %token <treeptr> LBRACE RBRACE LPAREN RPAREN
-%token <treeptr> MAINFUNC IDENTIFIER USE //DROPVAL
+%token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL
 %token <treeptr> BOOLEAN INT FLOAT CHAR STRING SYMBOL HEADVAR TAILVAR
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION
@@ -194,7 +194,8 @@ PostFixExpr: Primary   {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
 
 VarAssignment: LeftHandSide ASSIGNMENT Expr {$$ = allocTree(VAR_ASSIGNMENT, "var_assignment", 2, $1, $3);}
 ;
-LeftHandSide: Name Type {$$ = allocTree(LEFT_HAND_SIDE, "left_hand_side", 2, $1, $2);} // TODO: add dropval for no values
+LeftHandSide: Name Type {$$ = allocTree(LEFT_HAND_SIDE, "left_hand_side", 2, $1, $2);}
+    | DROPVAL {$$ = allocTree(LEFT_HAND_SIDE, "left_hand_side", 1, $1);}
 ;
 
 
