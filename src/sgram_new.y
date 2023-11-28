@@ -34,6 +34,8 @@
 %type <treeptr> ImportList
 
 %type <treeptr> StructDefinition
+%type <treeptr> StructParams
+%type <treeptr> StructParam
 
 %type <treeptr> FunctionDefinition
 %type <treeptr> FunctionHeader
@@ -104,7 +106,12 @@ ImportList: ImportList COMA Name {$$ = allocTree(IMPORT_LIST, "import_list", 2, 
 
 /* -- STRUCT GRAMAR DEFINITIONS -- */
 
-StructDefinition: STRUCT Name LBRACE ParameterList RBRACE {$$ = allocTree(STRUCT_DEFINITION, "struct_definition", 2, $2, $4);}
+StructDefinition: STRUCT Name LBRACE StructParams RBRACE {$$ = allocTree(STRUCT_DEFINITION, "struct_definition", 2, $2, $4);}
+;
+StructParams: StructParams SEMICOLON StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 2, $1, $3);}
+    | StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 1, $1);}
+;
+StructParam: Name Type {$$ = allocTree(STRUCT_PARAM, "struct_param", 2, $1, $2);}
 ;
 
 
@@ -134,6 +141,7 @@ FunctionBodyDecl: LBRACE PatternBlock RBRACE {$$ = allocTree(FUNC_BODY_DECL, "fu
 
 
 /* -- PATTERN EXPRESSION GRAMMAR -- */
+
 PatternBlock: PatternBlock BAR PatternStmt {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $1, $3);}
     | PatternStmt {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 1, $1);}
 ;
