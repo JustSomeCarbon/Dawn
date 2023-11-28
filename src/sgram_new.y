@@ -64,6 +64,7 @@
 
 %type <treeptr> RelationOp
 %type <treeptr> Type
+%type <treeptr> TupTypeDecl
 %type <treeptr> Literal
 %type <treeptr> ListLiteralsOpt
 %type <treeptr> ListLiterals
@@ -204,16 +205,20 @@ Type: BOOLEAN  {$$ = allocTree(TYPE, "type", 1, $1);}
     | STRING   {$$ = allocTree(TYPE, "type", 1, $1);}
     | SYMBOL   {$$ = allocTree(TYPE, "type", 1, $1);}
     | FUNCTION {$$ = allocTree(TYPE, "type", 1, $1);}
-    | LBRACKET Type RBRACKET {$$ = allocTree(TYPE, "type", 3, $1, $2, $3);}
-    | Name     {$$ = allocTree(TYPE, "type", 1, $1);}
+    | LBRACKET Type RBRACKET    {$$ = allocTree(TYPE, "type", 3, $1, $2, $3);}
+    | Name                      {$$ = allocTree(TYPE, "type", 1, $1);}
+    | LBRACE TupTypeDecl RBRACE {$$ = allocTree(TYPE, "type", 1, $2);}
 ;
-Literal: LITERALBOOL {$$ = allocTree(LITERAL, "literal", 1, $1);}
-    | LITERALINT     {$$ = allocTree(LITERAL, "literal", 1, $1);}
-    | LITERALFLOAT   {$$ = allocTree(LITERAL, "literal", 1, $1);}
-    | LITERALCHAR    {$$ = allocTree(LITERAL, "literal", 1, $1);}
-    | LITERALSTRING  {$$ = allocTree(LITERAL, "literal", 1, $1);}
-    | LITERALSYMBOL  {$$ = allocTree(LITERAL, "literal", 1, $1);}
-    | LITERALHEX     {$$ = allocTree(LITERAL, "literal", 1, $1);}
+TupTypeDecl: TupTypeDecl COMA Type {$$ = allocTree(TUP_TYPE_DECL, "tup_type_decl", 2, $1, $3);}
+    | Type {$$ = allocTree(TUP_TYPE_DECL, "tup_type_decl", 1, $1);}
+;
+Literal: LITERALBOOL  {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALINT      {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALFLOAT    {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALCHAR     {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALSTRING   {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALSYMBOL   {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | LITERALHEX      {$$ = allocTree(LITERAL, "literal", 1, $1);}
     | ListLiteralsOpt {$$ = allocTree(LITERAL, "literal", 1, $1);}
 ;
 ListLiteralsOpt: LBRACE ListLiterals RBRACE {$$ = allocTree(LIST_LITERALS_OPT, "list_literals_opt", 1, $2);}

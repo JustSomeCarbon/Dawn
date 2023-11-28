@@ -48,7 +48,10 @@ enum sol_terms {
     ARG_LIST,
     RELATION_OP,
     TYPE,
-    LITERAL
+    TUP_TYPE_DECL,
+    LITERAL,
+    LIST_LITERALS_OPT,
+    LIST_LITERALS,
 };
 
 // Code Structures
