@@ -58,6 +58,7 @@
 
 %type <treeptr> Name
 %type <treeptr> Primary
+%type <treeptr> FieldAccess
 %type <treeptr> FunctionCall
 %type <treeptr> ArgumentListOpt
 %type <treeptr> ArgumentList
@@ -159,8 +160,9 @@ UnaryExpr: NOT UnaryExpr {$$ = allocTree(UNARY_EXPR, "unary_expr", 2, $1, $2);}
     | SUBTRACT UnaryExpr {$$ = allocTree(UNARY_EXPR, "unary_expr", 2, $1, $2);}
     | PostFixExpr        {$$ = allocTree(UNARY_EXPR, "unary_expr", 1, $1);}
 ;
-PostFixExpr: Primary {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
-    | Name           {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
+PostFixExpr: Primary   {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
+    | Name FieldAccess {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 2, $1, $2);}
+    | Name             {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
 ;
 
 
@@ -180,6 +182,9 @@ Name: Name COLON IDENTIFIER {$$ = allocTree(NAME, "name", 2, $1, $3);}
 Primary: Literal         {$$ = allocTree(PRIMARY, "primary", 1, $1);}
     | LPAREN Expr RPAREN {$$ = allocTree(PRIMARY, "primary", 3, $1, $2, $3);}
     | FunctionCall       {$$ = allocTree(PRIMARY, "primary", 1, $1);}
+;
+FieldAccess: FieldAccess LBRACKET LITERALINT RBRACKET {$$ = allocTree(FIELD_ACCESS, "field_access", 2, $1, $3);}
+    | LBRACKET LITERALINT RBRACKET {$$ = allocTree(FIELD_ACCESS, "field_access", 1, $2);}
 ;
 FunctionCall: Name ArgumentListOpt {$$ = allocTree(FUNC_CALL, "func_call", 2, $1, $2);}
 ;

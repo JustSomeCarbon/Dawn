@@ -43,6 +43,7 @@ enum sol_terms {
     LEFT_HAND_SIDE,
     NAME,
     PRIMARY,
+    FIELD_ACCESS,
     FUNC_CALL,
     ARG_LIST_OPT,
     ARG_LIST,
