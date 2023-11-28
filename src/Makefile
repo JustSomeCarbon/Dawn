@@ -25,4 +25,4 @@ sgram.tab.c sgram.tab.h: sgram.y
 
 
 clean:
-	rm lex.yy.c *.tab.c *.tab.h *.o solx *.output
+	rm lex.yy.c *.tab.c *.tab.h *.o *.output solx

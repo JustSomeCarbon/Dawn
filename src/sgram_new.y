@@ -65,6 +65,8 @@
 %type <treeptr> RelationOp
 %type <treeptr> Type
 %type <treeptr> Literal
+%type <treeptr> ListLiteralsOpt
+%type <treeptr> ListLiterals
 
 %%
 
@@ -109,13 +111,13 @@ FunctionHeader: FUNCTION Name Type ParameterListOpt {$$ = allocTree(FUNC_HEADER,
     | FUNCTION MAINFUNC Type ParameterListOpt       {$$ = allocTree(FUNC_HEADER, "func_header", 3, $2, $3, $4);}
 ;
 ParameterListOpt: LPAREN ParameterList RPAREN {$$ = allocTree(PARAM_LIST_OPT, "param_list_opt", 1, $2);}
-    | LPAREN RPAREN {/* - NO VALUE - */}
+    | LPAREN RPAREN {$$ = NULL;}
 ;
 ParameterList: ParameterList COMA Name Type {$$ = allocTree(PARAM_LIST, "param_list", 3, $1, $3, $4);}
     | Name Type {$$ = allocTree(PARAM_LIST, "param_list", 2, $1, $2);}
 ;
 FunctionBody: LBRACE FunctionBodyDecls RBRACE {$$ = allocTree(FUNC_BODY, "func_body", 1, $2);}
-    | LBRACE RBRACE {/* - NO VALUE - */}
+    | LBRACE RBRACE {$$ = NULL;}
 ;
 FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl {$$ = allocTree(FUNC_BODY_DECLS, "func_body_decls", 2, $1, $2);}
     | FunctionBodyDecl {$$ = allocTree(FUNC_BODY_DECLS, "func_body_decls", 1, $1);}
@@ -181,7 +183,7 @@ Primary: Literal         {$$ = allocTree(PRIMARY, "primary", 1, $1);}
 FunctionCall: Name ArgumentListOpt {$$ = allocTree(FUNC_CALL, "func_call", 2, $1, $2);}
 ;
 ArgumentListOpt: LPAREN ArgumentList RPAREN {$$ = allocTree(ARG_LIST_OPT, "arg_list_opt", 1, $2);}
-    | LPAREN RPAREN {/* - NO VALUE - */}
+    | LPAREN RPAREN {$$ = NULL;}
 ;
 ArgumentList: ArgumentList COMA Expr {$$ = allocTree(ARG_LIST, "arg_list", 2, $1, $3);}
     | Expr {$$ = allocTree(ARG_LIST, "arg_list", 1, $1);}
@@ -203,6 +205,7 @@ Type: BOOLEAN  {$$ = allocTree(TYPE, "type", 1, $1);}
     | SYMBOL   {$$ = allocTree(TYPE, "type", 1, $1);}
     | FUNCTION {$$ = allocTree(TYPE, "type", 1, $1);}
     | LBRACKET Type RBRACKET {$$ = allocTree(TYPE, "type", 3, $1, $2, $3);}
+    | Name     {$$ = allocTree(TYPE, "type", 1, $1);}
 ;
 Literal: LITERALBOOL {$$ = allocTree(LITERAL, "literal", 1, $1);}
     | LITERALINT     {$$ = allocTree(LITERAL, "literal", 1, $1);}
@@ -211,6 +214,13 @@ Literal: LITERALBOOL {$$ = allocTree(LITERAL, "literal", 1, $1);}
     | LITERALSTRING  {$$ = allocTree(LITERAL, "literal", 1, $1);}
     | LITERALSYMBOL  {$$ = allocTree(LITERAL, "literal", 1, $1);}
     | LITERALHEX     {$$ = allocTree(LITERAL, "literal", 1, $1);}
+    | ListLiteralsOpt {$$ = allocTree(LITERAL, "literal", 1, $1);}
+;
+ListLiteralsOpt: LBRACE ListLiterals RBRACE {$$ = allocTree(LIST_LITERALS_OPT, "list_literals_opt", 1, $2);}
+| LBRACE RBRACE {$$ = NULL;}
+;
+ListLiterals: ListLiterals COMA Expr    {$$ = allocTree(LIST_LITERALS, "list_literals", 2, $1, $3);}
+    | Expr            {$$ = allocTree(LIST_LITERALS, "list_literals", 1, $1);}
 ;
 
 %%
