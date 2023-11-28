@@ -29,6 +29,7 @@ enum sol_terms {
     FUNC_HEADER,
     PARAM_LIST_OPT,
     PARAM_LIST,
+    PARAM,
     FUNC_BODY,
     FUNC_BODY_DECLS,
     FUNC_BODY_DECL,
