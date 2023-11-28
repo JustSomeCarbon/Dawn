@@ -30,6 +30,8 @@ enum sol_terms {
     FUNC_BODY,
     FUNC_BODY_DECLS,
     FUNC_BODY_DECL,
+    PATTERN_BLOCK,
+    PATTERN_STMT,
     EXPR,
     COND_OR_EXPR,
     COND_AND_EXPR,

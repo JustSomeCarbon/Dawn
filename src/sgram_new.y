@@ -22,7 +22,7 @@
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION
 %token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
-%token <treeptr> ASSIGNMENT /*BAR ARROWOP*/ RETURN //DOT
+%token <treeptr> ASSIGNMENT BAR ARROWOP RETURN //DOT
 %token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT
 %token <treeptr> GREATERTHANOREQUAL LESSTHANOREQUAL GREATERTHAN LESSTHAN
 
@@ -42,6 +42,9 @@
 %type <treeptr> FunctionBody
 %type <treeptr> FunctionBodyDecls
 %type <treeptr> FunctionBodyDecl
+
+%type <treeptr> PatternBlock
+%type <treeptr> PatternStmt
 
 %type <treeptr> Expr
 %type <treeptr> CondOrExpr
@@ -124,8 +127,17 @@ FunctionBody: LBRACE FunctionBodyDecls RBRACE {$$ = allocTree(FUNC_BODY, "func_b
 FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl {$$ = allocTree(FUNC_BODY_DECLS, "func_body_decls", 2, $1, $2);}
     | FunctionBodyDecl {$$ = allocTree(FUNC_BODY_DECLS, "func_body_decls", 1, $1);}
 ;
-FunctionBodyDecl: Expr SEMICOLON {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $1);}
+FunctionBodyDecl: LBRACE PatternBlock RBRACE {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $2);}
+    | Expr SEMICOLON             {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $1);}
     | RETURN Expr SEMICOLON      {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $2);}
+;
+
+
+/* -- PATTERN EXPRESSION GRAMMAR -- */
+PatternBlock: PatternBlock BAR PatternStmt {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $1, $3);}
+    | PatternStmt {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 1, $1);}
+;
+PatternStmt: Expr ARROWOP FunctionBodyDecls {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 2, $1, $3);}
 ;
 
 
