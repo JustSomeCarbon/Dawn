@@ -57,6 +57,7 @@
 %type <treeptr> AddExpr
 %type <treeptr> MultExpr
 %type <treeptr> UnaryExpr
+%type <treeptr> ConcatExpr
 %type <treeptr> PostFixExpr
 
 %type <treeptr> VarAssignment
@@ -182,7 +183,10 @@ MultExpr: MultExpr MULTIPLY UnaryExpr {$$ = allocTree(MULT_EXPR, "mult_expr", 3,
 ;
 UnaryExpr: NOT UnaryExpr {$$ = allocTree(UNARY_EXPR, "unary_expr", 2, $1, $2);}
     | SUBTRACT UnaryExpr {$$ = allocTree(UNARY_EXPR, "unary_expr", 2, $1, $2);}
-    | PostFixExpr        {$$ = allocTree(UNARY_EXPR, "unary_expr", 1, $1);}
+    | ConcatExpr         {$$ = allocTree(UNARY_EXPR, "unary_expr", 1, $1);}
+;
+ConcatExpr: ConcatExpr BAR PostFixExpr {$$ = allocTree(CONCAT_EXPR, "concat_expr", 2, $1, $3);}
+    | PostFixExpr {$$ = allocTree(CONCAT_EXPR, "concat_expr", 1, $1);}
 ;
 PostFixExpr: Primary   {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
     | Name FieldAccess {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 2, $1, $2);}

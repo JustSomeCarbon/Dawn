@@ -43,6 +43,7 @@ enum sol_terms {
     ADD_EXPR,
     MULT_EXPR,
     UNARY_EXPR,
+    CONCAT_EXPR,
     POST_FIX_EXPR,
     VAR_ASSIGNMENT,
     LEFT_HAND_SIDE,
