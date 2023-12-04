@@ -53,7 +53,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "_"             {return allocToken(DROPVAL);}
 "->"            {return allocToken(ARROWOP);}
 
-"."             {return allocToken(DOT);}
+/* "."             {return allocToken(DOT);} */
 ","             {return allocToken(COMA);}
 "{"             {return allocToken(LBRACE);}
 "}"             {return allocToken(RBRACE);}

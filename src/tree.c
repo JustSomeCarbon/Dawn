@@ -13,8 +13,8 @@
 #include "sgram.tab.h"
 
 /*
- * Initialize and allocate a new token structure based on the defined integer code value.
- * When complete, returns the code as an integer.
+ * allocToken: Initialize and allocate a new token structure based on the defined integer code value.
+ *  When complete, returns the code as an integer.
  */
 int allocToken(int code)
 {
@@ -127,8 +127,8 @@ int allocToken(int code)
 
 
 /*
- * Initialize and allocate a new tree structure node. returns the new
- * tree structure.
+ * allocTree: Initialize and allocate a new tree structure node. returns the new
+ *  tree structure.
  */
 struct tree* allocTree(int code, char* symb, int numkids, ...)
 {
@@ -156,9 +156,9 @@ struct tree* allocTree(int code, char* symb, int numkids, ...)
 }
 
 /*
- * Takes a tree pointer and prints all values stored within. Nested values are 
- * printed with indentation to signify depth for easier viewing.
- * Returns nothing.  -- WHY WAS IT FREEING VALUES??
+ * printTree: Takes a tree pointer and prints all values stored within. Nested values are 
+ *  printed with indentation to signify depth for easier viewing.
+ *  Returns nothing.
  */
 void printTree(struct tree *t, int depth)
 {
@@ -189,9 +189,9 @@ void printTree(struct tree *t, int depth)
 }
 
 /*
- * Takes a tree pointer and frees the memory allocation for all data values within
- * the given tree structure t.
- * Returns nothing.
+ * freeTree: Takes a tree pointer and frees the memory allocation for all data values within
+ *  the given tree structure t.
+ *  Returns nothing.
  */
 void freeTree(struct tree* t)
 {
@@ -219,10 +219,10 @@ void freeTree(struct tree* t)
 }
 
 /*
- * Takes a defined integer code, a status as a string, and an error type
- * as a string. Logs the thrown error to the console before applying a safe exit
- * from compiler current state.
- * Returns nothing.
+ * returnOnError: Takes a defined integer code, a status as a string, and an error type
+ *  as a string. Logs the thrown error to the console before applying a safe exit
+ *  from compiler current state.
+ *  Returns nothing.
  */
 void returnOnError(int code, char* status, char* errType) {
     printf("Error::%d:: %s: %s", code, status, errType);
@@ -231,8 +231,8 @@ void returnOnError(int code, char* status, char* errType) {
 }
 
 /**
- * The general implementation of yyerror as defined through bison. The function
- * takes a string and prints an error to the standard error before exiting the program.
+ * yyerror: The general implementation of yyerror as defined through bison. The function
+ *  takes a string and prints an error to the standard error before exiting the program.
  * TODO: Reformat so that any memory is safely freed before the exit.
  */
 int yyerror(char *s) {

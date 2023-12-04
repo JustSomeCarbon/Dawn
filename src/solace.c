@@ -5,6 +5,8 @@
  * Description: The main Solace compiler file. This file must be compiled
  *  and run before being used. Functionality includes the functional
  *  binding and usage of the grammar and syntax files and functions.
+ * 
+ * TODO:: Add a debug flag for the parser output.
  */
 
 #include <stdio.h>
@@ -19,9 +21,12 @@ char* yyfile;
 extern int yylex_destroy();
 extern struct tree* root;
 
-// prototypes
+// Local Prototypes
+
 void check_extension(char* file);
 
+
+// Main Solace Compiler Function
 
 int main(int argc, char* argv[])
 {
@@ -74,24 +79,30 @@ int main(int argc, char* argv[])
 }
 
 
+/*
+ * check_extension: takes a file name and checks whether the extension of the file matches the .solc file extension.
+ *  Populates the yyfile global for further compilation.
+ *  If it does not throw an error and exits (-1).
+ *  If the file does not have an extension, add the .solc extension to the file and populate yyfile.
+ */
 void check_extension(char* file)
 {
     char* extension = strrchr(file, '.');
     if (extension != NULL) {
-        if (strcmp(extension, ".solace") != 0) {
+        if (strcmp(extension, ".solc") != 0) {
             printf("Error :: file given is not a solace source file: %s\n\n", file);
-            exit(-1); // !- source file access error -!
+            exit(-1); // !- source file error -!
         } else {
-            yyfile = (char *) calloc(strlen(file)+8, sizeof(char));
+            yyfile = (char *) calloc(strlen(file)+6, sizeof(char));
             strncpy(yyfile, file, strlen(file)); // initialize yyfile
             return;
         }
     }
-    // add the .solace extension
-    yyfile = (char *) calloc(strlen(file)+7, sizeof(char));
-    char* end = ".solace";
-    char a[strlen(file)+7];
+    // add the .solc extension
+    yyfile = (char *) calloc(strlen(file)+5, sizeof(char));
+    char* end = ".solc";
+    char a[strlen(file)+5];
     strncat(a, file, strlen(file));
-    strncpy(yyfile, strncat(file, end, 7), strlen(file)+7);
+    strncpy(yyfile, strncat(file, end, 5), strlen(file)+5);
     return;
 }
