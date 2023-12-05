@@ -170,7 +170,7 @@ void printTree(struct tree *t, int depth)
     // check if t is a leaf node
     if (t->nkids == 0) {
         // print leaf information
-        printf("%*s\tLEAF  %d: %s  \n", depth * 3, " ", t->leaf->category, t->leaf->text);
+        printf("%*s\tLEAF  %d: %s  ", depth * 3, " ", t->leaf->category, t->leaf->text);
         // If the ival/sval field is not NULL, print the value to standard output
         if (t->leaf->sval != NULL) {                    // char and string literal
             printf("%s\n", t->leaf->sval);
@@ -178,6 +178,8 @@ void printTree(struct tree *t, int depth)
             fprintf(stdout, "%d\n", t->leaf->ival);
         } else if (t->leaf->category == LITERALFLOAT) { // float literal
             fprintf(stdout, "%f\n", t->leaf->dval);
+        } else {
+            printf("\n");
         }
     } else {
         // print the tree structure information
@@ -212,13 +214,14 @@ void freeTree(struct tree* t)
         free(t->leaf);
         free(t);
     } else {
-        // recursive call for each kid
+        // recursive call for each child
         for (int i = 0; i < t->nkids; i++) {
             freeTree(t->kids[i]);
         }
         // free the local tree struct
         free(t);
     }
+    return;
 }
 
 /*

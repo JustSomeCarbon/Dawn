@@ -1,4 +1,4 @@
-pack:Main
+space::Main;
 
 func main int ()
 {
@@ -7,11 +7,11 @@ func main int ()
 
 	// contatenation of characters results in a string
 	c string = a | b;
-	IO:out(a);
-	IO:out(b);
-	IO:out(c);
-	IO:out(a == a);
-	IO:out(a == b);
+	IO::out(a);
+	IO::out(b);
+	IO::out(c);
+	IO::out(a == a);
+	IO::out(a == b);
 
 	0;
 }

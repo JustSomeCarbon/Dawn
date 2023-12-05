@@ -1,23 +1,23 @@
-space:Main
+space::Main;
 
 /* define a new structure to use */
 struct example {
-	n int,
-	f float,
-	s string,
-	c char,
-	b bool
+	n int;
+	f float;
+	s string;
+	c char;
+	b bool;
 }
 
 func main int ()
 {
 	// construct a new example structure
 	ex example = {32, 1.0, "example struct", 'y', false};
-	IO:out(ex:n);
-	IO:out(ex:f);
-	IO:out(ex:s);
-	IO:out(ex:c);
-	IO:out(ex:b);
+	IO::out(ex.n);
+	IO::out(ex.f);
+	IO::out(ex.s);
+	IO::out(ex.c);
+	IO::out(ex.b);
 
 	0;
 }

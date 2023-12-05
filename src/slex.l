@@ -28,7 +28,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "char"          {return allocToken(CHAR);}
 "string"        {return allocToken(STRING);}
 "func"          {return allocToken(FUNCTION);}
-":sym"          {return allocToken(SYMBOL);}
+":sym:"          {return allocToken(SYMBOL);}
 "struct"        {return allocToken(STRUCT);}
 "use"           {return allocToken(USE);}
 "space"         {return allocToken(MODSPACE);}
@@ -53,6 +53,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "_"             {return allocToken(DROPVAL);}
 "->"            {return allocToken(ARROWOP);}
 
+"."             {return allocToken(DOT);}
 ","             {return allocToken(COMA);}
 "{"             {return allocToken(LBRACE);}
 "}"             {return allocToken(RBRACE);}
@@ -60,7 +61,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "]"             {return allocToken(RBRACKET);}
 "("             {return allocToken(LPAREN);}
 ")"             {return allocToken(RPAREN);}
-":"             {return allocToken(COLON);}
+"::"            {return allocToken(COLON);}
 ";"             {return allocToken(SEMICOLON);}
 
 [1-9][0-9]*                   {return allocToken(LITERALINT);}

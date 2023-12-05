@@ -17,7 +17,7 @@
 
 %token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON MODSPACE
 %token <treeptr> LBRACE RBRACE LPAREN RPAREN
-%token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL
+%token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL DOT
 %token <treeptr> BOOLEAN INT FLOAT CHAR STRING SYMBOL HEADVAR TAILVAR
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION
@@ -83,10 +83,10 @@
 
 /* -- SOURCE FILE DEFINITION -- */
 
-FileRoot: SourceSpace FileDefinitions {$$ = allocTree(FILE_ROOT, "file_root", 2, $1, $2);}
-    | SourceSpace                     {$$ = allocTree(FILE_ROOT, "file_root", 1, $1);}
+FileRoot: SourceSpace FileDefinitions {root = allocTree(FILE_ROOT, "file_root", 2, $1, $2);}
+    | SourceSpace                     {root = allocTree(FILE_ROOT, "file_root", 1, $1);}
 ;
-SourceSpace: MODSPACE COLON Name {$$ = allocTree(SOURCE_SPACE, "source_space", 2, $1, $3);}
+SourceSpace: MODSPACE COLON Name SEMICOLON {$$ = allocTree(SOURCE_SPACE, "source_space", 2, $1, $3);}
 ;
 FileDefinitions: FileDefinitions StructDefinition {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 2, $1, $2);}
     | FileDefinitions UseDefinition      {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 2, $1, $2);}
@@ -110,10 +110,10 @@ ImportList: ImportList COMA Name {$$ = allocTree(IMPORT_LIST, "import_list", 2, 
 
 StructDefinition: STRUCT Name LBRACE StructParams RBRACE {$$ = allocTree(STRUCT_DEFINITION, "struct_definition", 2, $2, $4);}
 ;
-StructParams: StructParams SEMICOLON StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 2, $1, $3);}
+StructParams: StructParams StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 2, $1, $2);}
     | StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 1, $1);}
 ;
-StructParam: Name Type {$$ = allocTree(STRUCT_PARAM, "struct_param", 2, $1, $2);}
+StructParam: Name Type SEMICOLON {$$ = allocTree(STRUCT_PARAM, "struct_param", 2, $1, $2);}
 ;
 
 
@@ -205,7 +205,8 @@ LeftHandSide: Name Type {$$ = allocTree(LEFT_HAND_SIDE, "left_hand_side", 2, $1,
 
 /* -- NAMES AND FUNCTION CALLS GRAMMAR DEFINITIONS -- */
 
-Name: Name COLON IDENTIFIER {$$ = allocTree(NAME, "name", 2, $1, $3);}
+Name: Name COLON IDENTIFIER {$$ = allocTree(NAME, "name", 3, $1, $2, $3);}
+    | Name DOT IDENTIFIER   {$$ = allocTree(NAME, "name", 3, $1, $2, $3);}
     | IDENTIFIER            {$$ = allocTree(NAME, "name", 1, $1);}
 ;
 Primary: Literal         {$$ = allocTree(PRIMARY, "primary", 1, $1);}

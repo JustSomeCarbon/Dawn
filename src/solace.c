@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
             // compile the source file
             check_extension(argv[filearg]);
             
-            // loop through parser: TEST
+            // open the given source file
             yyin = fopen(yyfile, "r");
             if (yyin == NULL) {
                 // file open error
@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
             printf("File parse returns:: %d\n\n", yyparse());
             printTree(root, 0);
 
-            printf("Freeing source file...");
+            printf("Freeing source file...\n");
             freeTree(root);
 
             // close the file

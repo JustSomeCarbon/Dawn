@@ -1,4 +1,4 @@
-space:Main
+space::Main;
 
 func main int ()
 {
@@ -6,21 +6,21 @@ func main int ()
 	b int = 3;
 	
 	// test mathematical operations and their output
-	IO:out(a + b);
-	IO:out(b - a);
-	IO:out(a * b);
-	IO:out(b / a);
-	IO:out(b % a);
+	IO::out(a + b);
+	IO::out(b - a);
+	IO::out(a * b);
+	IO::out(b / a);
+	IO::out(b % a);
 
 	// test value comparison operations
-	IO:out(a == a);
-	IO:out(a == b);
-	IO:out(a > b);
-	IO:out(a < b);
-	IO:out(a >= b);
-	IO:out(a <= b);
-	IO:out(b != b);
-	IO:out(b != a);
+	IO::out(a == a);
+	IO::out(a == b);
+	IO::out(a > b);
+	IO::out(a < b);
+	IO::out(a >= b);
+	IO::out(a <= b);
+	IO::out(b != b);
+	IO::out(b != a);
 
 	0;
 }

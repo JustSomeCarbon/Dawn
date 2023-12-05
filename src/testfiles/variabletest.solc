@@ -1,4 +1,4 @@
-space:Main
+space::Main;
 
 func main int ()
 {
@@ -8,10 +8,10 @@ func main int ()
 	c char = 'a';
 	d string = "hello, world!";
 	e bool = true;
-	t (int, float) = (0, 1);
+	t {int, float} = {0, 1};
 
 	// local symbol definition
-	s :sym = :local_symbol;
+	s :sym: = :local_symbol:;
 
 	0;
 }

@@ -1,4 +1,4 @@
-space:Main
+space::Main;
 
 // test defining and using strings
 func main int ()
@@ -8,9 +8,9 @@ func main int ()
 
 	// concatenate the variables a and b (a before b)
 	c string = a | b;
-	IO:out(a);
-	IO:out(b);
-	IO:out(c);
+	IO::out(a);
+	IO::out(b);
+	IO::out(c);
 
 	0;
 }
