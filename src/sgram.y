@@ -22,7 +22,7 @@
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION
 %token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
-%token <treeptr> ASSIGNMENT BAR ARROWOP RETURN //DOT
+%token <treeptr> ASSIGNMENT BAR ARROWOP RETURN
 %token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT
 %token <treeptr> GREATERTHANOREQUAL LESSTHANOREQUAL GREATERTHAN LESSTHAN
 
@@ -165,8 +165,8 @@ CondOrExpr: CondOrExpr LOGICALOR CondAndExpr {$$ = allocTree(COND_OR_EXPR, "cond
 CondAndExpr: CondAndExpr LOGICALAND EqExpr {$$ = allocTree(COND_AND_EXPR, "cond_and_expr", 2, $1, $3);}
     | EqExpr {$$ = allocTree(COND_AND_EXPR, "cond_and_expr", 1, $1);}
 ;
-EqExpr: EqExpr ISEQUALTO RelationExpr  {$$ = allocTree(EQ_EXPR, "eq_expr", 3, $1,, $2, $3);}
-    | EqExpr NOTEQUALTO RelationExpr   {$$ = allocTree(EQ_EXPR, "eq_expr", 3, $1,, $2, $3);}
+EqExpr: EqExpr ISEQUALTO RelationExpr  {$$ = allocTree(EQ_EXPR, "eq_expr", 3, $1, $2, $3);}
+    | EqExpr NOTEQUALTO RelationExpr   {$$ = allocTree(EQ_EXPR, "eq_expr", 3, $1, $2, $3);}
     | RelationExpr                     {$$ = allocTree(EQ_EXPR, "eq_expr", 1, $1);}
 ;
 RelationExpr: RelationExpr RelationOp AddExpr {$$ = allocTree(RELATION_EXPR, "relation_expr", 3, $1, $2, $3);} 

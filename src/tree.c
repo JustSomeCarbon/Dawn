@@ -162,7 +162,7 @@ struct tree* allocTree(int code, char* symb, int numkids, ...)
  */
 void printTree(struct tree *t, int depth)
 {
-    // if there is no tree structure, return
+    // There is no tree structure, return
     if (t == NULL) {
         return;
     }
@@ -170,17 +170,20 @@ void printTree(struct tree *t, int depth)
     // check if t is a leaf node
     if (t->nkids == 0) {
         // print leaf information
-        printf("LEAF %*s\t%d: %s  \n", depth * 3, " ", t->leaf->category, t->leaf->text);
+        printf("%*s\tLEAF  %d: %s  \n", depth * 3, " ", t->leaf->category, t->leaf->text);
         // If the ival/sval field is not NULL, print the value to standard output
-        if (t->leaf->sval != NULL) {
+        if (t->leaf->sval != NULL) {                    // char and string literal
             printf("%s\n", t->leaf->sval);
-        } else if (t->leaf->category == LITERALINT || t->leaf->category == LITERALFLOAT || t->leaf->category == LITERALCHAR) {
+        } else if (t->leaf->category == LITERALINT) {   // int literal
             fprintf(stdout, "%d\n", t->leaf->ival);
+        } else if (t->leaf->category == LITERALFLOAT) { // float literal
+            fprintf(stdout, "%f\n", t->leaf->dval);
         }
     } else {
         // print the tree structure information
-        printf("TREE %*s %s: %d   %d\n", depth * 3, " ", t->symbolname, t->prodrule, t->nkids);
-        // recursive call for each kid
+        printf("%*sTREE  %s: %d  kids: %d\n", depth * 3, " ", t->symbolname, t->prodrule, t->nkids);
+
+        // recursive print each child
         for (int i = 0; i < t->nkids; i++) {
             printTree(t->kids[i], depth+1);
         }
