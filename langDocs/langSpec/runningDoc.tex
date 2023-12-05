@@ -19,6 +19,8 @@
 
 \section{Introduction}
 
+Solace is a statically typed functional programming language with a focus on quick
+construction and easy to read and write syntax.
 This document is a running documentation for the Solace language. This documentation
 contains information regarding value types, and general syntax along with simple examples.
 
@@ -294,8 +296,8 @@ func main int ()
 	
 	// call a function that returns another function and store it
 	// wthin a variable
-	f func = retFunc(); // prints: "Returning a function from a function"
-	f();		    // prints: "Function returned from another function"
+	func f = retFunc(); // prints: "Returning a function from a function"
+	f();		    	// prints: "Function returned from another function"
 	
 	// define a function
 	func double int (n int) -> n+n;
@@ -314,9 +316,10 @@ func addTwo int (a int, b int)
 
 func retFunc func ()
 {
-	io:out("Returning a function from a function");
+	IO:out("Returning a function from a function");
 	
-	() :sym -> {io:out("Function returned from another function"); :ok;}
+	// return an un-named/anonymous function
+	func () :sym -> {IO:out("Function returned from another function"); :ok;}
 }
 
 func applyGivenFunc int (f func, n int)
