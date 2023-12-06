@@ -1,0 +1,26 @@
+space::Main;
+
+func main int ()
+{
+	a int = 2;
+	b int = 3;
+	
+	// test mathematical operations and their output
+	IO::out(a + b);
+	IO::out(b - a);
+	IO::out(a * b);
+	IO::out(b / a);
+	IO::out(b % a);
+
+	// test value comparison operations
+	IO::out(a == a);
+	IO::out(a == b);
+	IO::out(a > b);
+	IO::out(a < b);
+	IO::out(a >= b);
+	IO::out(a <= b);
+	IO::out(b != b);
+	IO::out(b != a);
+
+	0;
+}

@@ -1,0 +1,11 @@
+space::Main;
+
+func main int ()
+{
+	/* compare symbols to one another and print comparisons */
+	IO::out(:apple: == :apple:);
+	IO::out(:banana: == :banana:);
+	IO::out(:apple == :banana:);
+
+	0;
+}

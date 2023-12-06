@@ -1,4 +1,4 @@
-pack:Main
+space::Main;
 
 /* define a new structure to use */
 struct example {
@@ -12,12 +12,12 @@ struct example {
 func main int ()
 {
 	// construct a new example structure
-	ex example = {4, 1.0, "example struct", 'y', false};
-	IO:out(ex:n);
-	IO:out(ex:f);
-	IO:out(ex:s);
-	IO:out(ex:c);
-	IO:out(ex:b);
+	ex example = {32, 1.0, "example struct", 'y', false};
+	IO::out(ex.n);
+	IO::out(ex.f);
+	IO::out(ex.s);
+	IO::out(ex.c);
+	IO::out(ex.b);
 
 	0;
 }

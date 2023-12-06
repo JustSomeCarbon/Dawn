@@ -1,0 +1,19 @@
+space::Main;
+
+func main int ()
+{
+	IO::out(double(10));		 // 20
+	IO::out(double(9));		 // 18
+	IO::out(divide_by(8, 4)); // 2.0
+	IO::out(divide_by(7, 2)); // 3.5
+	0;
+}
+
+func double int (n int)
+{
+	n * 2;
+}
+
+func divide_by float (n int, d int) {
+	n / d;
+}

@@ -7,56 +7,91 @@
  *  integer values corresponding to terminal values. Finally, all token and
  *  tree structures are defined.
  */
+#include <stdio.h>
 
-extern char* yyfile; // !- contains file to compile -!
+extern FILE* yyin; // !- contains file to compile -!
+extern char* yytext;
+extern int yylineno;
+extern char* yyfile;
+// contains the root of the tree generated from parsing
+extern struct tree* root;
 
 enum sol_terms {
-    FUNCTION_DECL=1001,
-    FUNCTION_HEADER,
-    FUNCTION_BODY,
-    FUNCTION_BODY_DECLS,
-    FUNCTION_BODY_DECL, // 1005
-    FUNCTION_RETURN_VAL,
-    FIELD_DECL,
-    TYPE,
-    NAME,
-    VAR_DECLS,          // 1010
-    VAR_DECL,
-    FORMAL_PARAM_LIST_OPT,
-    FORMAL_PARAM_LIST,
-    FORMAL_PARAM,
-    ARG_LIST_OPT,       // 1015
-    BLOCK,
-    BLOCK_STMTS_OPT,
-    BLOCK_STMTS,
-    BLOCK_STMT,
-    LOCAL_VAR_DECL_STMT,// 1020
-    LOCAL_VAR_DECL,
-    STMT_WT,
-    STMT,
-    EXPR_STMT,
-    STMT_EXPR,          // 1025
-    IF_THEN_STMT,
-    IF_THEN_ELSE_STMT,
-    ELSE_IF_SEQ,
-    ELSE_IF_STMT,
-    BREAK_STMT,         // 1030
-    RETURN_STMT,
-    PRIMARY,
-    LITERAL,
-    ARG_LIST,
-    FIELD_ACCESS,       // 1035
-    POST_FIX_EXPR,
-    UNARY_EXPR,
-    MULT_EXPR,
-    ADD_EXPR,
-    REL_OP,             // 1040
-    REL_EXPR,
-    EQ_EXPR,
+    FILE_ROOT=1001,
+    SOURCE_SPACE,
+    FILE_DEFINITIONS,
+    USE_DEFINITIONS,
+    IMPORT_LIST,        // 1005
+    STRUCT_DEFINITION,
+    STRUCT_PARAMS,
+    STRUCT_PARAM,
+    FUNC_DEFINITION,
+    FUNC_HEADER,        // 1010
+    PARAM_LIST_OPT,
+    PARAM_LIST,
+    PARAM,
+    FUNC_BODY,
+    FUNC_BODY_DECLS,    // 1015
+    FUNC_BODY_DECL,
+    PATTERN_BLOCK,
+    PATTERN_STMT,
+    EXPR,
+    COND_OR_EXPR,       // 1020
     COND_AND_EXPR,
-    COND_OR_EXPR,
-    EXPR,               // 1045
-    ASSIGN,
-    LEFT_HAND_SIDE,
-    ASSIGN_OP,
+    EQ_EXPR,
+    RELATION_EXPR,
+    ADD_EXPR,
+    MULT_EXPR,          // 1025
+    UNARY_EXPR,
+    CONCAT_EXPR,
+    POST_FIX_EXPR,
+    VAR_ASSIGNMENT,
+    LEFT_HAND_SIDE,     // 1030
+    NAME,
+    PRIMARY,
+    FIELD_ACCESS,
+    FUNC_CALL,
+    ARG_LIST_OPT,       // 1035
+    ARG_LIST,
+    RELATION_OP,
+    TYPE,
+    TUP_TYPE_DECL,
+    LITERAL,            // 1040
+    LIST_LITERALS_OPT,
+    LIST_LITERALS,
+    SYNTAX_ERROR,
 };
+
+// Code Structures
+
+struct token {
+    int category;   // integer return code from yylex
+    char* text;     // raw string pattern
+    int lineno;     // token line number location
+    char* filename; // source file name
+
+    int ival;       // used for integer values
+    double dval;    // used for floating point values
+    char* sval;     // used for character and string values
+};
+
+struct tree {
+    int prodrule;
+    char* symbolname;
+    int nkids;
+    
+    struct tree* kids[9]; // if nkids > 0
+    struct token* leaf;   // if nkids == 0; Null for ε productions
+};
+
+// Function Prototypes
+
+int allocToken(int code);
+struct tree* allocTree(int code, char* symb, int numkids, ...);
+void printTree(struct tree* t, int depth);
+void freeTree(struct tree* t);
+void returnOnError(int code, char* status, char* errType);
+
+// Dependant functions
+int yylex_destroy();
+extern int yyparse();

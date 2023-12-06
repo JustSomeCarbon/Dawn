@@ -3,4 +3,8 @@ langDocs/langSpec/*.log
 src/*.o
 src/solx
 src/lex.yy.c
+src/*.tab.c
+src/*.tab.h
+src/*.output
 .DS_Store
+.vscode

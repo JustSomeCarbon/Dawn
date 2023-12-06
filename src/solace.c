@@ -5,21 +5,28 @@
  * Description: The main Solace compiler file. This file must be compiled
  *  and run before being used. Functionality includes the functional
  *  binding and usage of the grammar and syntax files and functions.
+ * 
+ * TODO:: Add a debug flag for the parser output.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "solace.h"
+#include "sgram.tab.h"
 #include "tree.h"
 
 // external and globals
 extern FILE* yyin;
 char* yyfile;
+extern int yylex_destroy();
+extern struct tree* root;
 
-// prototypes
+// Local Prototypes
+
 void check_extension(char* file);
 
+
+// Main Solace Compiler Function
 
 int main(int argc, char* argv[])
 {
@@ -44,7 +51,7 @@ int main(int argc, char* argv[])
             // compile the source file
             check_extension(argv[filearg]);
             
-            // loop through parser: TEST
+            // open the given source file
             yyin = fopen(yyfile, "r");
             if (yyin == NULL) {
                 // file open error
@@ -52,130 +59,15 @@ int main(int argc, char* argv[])
                 fclose(yyin);
                 exit(1);
             }
+            // Parse the source file given
+            printf("File parse returns:: %d\n\n", yyparse());
+            printTree(root, 0);
 
-            int tokcat = 1;
-            struct tokenlist* tl = NULL;
-            struct tokenlist* tltail = NULL;
+            printf("Freeing source file...\n");
+            freeTree(root);
 
-            tl = calloc(1, (sizeof(struct tokenlist)));
-            tltail = tl;
-            if (tl == NULL) {
-                printf("Error: unable to allocate memory for lexical tokenizer\n\n");
-                fclose(yyin);
-                exit(1);
-            }
-
-            // create a new token
-            tltail->t = calloc(1, sizeof(struct token));
-            tltail->next = NULL;
-            if (tltail->t == NULL) {
-                printf("Error: token memory allocation failure\n\n");
-                exit(1);
-            }
-
-            //int toklen = 0;
-            // lexer process ->
-            while (tokcat) {
-                //toklen++;
-                tokcat = yylex();
-
-                tltail->t->category = tokcat;
-                tltail->t->text = strdup(yytext);
-                tltail->t->lineno = yylineno;
-                tltail->t->filename = argv[filearg];
-
-                switch (tokcat)
-                {
-                case LITERALINT:
-                    tltail->t->ival = strtol(yytext, NULL, 10);
-                    break;
-                case LITERALHEX:
-                    tltail->t->ival = strtol(yytext+2, NULL, 16);
-                    break;
-                case LITERALFLOAT:
-                    tltail->t->dval = strtod(yytext, NULL);
-                    break;
-                case LITERALSTRING:
-                    tltail->t->sval = calloc(1, strlen(yytext)); // may be too long, used yyleng
-                    int walk = 1;
-                    while (*(yytext+walk) != '\0') {
-                        if (*(yytext+walk) == '\\') {
-                            // handle escape characters
-                            walk++;
-                            switch (*(tltail->t->text+walk))
-                            {
-                            case 'n':
-                                *(tltail->t->sval+walk) = 0x0a;
-                                break;
-                            case 't':
-                                *(tltail->t->sval+walk) = 0x09;
-                                break;
-                            case '\\':
-                                *(tltail->t->sval+walk) = 0x5c;
-                                break;
-                            case '\'':
-                                *(tltail->t->sval+walk) = 0x27;
-                                break;
-                            case '\"':
-                                *(tltail->t->sval+walk) = 0x22;
-                                break;
-                            default:
-                                printf("Error: Unsupported escape character %s at line %d in file %s\n\n", yytext, yylineno, argv[filearg]);
-                                fclose(yyin);
-                                exit(1);
-                                break;
-                            }
-                        } else {
-                            *(tltail->t->sval+walk) = *(yytext+walk);
-                        }
-                        walk++;
-                    }
-                    *(tltail->t->sval+walk) = '\0';
-                    break;
-                case LITERALCHAR:
-                    if (*(yytext+1) == '\\') {
-                        // handle escape characters
-                        switch (*(tltail->t->text+2))
-                        {
-                        case 'n':
-                            tltail->t->ival = 0x0a;
-                            break;
-                        case 't':
-                            tltail->t->ival = 0x09;
-                            break;
-                        case '\\':
-                            tltail->t->ival = 0x5c;
-                            break;
-                        case '\'':
-                            tltail->t->ival = 0x27;
-                            break;
-                        case '\"':
-                            tltail->t->ival = 0x22;
-                            break;
-                        default:
-                            printf("Error: unsupported escape character %s at line %d in file %s\n\n", yytext, yylineno, argv[filearg]);
-                            break;
-                        }
-                    } else {
-                        tltail->t->ival = *(yytext+1);
-                    }
-                    break;
-                default:
-                    break;
-                }
-
-                tltail->next = allocateToken();
-                if (tltail->next == NULL) {
-                    printf("Error: unable to allocate memory space for lexer token");
-                    fclose(yyin);
-                    exit(1);
-                }
-                tltail = tltail->next;
-            } // end of lexer while
+            // close the file
             fclose(yyin);
-
-            // print the token list
-            printTokenList(tl);
         }
         // move to next source file
         filearg++;
@@ -187,24 +79,30 @@ int main(int argc, char* argv[])
 }
 
 
+/*
+ * check_extension: takes a file name and checks whether the extension of the file matches the .solc file extension.
+ *  Populates the yyfile global for further compilation.
+ *  If it does not throw an error and exits (-1).
+ *  If the file does not have an extension, add the .solc extension to the file and populate yyfile.
+ */
 void check_extension(char* file)
 {
     char* extension = strrchr(file, '.');
     if (extension != NULL) {
-        if (strcmp(extension, ".solace") != 0) {
+        if (strcmp(extension, ".solc") != 0) {
             printf("Error :: file given is not a solace source file: %s\n\n", file);
-            exit(-1); // !- source file access error -!
+            exit(-1); // !- source file error -!
         } else {
-            yyfile = (char *) calloc(strlen(file)+8, sizeof(char));
+            yyfile = (char *) calloc(strlen(file)+6, sizeof(char));
             strncpy(yyfile, file, strlen(file)); // initialize yyfile
             return;
         }
     }
-    // add the .solace extension
-    yyfile = (char *) calloc(strlen(file)+7, sizeof(char));
-    char* end = ".solace";
-    char a[strlen(file)+7];
+    // add the .solc extension
+    yyfile = (char *) calloc(strlen(file)+5, sizeof(char));
+    char* end = ".solc";
+    char a[strlen(file)+5];
     strncat(a, file, strlen(file));
-    strncpy(yyfile, strncat(file, end, 7), strlen(file)+7);
+    strncpy(yyfile, strncat(file, end, 5), strlen(file)+5);
     return;
 }

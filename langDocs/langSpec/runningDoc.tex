@@ -68,7 +68,7 @@ languages, integers represent whole values, and floats represent floating point 
 integer values can be defined in the following manner:
 
 \begin{lstlisting}
-module:Main
+pack:Main
 
 func main int()
 {
@@ -145,7 +145,7 @@ Arithmetic and comparison operators are performed between two given values. The 
 is an example of each operator usage:
 
 \begin{lstlisting}
-module:Main
+pack:Main
 
 fun main int ()
 {
@@ -184,7 +184,7 @@ containing both character values. Strings can be concatenated together to result
 string value containing both original strings.
 
 \begin{lstlisting}
-module:Main
+pack:Main
 
 func main int ()
 {
@@ -209,7 +209,7 @@ func main int ()
 }
 \end{lstlisting}
 
-\subsection{Boleans and Symbols}
+\subsection{Booleans and Symbols}
 
 Boolean values can represent two different states: true and false. boolean values are
 able to be compared through the use of comparison operations. Symbols are a unique type
@@ -217,7 +217,7 @@ as they represent defined names rather than raw values. There are two predefined
 $:ok$ and $:err$.
 
 \begin{lstlisting}
-module:Main
+pack:Main
 
 func main int ()
 {
@@ -253,7 +253,7 @@ tied to their name, and no other value. variables can contain symbol values.
 The following is a simple example of symbol definition and use.
 
 \begin{lstlisting}
-module:Main
+pack:Main
 
 // define two new symbols
 :sym {:apple, :orange}
@@ -287,7 +287,7 @@ Functions, like any other type, can be passed into other functions as parameters
 The following is an example of function definition and usage:
 
 \begin{lstlisting}
-module:Main
+pack:Main
 
 func main int ()
 {
@@ -339,7 +339,7 @@ are defined using a special name and all included types in the structure as thei
 following is a simple showcase of how to define and use a structure in a Solace program.
 
 \begin{lstlisting}
-module:Main
+pack:Main
 
 struct cake
 {
@@ -379,7 +379,7 @@ contain the underscore character: "\_". Names are able to utilize the underscore
 as "$some\_var$". The underscore character holds a special meaning where any value bound to the variable
 whose name is soley the underscore character is dropped from memory.
 
-\section{Controll Flow}
+\section{Control Flow}
 
 Solace defines its own control flow for program development. Rather than having if-else
 statements, Solace utilizes pattern matching code blocks. Control flow is defined and
@@ -387,7 +387,7 @@ contained through the use of brackets, and the arrow operator. The following is 
 of simple control flow:
 
 \begin{lstlisting}
-module:Main
+pack:Main
 
 func main int ()
 {
