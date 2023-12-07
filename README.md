@@ -4,6 +4,8 @@ Solace is designed to be simple to read and write with. Source files will compil
 down to assembly. The goal for Solace is to be fast, reliable, and enjoyable
 to build with.
 
+Check out the development Blog: [OneDev Development](https://noegarciaonedev.blogspot.com/)
+
 ## About the language
 Solace is a compiled functional programming language developed with the C
 language utilizing Flex and Bison.
@@ -26,5 +28,5 @@ Apple silicon systems.
 To run the Solace compiler, run the resulting object file called `solace` 
 followed by the name of the source file to be compiled.
 ~~~
-$ ./solx example_file.solace
+$ ./solx example_file.solc
 ~~~
