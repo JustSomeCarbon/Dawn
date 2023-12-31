@@ -6,7 +6,7 @@
 
 \title{
 	\vspace{2in}
-	\textmd{\textbf{Solace Language Specification Document}}
+	\textmd{\textbf{The Solace Programming Language}}
 	\vspace{3in}
 }
 \author{No\'e Garcia}
@@ -18,24 +18,58 @@
 \newpage
 
 \section{Solace Overview}
-This document contains the specification lists and requirements for the Solace Language.
-Solace is a statically typed functional programming language with a focus on quick
-construction and easy to read and write syntax. The following document defines syntax,
-grammar, and lexical aspects of the langauge. As the definition of the language grows
-and changes, this document will be updated.
+Solace is a small functional programming language developed as a hobby project starting in
+$2023$. Solace is built to be a bridge between imperative and functional programming language
+domains. Built to be simple and easy to read and write with, Solace is a statically typed,
+semi-pure functional language with basic support for simple tooling and functionality. While in
+its infant stages, the language will grow to support more common aspects found in other
+languages.
 
-The main focus with this project is introducing the functional paradigm in a easily
-digestible manner so as to minimize confusion for users who are most comfortable with
-the imparative paradigm. Different ideas for how to do this may be explored, and as
-such, the specifications of the language will most likely change until a
-stable foundation is established.
+Functional programming can be intimidating for those unfamiliar to many who have never worked
+with it before. For this reason, Solace is a case study for a programming langauge which aims to
+make the introduction to the functional paradigm more familiar and easily approachable.
 
-Solace is a small project designed and constructed by one person who is learning more
-as they are building the language. As such take all implementation lightly,
-as Solace is built and polished.
+Solace is a general programming langauge as constructed, but domain specific library extensions
+will be built to extend the capabilities of Solace into specific use cases. As it stands, there are
+plans to epand on Solace by adding the ability to write logic centric programs.
+
+This text is an introdution to the Solace language as it is, and should be used by anyone who is looking
+to learn how to read and write in the language.
+
+
+\section{Functional Programming}
+What is functional programming? In essence, functional programming is the practice of building computer
+programs using functions. While this sounds similar to other languages if you have worked with languages
+such as C or Python, there are a few rules that the functions in functional programming languages follow
+that are not followed in other imperative langauges.
+
+The first is that functions should all accept at least one variable. And, each function may only have one
+output. For every input of a function there is a designated output; No matter how many times the function is
+run with that input, it will always result in the same output.
+
+The Second is that functions do not access or manipulate variables or values outside of themselves. This means
+that functions are not able to work with global variables in their computation. Only the variables passed into
+the functions and variables defined within the function are able to be used in any computation within the
+function. Building on top of this, functions do not create side effects. This means functions do not alter
+variable values or states outside of its own scope. All functions are effectively stateless and perform the
+exact same every time they are called with the same input (as mentioned in the above point).
+
+Lastly, all data in functional programs are immutable. When a variable is declared, its value is not able to
+be changed. This makes values much more safe to use in complex operations that may share the same values. Building
+on top of this, functional programming languages do not support loops that are found in imperative domains, such as
+$for$ and $while$. Because values are immutable, the condition value in a $while$ loop would never change, likewise with
+the $for$ loops, the variable defined in its scope would never be able to increase or decrease in value, making the loop
+impossible in the functional domain. Rather than using loops, however, recursion is used when looping is necessary
+in some computation.
+
+Functional programming is a shift in how programs should be written. This shift makes for code that is more safe and easy to
+understand. In the following sections, this book will go into depth of the Solace programming language and provide
+information on the data types and structures of the language as well as how the language is written, used, and understood.
 
 
 \section{Types}
+A foundational building block of all programming languages is its typing system.
+
 This section documents the available types within Solace. Types are broken into Atomic,
 Composite, and Domain-specific. Solace is going to function as a general programming language,
 with no specific focus on any domain (as of yet).
