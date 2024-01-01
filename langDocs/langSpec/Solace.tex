@@ -3,6 +3,10 @@
 \usepackage{geometry}
 \geometry{margin=1in}
 \usepackage{listings}
+\usepackage{hyperref}
+
+% set the language for the examples
+\lstset{language=Bash}
 
 \title{
 	\vspace{2in}
@@ -17,10 +21,10 @@
 \maketitle
 \newpage
 
-\section{Solace Overview}
+\section{Introduction to Solace}
 Solace is a small functional programming language developed as a hobby project starting in
-$2023$. Solace is built to be a bridge between imperative and functional programming language
-domains. Built to be simple and easy to read and write with, Solace is a statically typed,
+$2023$. Solace is built to be a bridge between imperative and  declarative functional programming
+language domains. Built to be simple and easy to read and write with, Solace is a statically typed,
 semi-pure functional language with basic support for simple tooling and functionality. While in
 its infant stages, the language will grow to support more common aspects found in other
 languages.
@@ -67,12 +71,58 @@ understand. In the following sections, this book will go into depth of the Solac
 information on the data types and structures of the language as well as how the language is written, used, and understood.
 
 
-\section{Types}
-A foundational building block of all programming languages is its typing system.
+\section{Domain Specific Language}
+Solace is a general purpose functional programming language built without a specific domain in mind. There are a number of
+general purpose programming languages that exist today, so there are a number of languages to choose from in that regard,
+Solace aims to be a hobby/playground/research language. The functional domain, while gaining traction in use, is still
+regarded as a fringe domain to build production level code with. There is plenty to be done in terms of functional language
+development, and Solace is a testing ground for that.
 
-This section documents the available types within Solace. Types are broken into Atomic,
-Composite, and Domain-specific. Solace is going to function as a general programming language,
-with no specific focus on any domain (as of yet).
+Beyond functional programming, logic programming is another domain of programming development that has not been brought out
+of the academic sphere much. Solace is the perfect language to begin to test aspects of logic programming being brought into a
+toy language to play around with and to understand its respective use cases better.
+
+
+\section{Getting Started}
+Solace is written in C and compiled with the $Clang$ compiler. Apart from this, the lexer for Solace is written in $Flex$
+(also known as fast lexical analysis generator), and the parser is written with GNU Bison. Solace is hosted on github
+\href{https://github.com/JustSomeCarbon/Solace/tree/main}{here} and can be cloned to a local machine using git. After
+Solace is installed, it can be built by typing the following into the console while within the $Solace/src$ project directory:
+
+\begin{lstlisting}
+ \$ make
+\end{lstlisting}
+
+This will run the make file in the source directory and build the language from source. Once this completes, the executable
+$./solx$ file will be available. This is the Solace compiler program. To compile a Solace file run the following with the
+Solace source file to compile:
+
+\begin{lstlisting}
+ \$ ./solx solaceFileToCompile.solc
+\end{lstlisting}
+
+All Solace source files should have the $.solc$ file extension to signal to the compiler that what its looking at is a
+Solace source code file. The compiler is also able to handle Solace source code files that do not have file extionsions.
+If a source code file named $Fibonacci$ (with no file extension) the compiler takes the file and adds the $.solc$ extension
+to the end of a file.
+
+\subsection{Writing your First Lines}
+Things
+
+
+\section{Types}
+Types are a foundational building block to all programming languages. Different types are represented to the computer using
+different sizes of bytes, and allow the computer to know what to expect when we define some value for it to store for later
+use. In languages like C, variables are statically typed. This means that the author has to explicitly define what type a
+variable is at its declaration. Solace is also statically typed. To define a variable in Solace, the name of the variable is
+first given followed by the type of the variable, and then the assignment of the variable.
+
+Types can be broken down into two different classifications for Solace: atomic and composite. Atomic types are the basic
+building blocks of the typing system within the language, while composite types are types that are built on top of atomic
+types, used to handle the structure and storage of data.
+
+Solace has general atomic types that are present in many other programming languages: integers, floating point numbers, characters,
+strings, booleans, functions, and symbols.
 
 \subsection{Atomic Types}
 \begin{center}
@@ -86,11 +136,26 @@ with no specific focus on any domain (as of yet).
 	char & character type \\
 	string & string type \\
 	bool & bolean type \\
-	:sym & symbolic type \\
+	:sym: & symbolic type \\
 	func & function type \\
 	\hline
 \end{tabular}
 \end{center}
+
+Integers are used to handle and store whole numbers. Numbers like $0$ or $-14$ can be stored in a variable with the integer type. Float
+types are used to handle real numbers. Floats can store and handle values such as $0.1$ or $0.0001$. Characters handle single character
+values such as $'a'$, while strings can handles multiple characters strung together like $"hello, world!"$. Booleans handles values like
+$true$ and $false$. Function types are used to store whole functions. In functional programming languages such as Solace, functions are
+treated like any other type. Symbols are an interesting type, as they store literal values. A symbol value $:apple:$ is only equivalent
+to itself, and represents its literal value as defined by the author. Symbols can be any string of characters (excluding special
+characters and white space).
+
+Composite functions, as was previously defined, are built on top of atomic types as a coalition enabling the structure and storage of
+information. Solace provides the following composite types: list/arrays, tupples, and structures. These types are more complex than
+atomic types. Arrays are able to store a collection of values within its definition, enabling storage of multiple values within a single
+variable. Tupples are similar but more flexible than arrays. Arrays are a collection of values that are of the same type, tupples are able
+to store multiple values of different types. Structures are the most flexible of the composite types, enabling the construction of a data
+store capable of storing multiple variable values.
 
 \subsection{Composite Types}
 \begin{center}
@@ -100,14 +165,14 @@ with no specific focus on any domain (as of yet).
 	\hline
 	\hline
 	list/array & designating an array type, contains same type collections. \\
-	tpl & basic typle type for simple groupings. \\
+	tupple & basic typle type for simple groupings. \\
 	struct & designating a structure object definition for more complex data objects. \\
 	\hline
 \end{tabular}
 \end{center}
 
-\subsection{Domain-Specific}
-Solace is meant to be general purpose at this point, so nothin domain specific has been defined.
+\subsection{Defining and storing values}
+Things
 
 
 \section{Lexical Rules}
@@ -120,6 +185,7 @@ other languages, such as C, while taking a different approach. A lot of the
 reserved words are defined for type declarations shown above, or the legal operators for the 
 language that are defined below. The following are the reserved words for the language
 that do not fit in under the other sections.
+
 
 \subsection{Reserved Words}
 
