@@ -14,7 +14,7 @@
 	\vspace{3in}
 }
 \author{No\'e Garcia}
-\date{February, 2023}
+\date{January, 2024}
 
 \begin{document}
 
@@ -67,7 +67,7 @@ impossible in the functional domain. Rather than using loops, however, recursion
 in some computation.
 
 Functional programming is a shift in how programs should be written. This shift makes for code that is more safe and easy to
-understand. In the following sections, this book will go into depth of the Solace programming language and provide
+understand. In the following sections, this document will go into depth of the Solace programming language and provide
 information on the data types and structures of the language as well as how the language is written, used, and understood.
 
 
@@ -90,24 +90,48 @@ Solace is written in C and compiled with the $Clang$ compiler. Apart from this, 
 Solace is installed, it can be built by typing the following into the console while within the $Solace/src$ project directory:
 
 \begin{lstlisting}
- \$ make
+ $ make
 \end{lstlisting}
 
-This will run the make file in the source directory and build the language from source. Once this completes, the executable
-$./solx$ file will be available. This is the Solace compiler program. To compile a Solace file run the following with the
-Solace source file to compile:
+This will run the make the executable compiler file in the source directory and build the language from source.
+Once this completes, the executable $solx$ file will be available. This is the Solace compiler program.
+To compile a Solace file run the following with the Solace source file to compile:
 
 \begin{lstlisting}
- \$ ./solx solaceFileToCompile.solc
+ $ ./solx solaceFileToCompile.solc
 \end{lstlisting}
 
 All Solace source files should have the $.solc$ file extension to signal to the compiler that what its looking at is a
 Solace source code file. The compiler is also able to handle Solace source code files that do not have file extionsions.
-If a source code file named $Fibonacci$ (with no file extension) the compiler takes the file and adds the $.solc$ extension
-to the end of a file.
+If a source code file named $Fibonacci$ (with no file extension) is given to the compiler, it is taken and the $.solc$ extension
+is appended to the end of the file name.
 
-\subsection{Writing your First Lines}
-Things
+\subsection{Writting Solace for the First time}
+Solace is easy to get started with. Similar to the C language, Solace requires a few things in order to compile
+and run. The first is a $module$ $space$ $name$ definition, and then a main function (although main functions are not required when
+writting library functions). The following is an example of writting the most simple algorithm we can in Solace: A program
+that exits.
+
+\begin{lstlisting}
+space::Main;
+
+func main int() {
+	0;
+}
+\end{lstlisting}
+
+Disecting the source code above, we can see the first line of the program explicitly defining the module space to be $Main$. Solace
+picks the $Main$ module space as the space to run when executing the project; it is where the compiler looks for the main function.
+The next line is the \textit{main function} definition. We denote that we are defining a function with the $func$ keyword followed by
+the name of the function and then its return value. All functions must have a return value. Main functions should return an integer
+to signal the exit value of the program. Within the main function there is a single expression: $0;$ This tells the main funciton
+to return $0$ and exit.
+
+While this is a simple program we can see how Solace files are structured. After saving the source file as $justExit.solc$ we can
+then compile the program with \textit{./solx justExit.solc} .
+
+In the following sections this document will break down the Solace language and introduce new concepts and how to use them in the
+Solace language.
 
 
 \section{Types}
@@ -122,7 +146,8 @@ building blocks of the typing system within the language, while composite types 
 types, used to handle the structure and storage of data.
 
 Solace has general atomic types that are present in many other programming languages: integers, floating point numbers, characters,
-strings, booleans, functions, and symbols.
+strings, booleans, functions, and symbols. In Solace (like in many other functional programming languages) functions are considered
+to be basic atomic types.
 
 \subsection{Atomic Types}
 \begin{center}
@@ -131,13 +156,13 @@ strings, booleans, functions, and symbols.
 	reserved words & description \\
 	\hline
 	\hline
-	int & integer data type, defaults to int32 \\
+	int & integer data type, defaults to int64 \\
 	float & floating point number type, defaults to float 64 \\
-	char & character type \\
-	string & string type \\
-	bool & bolean type \\
-	:sym: & symbolic type \\
-	func & function type \\
+	char & stores a single character \\
+	string & stores multiple conjoined character values between "" \\
+	bool & either a true or a false value \\
+	:sym: & symbolic literal values \\
+	func & defines funciton definitions and types \\
 	\hline
 \end{tabular}
 \end{center}
@@ -164,8 +189,8 @@ store capable of storing multiple variable values.
 	type name & description \\
 	\hline
 	\hline
-	list/array & designating an array type, contains same type collections. \\
-	tupple & basic typle type for simple groupings. \\
+	list/array & contains a number of same type values. \\
+	tupple & can contain number of different type values. \\
 	struct & designating a structure object definition for more complex data objects. \\
 	\hline
 \end{tabular}
