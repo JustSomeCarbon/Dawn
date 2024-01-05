@@ -22,6 +22,7 @@
 \newpage
 
 \section{Introduction to Solace}
+
 Solace is a small functional programming language developed as a hobby project starting in
 $2023$. Solace is built to be a bridge between imperative and  declarative functional programming
 language domains. Built to be simple and easy to read and write with, Solace is a statically typed,
@@ -42,6 +43,7 @@ to learn how to read and write in the language.
 
 
 \section{Functional Programming}
+
 What is functional programming? In essence, functional programming is the practice of building computer
 programs using functions. While this sounds similar to other languages if you have worked with languages
 such as C or Python, there are a few rules that the functions in functional programming languages follow
@@ -72,8 +74,9 @@ information on the data types and structures of the language as well as how the 
 
 
 \section{Domain Specific Language}
+
 Solace is a general purpose functional programming language built without a specific domain in mind. There are a number of
-general purpose programming languages that exist today, so there are a number of languages to choose from in that regard,
+general purpose programming languages that exist today, so while there are a number of languages to choose from in that regard,
 Solace aims to be a hobby/playground/research language. The functional domain, while gaining traction in use, is still
 regarded as a fringe domain to build production level code with. There is plenty to be done in terms of functional language
 development, and Solace is a testing ground for that.
@@ -135,6 +138,7 @@ Solace language.
 
 
 \section{Types}
+
 Types are a foundational building block to all programming languages. Different types are represented to the computer using
 different sizes of bytes, and allow the computer to know what to expect when we define some value for it to store for later
 use. In languages like C, variables are statically typed. This means that the author has to explicitly define what type a
@@ -169,7 +173,7 @@ to be basic atomic types.
 
 Integers are used to handle and store whole numbers. Numbers like $0$ or $-14$ can be stored in a variable with the integer type. Float
 types are used to handle real numbers. Floats can store and handle values such as $0.1$ or $0.0001$. Characters handle single character
-values such as $'a'$, while strings can handles multiple characters strung together like $"hello, world!"$. Booleans handles values like
+values such as $'a'$, while strings can handles multiple characters strung together like \textit{"hello, world!"}. Booleans handles values like
 $true$ and $false$. Function types are used to store whole functions. In functional programming languages such as Solace, functions are
 treated like any other type. Symbols are an interesting type, as they store literal values. A symbol value $:apple:$ is only equivalent
 to itself, and represents its literal value as defined by the author. Symbols can be any string of characters (excluding special
@@ -197,19 +201,55 @@ store capable of storing multiple variable values.
 \end{center}
 
 \subsection{Defining and storing values}
-Things
+
+Variables are essential to storing and retrieving data in programs. Within Solace users are able to define their own variable names and their types
+as well as the data information they want to store within the variable. Variables are defined using simple syntax rules:
+
+\begin{lstlisting}
+space::Main
+
+func main int() {
+	n int = 32;
+ 	0;
+}
+\end{lstlisting}
+
+Looking at the code given, the initial setup has been seen before, what's different is the line \textit{n int = 32;} . This tells the Solace compiler that we want
+to define a variable $n$ that stores an integer value of $32$, and we end the line with the semicolon character ($;$) to signal to the compiler that we are ending our
+line. This syntax definition is standard for defining any variable of any type.
+
+\begin{lstlisting}
+space::Main
+
+func main int() {
+	letter char = 'c';
+	passage string = "hello, world!";
+ 	example bool = true;
+  	apple :sym: = :apple:;
+   	pie float = 3.14;
+
+ 	0;
+}
+\end{lstlisting}
+
+In the code segment above, there are examples of different variable types being defined. As previously discussed the $char$ type is able to hold a single character value
+within single quotation marks, in this case it is given the value $'c'$. While character types are able to hold any aphabet symbol, numbers can also be represented $'4'$
+or special characters $'\$'$. Strings are able to hold entire segments of characters, all incased within double quotation marks. In the above case the string $passage$
+contains the passage \textit{"hello, world!"}. Boolean values are a set of values, true or fasle. Above, the variable $example$ holds the boolean value $true$, but could also
+hold the value for $false$. The $apple$ is a symbol type variable. Symbols are defined by encasing a name within colons on each side. the $apple$ variable contains the $:apple:$
+symbol value. Floats are real number values. The variable $pie$ contains the value $3.14$ but can also contain different types of floats like $1.0$ and $3.000007$. The last 
+type to mention is the function type. Functions are a little different than the rest of the types. Typically, to define a function the $func$ keyword is placed before the
+name of the function, followed by the return type of the function. Functions are the only type to have such syntactic behaviours.
 
 
-\section{Lexical Rules}
-Like in many languages, Solace has rules as to what constitutes legal syntax for things such as
-variable declarations, function definitions, and naming criteria.
+\section{Syntax Rules}
 
-Solace defines a number of reserved words that are used in defining types, function definitions,
-and data structures. The reserved words chosen for Solace are designed to be similar to
-other languages, such as C, while taking a different approach. A lot of the
-reserved words are defined for type declarations shown above, or the legal operators for the 
-language that are defined below. The following are the reserved words for the language
-that do not fit in under the other sections.
+Like in many languages, Solace has rules as to what constitutes legal syntax, as shown previously with variable declarations, function definitions, and naming criteria. Solace
+also utilizes different keywords to construct and enforce these syntax rules. Keywords are spercial words within a programming language that are not able to be used in variable,
+function, structure, or module space name defintions. They are standalone words that define specific meaning within the language.
+Solace defines a number of reserved words that are used in defining types, describing function definitons, and establishing data structures. The reserved words chosen
+for Solace are designed to be similar to other languages, such as $C$. A lot of the reserved words are defined for type declarations shown above, or the legal operators for the 
+language that are defined below. The following are a list of the reserved words Solace utilizes.
 
 
 \subsection{Reserved Words}
@@ -220,17 +260,37 @@ that do not fit in under the other sections.
 Reserved word & description \\
 \hline
 \hline
-main & used to declare the main function of the program \\
-use & used to include packages/libraries \\
-module & used to define the module the file belongs to \\
-ret & keyword used to return value(s) from function \\
+space & declare the module space for the following program \\
+main & declare the main function of the program, used in the Main space \\
+use & include external packages/libraries \\
+return & keyword used to return value(s) from function \\
+head/tail & variables used to split arrays \\
+\hline
+\hline
+int & integer type keyword \\
+float & floating point type keyword \\
+char & character type keyword \\
+string & string type keyword \\
+symbol & symbol type keyword \\
+bool & boolean type keyword \\
+func & function type keyword \\
+struct & structure definition type keyword \\
 \hline
 \end{tabular}
 \end{center}
 
+The names above the double line within the table are special words used to define specific parts of the program, while the names bellow the double line are type keywords that
+are used in defining or referencing the specific types of Solace. These names cannot be overriden by the user when building programs. You may not name a variable
+\textit{int int = 4;} since the $int$ keyword is reserved for describing the type of the variable in this case.
 
 \section{Operators}
-The following showcase some of the legal oporators for Solace
+
+Operators are special characters that perform some operation within Solace. There are three different kinds of operations within Solace, numerical operations, logical operations,
+and string operations. Numerical operations take two numerical values and apply a specified mathematical operation to obtain a numerical result. An example of this is addition:
+$2 + 2$ would result in the value $4$. The operation $3.0 / 2.0$ results in a value of $1.5$. Logical operations are operations that determine a logical result from one or two
+boolean values.Some logical operations only take boolean values. We can use the and operator to test two different boolean values and return a resulting value as such: $true && false$
+which will result in $false$. Other logical operators can take numerical, character, or string data and compare them. For example $5 > 10$ (five is greater than 10) would result in
+the $false$ boolean value. Another example is comparing two characters $'c' == 'c'$ which results in $true$.
 
 \begin{center}
 \begin{tabular}{|r|l|}
@@ -242,31 +302,30 @@ $+$ & addition operation \\
 $-$ & subtraction operation \\
 $*$ & multiplication operation \\
 $/$ & division operation \\
-\% & modulo operation \\
+\% & modulo operation, find remainder of a division \\
+\hline
+\hline
+\&\& & And logical operation \\
+|| & Or logical operation \\
+! & not operation, take the inverse of a boolean value \\
+\hline
 $>$ & greater than comparison \\
 $<$ & less than comparison \\
 $>=$ & greater than or equal to comparison \\
 $<=$ & less than or equal to comparison \\
-== & equal to comparison \\
-!= & not equal to comparison \\
+== & equal to comparison, test equivalence \\
+!= & not equal to comparison, test non-equivalence \\
+\hline
+\hline
+$|$ & concatenation operation, join two values together \\
 \hline
 \end{tabular}
 \end{center}
 
 
-\section{Syntax}
-This section outlines an overview on the basic syntax of the Solace language.
-The main goal of the syntax is to remain simple but flexible enough to build
-interesting programs. This includes the ability for defining variables and functions,
-higher order functions, and establishing basic program workflow.
-The following showcase a simple program that defines a fibonacci function and 
-the main function of the program. The main function is necessary for the solace to
-run, similar to C type languages.
+\section{Performing Operations in Solace}
 
-Solace will take an approach to syntax similar to C like syntax. Solace is a statically typed
-langauge, so variable types must be defined upon their declaration. Code blocks are defined
-through the use of brackets. nested blocks can be defined within function definitions
-for pattern matching functionality.
+This section outlines how to operate on values in Solace.
 
 
 The following is a showcase of a simple program:
@@ -303,7 +362,7 @@ func factorial int (n int)
 In maintaining with the traditional functional language paradigm, all functions are
 designed to be pure. There are no plans as of this time to completely force pure functions.
 
-\section{Summary}
+\section{Conclusion}
 Solace is a simple functional programming language built as a toy project language.
 This language is meant to be simplistic to read and write programs with. Solace is written 
 utilizing Yacc, Bison, and C, with the clang compiler.
