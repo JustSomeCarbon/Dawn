@@ -48,6 +48,9 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 ">="            {return allocToken(GREATERTHANOREQUAL);}
 "<="            {return allocToken(LESSTHANOREQUAL);}
 "!="            {return allocToken(NOTEQUALTO);}
+"&&"            {return allocToken(LOGICALAND);}
+"||"            {return allocToken(LOGICALOR);}
+"!"             {return allocToken(NOT);}
 
 "|"             {return allocToken(BAR);}
 "_"             {return allocToken(DROPVAL);}
