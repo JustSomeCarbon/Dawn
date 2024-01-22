@@ -67,6 +67,7 @@
 %type <treeptr> Primary
 %type <treeptr> FieldAccess
 %type <treeptr> FunctionCall
+%type <treeptr> LambdaExpr
 %type <treeptr> ArgumentListOpt
 %type <treeptr> ArgumentList
 
@@ -151,6 +152,7 @@ PatternBlock: PatternBlock BAR PatternStmt {$$ = allocTree(PATTERN_BLOCK, "patte
     | PatternStmt {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 1, $1);}
 ;
 PatternStmt: Expr ARROWOP FunctionBodyDecls {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 2, $1, $3);}
+    | ARROWOP FunctionBodyDecl {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 1, $2);}
 ;
 
 
@@ -210,13 +212,16 @@ Name: Name COLON IDENTIFIER {$$ = allocTree(NAME, "name", 3, $1, $2, $3);}
     | IDENTIFIER            {$$ = allocTree(NAME, "name", 1, $1);}
 ;
 Primary: Literal         {$$ = allocTree(PRIMARY, "primary", 1, $1);}
-    | LPAREN Expr RPAREN {$$ = allocTree(PRIMARY, "primary", 3, $1, $2, $3);}
+    | LPAREN Expr RPAREN {$$ = allocTree(PRIMARY, "primary", 1, $2);}
+    | LambdaExpr {$$ = allocTree(PRIMARY, "primary", 1, $1);}
     | FunctionCall       {$$ = allocTree(PRIMARY, "primary", 1, $1);}
 ;
 FieldAccess: FieldAccess LBRACKET LITERALINT RBRACKET {$$ = allocTree(FIELD_ACCESS, "field_access", 2, $1, $3);}
     | LBRACKET LITERALINT RBRACKET {$$ = allocTree(FIELD_ACCESS, "field_access", 1, $2);}
 ;
 FunctionCall: Name ArgumentListOpt {$$ = allocTree(FUNC_CALL, "func_call", 2, $1, $2);}
+;
+LambdaExpr: ParameterListOpt Type ARROWOP FunctionBody {$$ = allocTree(LAMBDA_EXPR, "lambda_expr", 2, $1, $3);}
 ;
 ArgumentListOpt: LPAREN ArgumentList RPAREN {$$ = allocTree(ARG_LIST_OPT, "arg_list_opt", 1, $2);}
     | LPAREN RPAREN {$$ = NULL;}

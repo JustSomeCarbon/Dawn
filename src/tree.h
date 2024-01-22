@@ -51,12 +51,13 @@ enum sol_terms {
     PRIMARY,
     FIELD_ACCESS,
     FUNC_CALL,
-    ARG_LIST_OPT,       // 1035
+    LAMBDA_EXPR,        // 1035
+    ARG_LIST_OPT,
     ARG_LIST,
     RELATION_OP,
     TYPE,
-    TUP_TYPE_DECL,
-    LITERAL,            // 1040
+    TUP_TYPE_DECL,      // 1040
+    LITERAL,
     LIST_LITERALS_OPT,
     LIST_LITERALS,
     SYNTAX_ERROR,
