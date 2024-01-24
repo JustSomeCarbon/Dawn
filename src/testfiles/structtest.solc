@@ -7,7 +7,7 @@ struct example {
 	s string;
 	c char;
 	b bool;
-}
+};
 
 func main int ()
 {

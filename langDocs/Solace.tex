@@ -109,10 +109,10 @@ Solace source code file. The compiler is also able to handle Solace source code 
 If a source code file named $Fibonacci$ (with no file extension) is given to the compiler, it is taken and the $.solc$ extension
 is appended to the end of the file name.
 
-\subsection{Writting Solace for the First time}
+\subsection{Writing Solace for the First time}
 Solace is easy to get started with. Similar to the C language, Solace requires a few things in order to compile
 and run. The first is a $module$ $space$ $name$ definition, and then a main function (although main functions are not required when
-writting library functions). The following is an example of writting the most simple algorithm we can in Solace: A program
+writing library functions). The following is an example of writing the most simple algorithm we can in Solace: A program
 that exits.
 
 \begin{lstlisting}
@@ -179,7 +179,7 @@ treated like any other type. Symbols are an interesting type, as they store lite
 to itself, and represents its literal value as defined by the author. Symbols can be any string of characters (excluding special
 characters and white space).
 
-Composite functions, as was previously defined, are built on top of atomic types as a coalition enabling the structure and storage of
+Composite types, as previously defined, are built on top of atomic types as a coalition enabling the structure and storage of
 information. Solace provides the following composite types: list/arrays, tupples, and structures. These types are more complex than
 atomic types. Arrays are able to store a collection of values within its definition, enabling storage of multiple values within a single
 variable. Tupples are similar but more flexible than arrays. Arrays are a collection of values that are of the same type, tupples are able
@@ -193,7 +193,7 @@ store capable of storing multiple variable values.
 	type name & description \\
 	\hline
 	\hline
-	list/array & contains a number of same type values. \\
+	list & contains a number of same type values. \\
 	tupple & can contain number of different type values. \\
 	struct & designating a structure object definition for more complex data objects. \\
 	\hline
@@ -206,7 +206,7 @@ Variables are essential to storing and retrieving data in programs. Within Solac
 as well as the data information they want to store within the variable. Variables are defined using simple syntax rules:
 
 \begin{lstlisting}
-space::Main
+space::Main;
 
 func main int() {
 	n int = 32;
@@ -219,7 +219,7 @@ to define a variable $n$ that stores an integer value of $32$, and we end the li
 line. This syntax definition is standard for defining any variable of any type.
 
 \begin{lstlisting}
-space::Main
+space::Main;
 
 func main int() {
 	letter char = 'c';
@@ -265,6 +265,7 @@ main & declare the main function of the program, used in the Main space \\
 use & include external packages/libraries \\
 return & keyword used to return value(s) from function \\
 head/tail & variables used to split arrays \\
+self & reference to the parent function \\
 \hline
 \hline
 int & integer type keyword \\
@@ -288,7 +289,7 @@ are used in defining or referencing the specific types of Solace. These names ca
 Operators are special characters that perform some operation within Solace. There are three different kinds of operations within Solace, numerical operations, logical operations,
 and string operations. Numerical operations take two numerical values and apply a specified mathematical operation to obtain a numerical result. An example of this is addition:
 $2 + 2$ would result in the value $4$. The operation $3.0 / 2.0$ results in a value of $1.5$. Logical operations are operations that determine a logical result from one or two
-boolean values.Some logical operations only take boolean values. We can use the and operator to test two different boolean values and return a resulting value as such: $true && false$
+boolean values.Some logical operations only take boolean values. We can use the and operator to test two different boolean values and return a resulting value as such: $true \&\& false$
 which will result in $false$. Other logical operators can take numerical, character, or string data and compare them. For example $5 > 10$ (five is greater than 10) would result in
 the $false$ boolean value. Another example is comparing two characters $'c' == 'c'$ which results in $true$.
 
@@ -306,7 +307,7 @@ $/$ & division operation \\
 \hline
 \hline
 \&\& & And logical operation \\
-|| & Or logical operation \\
+$||$ & Or logical operation \\
 ! & not operation, take the inverse of a boolean value \\
 \hline
 $>$ & greater than comparison \\
@@ -325,50 +326,235 @@ $|$ & concatenation operation, join two values together \\
 
 \section{Performing Operations in Solace}
 
-This section outlines how to operate on values in Solace.
+This section outlines how to operate on values and expressions in Solace. If you are familiar with C or any other high level programming language, performing 
+operations in Solace will be easy to understand and pick up. Solace allows the ability to perform mathematical and logical operations on data. the following is a
+simple showcase of how to perform the basic mathematical operations on integer and float values.
 
-
-The following is a showcase of a simple program:
 \begin{lstlisting}
-module:Main
+space::Main;
 
 func main int ()
 {
-	
-	out int = fibonacci(7); // returns 13
-	
-	// there is a ret and return keyword, but is not needed.
-	// the last statement in a block will be returned.
-	ret 0;
-}
+	2 + 2; // returns 4
+	5 - 2; // returns 3
+	0 * 7; // returns 0
+	6 / 3; // returns 2
+	8 % 4; // returns 2
 
-func fibonacci int (n int)
-{
-	// embedded blocks can be used when pattern matching
-	// and grouping functionality:
-	{ (n <= 1) -> 1; }
-	fibonacci(n-1) + fibonacci(n-2);
-}
+	2.0 + 1.0; // returns 3.0
+	0.0 - 1.0; // returns -1.0
+	2.5 * 2.0; // returns 5.0
+	7.0 / 3.0; // returns 2.5
 
-func factorial int (n int)
-{
-	// when matching a single parameter, it is possible to
-	// omit the parameter for just the matched values.
-	{ (0) -> 1; }
-	n * factorial(n-1);
+	// Solace preserves the type of the highest precision value in the operation
+	2.0 + 4;  // returns 6.0
+	10.0 / 2; // returns 5.0
 }
 \end{lstlisting}
 
-In maintaining with the traditional functional language paradigm, all functions are
-designed to be pure. There are no plans as of this time to completely force pure functions.
+Mathematical operations consist of two elements with the operation separating them in the middle. Solace is able to handle addition, subtraction, multiplication
+division, and remainder operations as showcased above. Mathematical operations consist of either integer values or floating point values. When performing an
+operation on an integer and a floating point number Solace will return a floating point number to ensure the highest precision of the operation is maintained.
+
+Comparison and logical operations are performed similar to that of mathematical operations. When comparing two values, the comparison operation resides between the two
+values being compared.
+
+\begin{lstlisting}
+space::Main;
+
+func main int()
+{
+	8 > 7;  // returns true
+	1 < 0;  // returns false
+	5 >= 5; // returns true
+	6 <= 9; // returns true
+
+	// some logical operations work with all types
+	1 == 0;      // returns false
+	'a' == 'a';  // returns true
+	"hello" == "hello" // returns true
+
+	1 != 0;      // returns true
+	'a' != 'a';  // returns false
+	"hello" != "hello" // returns false
+
+	// Some logical operations only take boolean values in their operation
+	true && true;  // returns true
+	true && false; // returns false
+	true || true;  // returns true
+	false || true; // returns true
+	!true;		   // returns false
+
+	0;
+}
+\end{lstlisting}
+
+Comparison logical operations have a broad set of input capabilities. Unlike mathematical operations, which are only able to take numerical input,
+comparison operations can take numerical values, cahracter values, string values, boolean values, or symbolic values. When comparing if some value is
+greater than or less than another values, the comparison can only handle numberical values, however, as showcased above, when comparing whether two
+values are equal to each other or not, Solace is able to handle any value type that is thrown at it. All operations return boolean values.
+
+Logical operations can only take boolean values as input and only return boolean values. There are three logical operations available: logical and,
+logical or, and logical not. Logical and only returns true when both values are true. Logical or only returns false when both values are false.
+Logical not returns the negation of the value given.
+
+
+\section{Working with Functions}
+
+Solace is a functional programming language and as such functions are treated the same way as any other type in the language. Functions are defined through
+the use of the function keyword followed by the name of the function, the return type, the parameter list, and then the function body. Seen above are a few
+examples of defining functions (we defined a main function to use). We can easily define and call functions within our programs.
+
+\begin{lstlisting}
+space::Main;
+
+func main int ()
+{
+	IO::out(double(5)); // prints 10;
+	0;
+}
+
+func double int (n int)
+{
+	n * 2;
+}
+\end{lstlisting}
+
+Here we define two functions: the main function that runs when we execute the program, and the double function that takes an integer $n$ and returns
+double its value back. Within the main funciton, we call the double function and print its output to the console, and then we return $0$. With Solace
+every function must return a value, and the type of the return value is specified in the heading of the function definition. To return a value from
+a function, Solace automatically takes the last expression in the function and returns it. We are also able to use the $return$ keyword to explicitly
+state to the compiler that you want to return a value.
+
+Since functions are like any other type, we are able to define and bind full functions to variable names to use, we can even return functions if we want!
+To do so we use lambda functions. These special functions are essentially nameless functions that can be bound to some name or used as they are
+with no reference bounding them.
+
+\begin{lstlisting}
+space::Main;
+
+func main int ()
+{
+	// we can bind a function to a local variable by defining it 
+	// as the assignment expression
+	double1 func = (int n) -> { n * 2; };
+
+	// we can bind a function from a return value of another function
+	double2 func = returnAFunction();
+
+	// we can call the functions like any other function
+	double1(5); // returns 10
+	double2(2); // returns 4
+
+	0;
+}
+
+func returnAFunction func ()
+{
+	(n int) int -> { n * 2; };
+}
+\end{lstlisting}
+
+Above we can see some examples of how Solace is able to handle functions as types. The $returnAFunction$ function returns a lambda function
+that can then be stored within another variable to use later. Lkewise, we are able to define functions within other functions by binding them
+to another variable of the funciton type. Finally we are able to call the lambda functions like any other function, by referencing where its
+bound and providing any necessary paramters.
+
+Lets take a look at more complex use cases for functions. In Solace, there are not any loops, and as such we have to make use of recursion.
+Let us assume we are building a summation function for values from 1 to the given limit. We can build it as follows:
+
+\begin{lstlisting}
+space::Main;
+
+func main int ()
+{
+	summation(5); // returns 15 (5 + 4 + 3 + 2 + 1)
+}
+
+func summation int (n int)
+{
+	{ (n <= 1) ->
+		return n;
+	}
+	n + summation(n-1);
+} 
+\end{lstlisting}
+
+We begin by creating the funciton signature for summation as taking a single input parameter $n$ that is of type integer and its return type is also the integer type.
+We then have to create our base case; the condition for which we stop calling the summation function. In this case, our base case is if the value of $n$ is equal to
+or falls below $1$. If this happens we simply return n. If this is not the case, we want to return the current value of $n$ added to the return value of calling the
+summation function again with the parameter $n-1$. This ensures we work our way down from the original $n$ value that was passed into the function when it was first
+called. Using this technique of recursion, we are able to simulate any looping we would need to do in the program.
+
+This creates a big problem, however. When working with a lambda function that does not have a name to reference, how can we use recursion? To deal with this problem
+Solace provides the $self$ keyword. To reference the parent function the program is currently in, we can use $self$ followed by the necessary parameter list in order
+to recurse.
+
+\begin{lstlisting}
+space::Main;
+
+func main int ()
+{
+	// define a lambda function that requires looping to complete
+	raiseToPower func = (n int, r int) int -> {
+		{ r <= 1 ->
+			return n;
+		}
+		n * self(n, r-1);
+	};
+
+	0;
+}
+\end{lstlisting}
+
+In the Example given above, we create a lambda function that we store in the variable $raiseToPower$. This function takes two parameters: $n$ the base integer value
+that we want to raise to a power, and $r$ the power we want to raise $n$ to. We first define our base case to check if $r$ is less than or equal to 1. If it is,
+we simply return n. If the base case is not met we want to multiply n by itself once more and recurse. We do this with $n$ * $self(n,r-1)$ where we call the
+lambda function again with the parameters $n$ and $r-1$.
+
+
+\section{Using Structures to Store Data}
+
+Structures are composite data types that are used to group different typed values together. Structures are very useful when you have information that you want to stay
+together that can easily be referenced. Unlike other types, structures cannot be defined within a funciton body, and instead have to be defined outside all
+function declarations. After defining how a structure is built, we can build a structure reference by using the name of the structure as the type of the variable. We must
+define the value of the structure fields in the assignment of the variable. Each field of the structure is ordinal, so the order in which we provide
+the field values matters. To then access the values we must use dot notation to reference field names of the structure.
+
+\begin{lstlisting}
+space::Main;
+
+struct PlayerCharacter {
+	name string;
+	level int;
+	exp float;
+};
+
+func main int ()
+{
+	playerOne PlayerCharacter = {"Echo", 14, 186.9};
+
+	// print the values to the console
+	IO::out(playerOne.name);
+	IO::out(playerOne.level);
+	IO::out(playerOne.exp);
+
+	0;
+}
+\end{lstlisting}
+
+In the example given above, we define a structure named $PlayerCharacter$ that has three fields: $name$ as a string, $level$ as an int, and $exp$
+as a float. Then within the main function we create an instance of the $PlayerCharacter$ structure and store it within the $PlayerOne$ variable.
+We set each of the fields of the structure in the assinment of the $PlayerOne$ variable. Next we reference each field of the $PlayerOne$ variable
+through dot notation to print the values stored in the structure to the console. We can easily create a new instance of the $PlayerCharacter$ structure
+and name it $PlayerTwo$ with different values.
+
 
 \section{Conclusion}
-Solace is a simple functional programming language built as a toy project language.
-This language is meant to be simplistic to read and write programs with. Solace is written 
-utilizing Yacc, Bison, and C, with the clang compiler.
-The goal right now is getting the language up and off the ground by implementing the
-specifications defined above. From there, the language will be evaluated and this document
-will be updated on where the language will build from there.
+
+Solace is a simple functional programming language built as a toy project language. This language is meant to be simplistic to read and write programs with.
+Solace is written utilizing Yacc, Bison, and C, with the clang compiler. The goal right now is getting the language up and off the ground by implementing the
+specifications defined above. From there, the language will be evaluated and this document will be updated on where the language will build from there.
 
 
 \end{document}

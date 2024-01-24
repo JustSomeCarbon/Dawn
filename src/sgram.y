@@ -17,7 +17,7 @@
 
 %token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON MODSPACE
 %token <treeptr> LBRACE RBRACE LPAREN RPAREN
-%token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL DOT
+%token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL DOT SELF
 %token <treeptr> BOOLEAN INT FLOAT CHAR STRING SYMBOL HEADVAR TAILVAR
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION
@@ -99,8 +99,8 @@ FileDefinitions: FileDefinitions StructDefinition {$$ = allocTree(FILE_DEFINITIO
 
 /*  -- USE GRAMAR DEFINITIONS -- */
 
-UseDefinition: USE Name SEMICOLON             {$$ = allocTree(USE_DEFINITIONS, "use_definitions", 1, $2);}
-    | USE Name COLON LBRACE ImportList RBRACE {$$ = allocTree(USE_DEFINITIONS, "use_definitions", 2, $2, $4);}
+UseDefinition: USE Name SEMICOLON                       {$$ = allocTree(USE_DEFINITIONS, "use_definitions", 1, $2);}
+    | USE Name COLON LBRACE ImportList RBRACE SEMICOLON {$$ = allocTree(USE_DEFINITIONS, "use_definitions", 2, $2, $5);}
 ;
 ImportList: ImportList COMA Name {$$ = allocTree(IMPORT_LIST, "import_list", 2, $1, $3);}
     | Name {$$ = allocTree(IMPORT_LIST, "import_list", 1, $1);}
@@ -109,7 +109,7 @@ ImportList: ImportList COMA Name {$$ = allocTree(IMPORT_LIST, "import_list", 2, 
 
 /* -- STRUCT GRAMAR DEFINITIONS -- */
 
-StructDefinition: STRUCT Name LBRACE StructParams RBRACE {$$ = allocTree(STRUCT_DEFINITION, "struct_definition", 2, $2, $4);}
+StructDefinition: STRUCT Name LBRACE StructParams RBRACE SEMICOLON {$$ = allocTree(STRUCT_DEFINITION, "struct_definition", 2, $2, $4);}
 ;
 StructParams: StructParams StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 2, $1, $2);}
     | StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 1, $1);}
@@ -142,7 +142,7 @@ FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl {$$ = allocTree(FUNC_BODY_
 ;
 FunctionBodyDecl: LBRACE PatternBlock RBRACE {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $2);}
     | Expr SEMICOLON             {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $1);}
-    | RETURN Expr SEMICOLON      {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $2);}
+    | RETURN Expr SEMICOLON      {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 2, $1, $2);}
 ;
 
 
@@ -220,8 +220,9 @@ FieldAccess: FieldAccess LBRACKET LITERALINT RBRACKET {$$ = allocTree(FIELD_ACCE
     | LBRACKET LITERALINT RBRACKET {$$ = allocTree(FIELD_ACCESS, "field_access", 1, $2);}
 ;
 FunctionCall: Name ArgumentListOpt {$$ = allocTree(FUNC_CALL, "func_call", 2, $1, $2);}
+    | SELF ArgumentListOpt         {$$ = allocTree(FUNC_CALL, "func_call", 2, $1, $2);}
 ;
-LambdaExpr: ParameterListOpt Type ARROWOP FunctionBody {$$ = allocTree(LAMBDA_EXPR, "lambda_expr", 2, $1, $3);}
+LambdaExpr: ParameterListOpt Type ARROWOP FunctionBody {$$ = allocTree(LAMBDA_EXPR, "lambda_expr", 3, $1, $2, $4);}
 ;
 ArgumentListOpt: LPAREN ArgumentList RPAREN {$$ = allocTree(ARG_LIST_OPT, "arg_list_opt", 1, $2);}
     | LPAREN RPAREN {$$ = NULL;}

@@ -33,8 +33,10 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "use"           {return allocToken(USE);}
 "space"         {return allocToken(MODSPACE);}
 "main"          {return allocToken(MAINFUNC);}
+"return"        {return allocToken(RETURN);}
 "head"          {return allocToken(HEADVAR);}
 "tail"          {return allocToken(TAILVAR);}
+"self"          {return allocToken(SELF);}
 
 "+"             {return allocToken(ADD);}
 "-"             {return allocToken(SUBTRACT);}
