@@ -352,6 +352,33 @@ func main int ()
 }
 \end{lstlisting}
 
+Solace allows the concatenation of a number of different types, including characters, strings, and lists. To concatenate two values together, the bar operator 
+is used between the two values you want to concatenate. The concatenation operation is ordinal, so in whatever order you place the values to concatenate, the
+result will reflect that order. Concatenation always results in a larger value, and for that reason, when characters are concatenated together the result is a
+string rather than a character.
+
+\begin{lstlisting}
+space::Main;
+
+func main int ()
+{
+	character1 char = 'h';
+	character2 char = 'i';
+	// results in a string
+	concat1 string = character1 | character2;
+
+	unfinishedString string = "ello";
+	// results in a string: "hello"
+	concat2 string = character1 | unfinishedString;
+
+	unfinishedString2 string = ", world!";
+	// results in a string: "hello, world!"
+	concat3 string = concat2 | unfinishedString2;
+
+	0;
+}
+\end{lstlisting}
+
 Mathematical operations consist of two elements with the operation separating them in the middle. Solace is able to handle addition, subtraction, multiplication
 division, and remainder operations as showcased above. Mathematical operations consist of either integer values or floating point values. When performing an
 operation on an integer and a floating point number Solace will return a floating point number to ensure the highest precision of the operation is maintained.
@@ -513,10 +540,101 @@ we simply return n. If the base case is not met we want to multiply n by itself 
 lambda function again with the parameters $n$ and $r-1$.
 
 
+\section{Lists for Collections of Data}
+
+When we want to group a number of values together, we can use a list. For example, let us assume we are storing the average temperature for each month in our program.
+We could define 12 separate variables, each coresponding to a different month in the year, but then if we wanted to pass those values to a function we would have to pass
+each of those 12 variables as parameters. Instead, we can use lists. In Solace, lists enable us to define a list of values and store them in a single variable.
+Later, when we want to access a specific value in the list, we use bracket notation along with a integer value to tell the compiler what value we want to retrieve.
+
+\begin{lstlisting}
+space::Main;
+
+func main int ()
+{
+	// define an array to contain temperatures
+	tempuratures [float] = {32.7, 46.9, 53.1, 68.4, 73.1, 79.0, 81.9, 77.6, 69.8, 62.3, 50.2, 41.5};
+
+	IO::out(temperatures[2]); // print the temp for march
+
+	0;
+}
+\end{lstlisting}
+
+In the example given above we can see that we create an array to store all the average temperatures of some year in a single variable named $temperatures$. We then
+print the third entry in the list, the entry for march (denoted in the index 2 as we begin our indexing from 0), to the console. In this way, we are able to define
+new lists of any type we want, and access the values of the array using the simple bracket notation.
+
+Similar to characters and strings, we are able to concatenate lists together, and add values to lists through concatenation. Using the bar operator, we can add single
+values to the beginning or ends of lists so long as the value we are concatenating and the types of the values in the list are the same. We are also able to take two
+different lists and concatenate them together so long as the types of their values matches as well.
+
+\begin{lstlisting}
+space::Main;
+
+func main int ()
+{
+	n int = 0;
+	nums [int] = {1,2,3};
+	nums2 [int] = {4,5,6,7};
+
+	// combine lists with concat
+	combinedNums [int] = n | nums; // returns {0,1,2,3}
+
+	finalCombinedNums [int] = combinedNums; // returns {0,1,2,3,4,5,6,7}
+
+	0;
+}
+\end{lstlisting}
+
+Looking above, we can see that we can add a single integer to the beginning of a list of integers through the use of the bar operator. We can also concatenate two
+different lists together as we combine both integer lists and store it in another variable.
+
+Since Solace does not provide looping other than recursion this makes moving through lists different than other values. To make life easier when attempting to loop
+through a list, Solace provides a helper in the form of the head and tail variables. These two variables are defined in the header of the function rather than the
+body, and dictate how the list is split when it enters the function. A list of three values given to a function that utilized the head/tail variables has, on its
+inital iteration of the function, the edge value assigned to the head variable, and the rest of the list assigned to the tail variable. this makes it so that 
+we are able to easily walk through the list and split a part off for computation.
+
+\begin{lstlisting}
+space::Main;
+
+func main int ()
+{
+	vals [float] = {4.2, 7.0, -3.1, 1.0};
+
+	// find the max value in a list of floats
+	maxVal float = FindMaxVal(vals, vals[0]);
+
+	IO::out(maxVal);
+
+	0;
+}
+
+func FindMaxVal float ([head | tail] [float], max float)
+{
+	{ head > max ->
+		max = head;
+	}
+	{ tail == [] ->
+		return max;
+	}
+	return self(tail, max);
+}
+\end{lstlisting}
+
+In this example, we define a function named $FindMaxVal$. In this function, we take a list of floats and a float value set to be our max value. Looking at the function
+header, we can see that the float list is defined as head/tail variables. In this situation, every time the function is called and is passed a list and a value, the list
+is split into the head and tail variables in which head contains the first value of the list and the tail contains the rest of the list. As the function moves through the
+list, it eventually leads to the condition where there is only one value in the list, in this case the head takes the value and the tail is set to an empty list. For this
+reason, the base case condition is to check if the tail variable is an empty list, we return. In the case the function is given a list that is initially empty, the tail
+variable remains the empty list, while the head variable is assigned to the zero value of the type of the values of the list.
+
+
 \section{Using Structures to Store Data}
 
-Structures are composite data types that are used to group different typed values together. Structures are very useful when you have information that you want to stay
-together that can easily be referenced. Unlike other types, structures cannot be defined within a funciton body, and instead have to be defined outside all
+Structures are composite data types that are defined by the user and used to group different typed values together. Structures are very useful when you have information
+that you want to stay together that can easily be referenced. Unlike other types, structures cannot be defined within a funciton body, and instead have to be defined outside all
 function declarations. After defining how a structure is built, we can build a structure reference by using the name of the structure as the type of the variable. We must
 define the value of the structure fields in the assignment of the variable. Each field of the structure is ordinal, so the order in which we provide
 the field values matters. To then access the values we must use dot notation to reference field names of the structure.
@@ -548,6 +666,11 @@ as a float. Then within the main function we create an instance of the $PlayerCh
 We set each of the fields of the structure in the assinment of the $PlayerOne$ variable. Next we reference each field of the $PlayerOne$ variable
 through dot notation to print the values stored in the structure to the console. We can easily create a new instance of the $PlayerCharacter$ structure
 and name it $PlayerTwo$ with different values.
+
+
+\section{Including Other Module Spaces}
+
+things
 
 
 \section{Conclusion}

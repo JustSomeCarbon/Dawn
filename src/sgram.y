@@ -191,7 +191,6 @@ ConcatExpr: ConcatExpr BAR PostFixExpr {$$ = allocTree(CONCAT_EXPR, "concat_expr
     | PostFixExpr {$$ = allocTree(CONCAT_EXPR, "concat_expr", 1, $1);}
 ;
 PostFixExpr: Primary   {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
-    | Name FieldAccess {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 2, $1, $2);}
     | Name             {$$ = allocTree(POST_FIX_EXPR, "post_fix_expr", 1, $1);}
 ;
 
@@ -209,6 +208,7 @@ LeftHandSide: Name Type {$$ = allocTree(LEFT_HAND_SIDE, "left_hand_side", 2, $1,
 
 Name: Name COLON IDENTIFIER {$$ = allocTree(NAME, "name", 3, $1, $2, $3);}
     | Name DOT IDENTIFIER   {$$ = allocTree(NAME, "name", 3, $1, $2, $3);}
+    | Name FieldAccess      {$$ = allocTree(NAME, "name", 2, $1, $2);}
     | IDENTIFIER            {$$ = allocTree(NAME, "name", 1, $1);}
 ;
 Primary: Literal         {$$ = allocTree(PRIMARY, "primary", 1, $1);}
@@ -216,8 +216,7 @@ Primary: Literal         {$$ = allocTree(PRIMARY, "primary", 1, $1);}
     | LambdaExpr {$$ = allocTree(PRIMARY, "primary", 1, $1);}
     | FunctionCall       {$$ = allocTree(PRIMARY, "primary", 1, $1);}
 ;
-FieldAccess: FieldAccess LBRACKET LITERALINT RBRACKET {$$ = allocTree(FIELD_ACCESS, "field_access", 2, $1, $3);}
-    | LBRACKET LITERALINT RBRACKET {$$ = allocTree(FIELD_ACCESS, "field_access", 1, $2);}
+FieldAccess: LBRACKET LITERALINT RBRACKET {$$ = allocTree(FIELD_ACCESS, "field_access", 1, $2);}
 ;
 FunctionCall: Name ArgumentListOpt {$$ = allocTree(FUNC_CALL, "func_call", 2, $1, $2);}
     | SELF ArgumentListOpt         {$$ = allocTree(FUNC_CALL, "func_call", 2, $1, $2);}
