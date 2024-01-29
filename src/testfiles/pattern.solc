@@ -1,0 +1,12 @@
+space::PatternTest;
+
+func patternTest int ()
+{
+    IO::out(factorial(5));
+}
+
+func factorial int (n int) {
+    { n <= 0 -> return 1;
+    | -> n * factorial(n-1);
+    }
+}

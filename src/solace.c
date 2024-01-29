@@ -24,6 +24,7 @@ extern struct tree* root;
 // Local Prototypes
 
 void check_extension(char* file);
+void step_through_dbFlags(int ast_flag);
 
 
 // Main Solace Compiler Function
@@ -32,6 +33,8 @@ int main(int argc, char* argv[])
 {
     // Solace compiler
     //  - version 0.0.1 pre-alpha
+
+    int astFlag = 0;
 
     if (argc == 0) {
         // no file given :: throw error
@@ -47,6 +50,9 @@ int main(int argc, char* argv[])
         if (strcmp(argv[filearg], "-v") == 0) {
             printf("Solace compiler\n   - version 0.0.1 pre-alpha\n");
             return 0;
+        } else if (strcmp(argv[filearg], "-s") == 0) {
+            // print the abstract syntax tree
+            astFlag = 1;
         } else {
             // compile the source file
             check_extension(argv[filearg]);
@@ -60,11 +66,8 @@ int main(int argc, char* argv[])
                 exit(1);
             }
             // Parse the source file given
-            printf("File parse returns:: %d\n\n", yyparse());
-            printTree(root, 0);
-
-            printf("Freeing source file...\n");
-            freeTree(root);
+            yyparse();
+            //printf("File parse returns:: %d\n\n", yyparse());
 
             // close the file
             fclose(yyin);
@@ -73,9 +76,21 @@ int main(int argc, char* argv[])
         filearg++;
     } // No more source files: end lexer
 
+    step_through_dbFlags(astFlag);
+
+    // Free the root of the AST
+    freeTree(root);
+
     // END OF COMPILATION
     yylex_destroy();
     return 0;
+}
+
+void step_through_dbFlags(int ast_flag)
+{
+    if (ast_flag) {
+        printTree(root, 0);
+    }
 }
 
 

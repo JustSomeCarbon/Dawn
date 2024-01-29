@@ -1,6 +1,6 @@
-space::Main;
+space::VariableTest;
 
-func main int ()
+func variableTest int ()
 {
 	// local variable definitions
 	a int = 1;
@@ -11,14 +11,20 @@ func main int ()
 
 	// local tupple definition
 	t {int, float} = {0, 1};
-	// tInT {{int, float}, {int, :sym:}} = {{0, 1}, {2, :ok:}}; FIGURE OUT NEXT
+	tuppleInTupple {{int, float}, {int, :sym:}} = {{0, 1}, {2, :ok:}};
 
 	// local list definition
 	lst [int] = {0, 1, 2};
-	//listInLst [[int]] = {{0, 1}, {2, 3}}; FIGURE OUT NEXT
+	listInLst [[int]] = {{0, 1}, {2, 3}};
 
 	// local symbol definition
 	s :sym: = :local_symbol:;
+
+	// lambda expressions
+	double func = (val1 int) int -> {
+		val1 * 2;
+	};
+	double(a);
 
 	0;
 }

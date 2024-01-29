@@ -1,0 +1,12 @@
+space::LambdaTest;
+
+func lambdsTest int () {
+    raiseToPower func = (n int, r int) int -> {
+        { r == 1 ->
+            return n;
+        }
+        n * self(n, r-1);
+    };
+
+    0;
+}
