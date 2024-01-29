@@ -11,7 +11,7 @@ Check out the development Blog: [OneDev Development](https://noegarciaonedev.blo
 
 ## About the language
 Solace is a small functional programming language developed as a hobby project starting in 2023. Solace is
-built to be a bridge between imperative and declarative functional programming language domains. Built
+built to be a bridge between imperative and declarative programming language domains. Built
 to be simple and easy to read and write with, Solace is a statically typed, semi-pure functional language
 with basic support for simple tooling and functionality. While in its infant stages, the language will grow to
 support more common aspects found in other languages.
@@ -22,7 +22,8 @@ project.
 
 ## Current Progress
 Solace is in the very early stages of development. Current progress includes the lexer and the parser enabling the
-compiler build an abstract syntax tree from the given file to compile. 
+compiler build an abstract syntax tree from the given file to compile. The next steps include populating symbol trees
+with type information.
 
 ## Build and Run
 Solace relies on the `clang` compiler, along with the `Yacc` and `Flex` tools, all of which must be installed.
@@ -34,4 +35,9 @@ To run the Solace compiler, run the resulting object file called `solx` followed
 be compiled.
 ~~~
 $ ./solx example_file.solc
+~~~
+
+To run the debugger to print the abstract syntax tree of the compiled file to the console we set the flag.
+~~~
+$ ./solx -s example_file.solc
 ~~~
