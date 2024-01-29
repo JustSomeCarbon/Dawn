@@ -233,8 +233,8 @@ func main int() {
 \end{lstlisting}
 
 In the code segment above, there are examples of different variable types being defined. As previously discussed the $char$ type is able to hold a single character value
-within single quotation marks, in this case it is given the value $'c'$. While character types are able to hold any aphabet symbol, numbers can also be represented $'4'$
-or special characters $'\$'$. Strings are able to hold entire segments of characters, all incased within double quotation marks. In the above case the string $passage$
+within single quotation marks, in this case it is given the value $'c'$. While character types are able to hold any aphabet symbol, numbers can also be represented ($'4'$)
+or special characters ($'\$'$). Strings are able to hold entire segments of characters, all incased within double quotation marks. In the above case the string $passage$
 contains the passage \textit{"hello, world!"}. Boolean values are a set of values, true or fasle. Above, the variable $example$ holds the boolean value $true$, but could also
 hold the value for $false$. The $apple$ is a symbol type variable. Symbols are defined by encasing a name within colons on each side. the $apple$ variable contains the $:apple:$
 symbol value. Floats are real number values. The variable $pie$ contains the value $3.14$ but can also contain different types of floats like $1.0$ and $3.000007$. The last 
@@ -296,7 +296,7 @@ the $false$ boolean value. Another example is comparing two characters $'c' == '
 \begin{center}
 \begin{tabular}{|r|l|}
 \hline
-Oporator character(s) & description \\
+Operator character(s) & description \\
 \hline
 \hline
 $+$ & addition operation \\
@@ -603,7 +603,7 @@ space::Main;
 func main int ()
 {
 	// define an array to contain temperatures
-	tempuratures [float] = {32.7, 46.9, 53.1, 68.4, 73.1, 79.0, 81.9, 77.6, 69.8, 62.3, 50.2, 41.5};
+	tempuratures [float] = {32.7, 46.9, 53.1, 68.4, 73.1};
 
 	IO::out(temperatures[2]); // print the temp for march
 
@@ -611,8 +611,8 @@ func main int ()
 }
 \end{lstlisting}
 
-In the example given above we can see that we create an array to store all the average temperatures of some year in a single variable named $temperatures$. We then
-print the third entry in the list, the entry for march (denoted in the index 2 as we begin our indexing from 0), to the console. In this way, we are able to define
+In the example given above we can see that we create an array to store the average temperatures of the first five months of some year in a single variable named $temperatures$.
+We then print the third entry in the list, the entry for march (denoted in the index 2 as we begin our indexing from 0), to the console. In this way, we are able to define
 new lists of any type we want, and access the values of the array using the simple bracket notation.
 
 Similar to characters and strings, we are able to concatenate lists together, and add values to lists through concatenation. Using the bar operator, we can add single
@@ -717,7 +717,7 @@ func moveCharacter {int, :sym:} (position int)
 
 Tuples can contain any combination of types, even other tuples. Because of this, however, we must explicitly define the structure of the tuple in its type definition. If
 we want to define a tuple named $rectangle$ and we want it to contain all the information we would want including the length of its sides, and whether or not its a square,
-we would explicitly need to define it as follows: $rectangle$ ${float, float, :sym:}$ = ${3.4, 5.1, :rectangle:}$. The more complex the tuple structure, the more complex the
+we would explicitly need to define it as follows: $rectangle$ $\{float, float, :sym:\}$ = $\{3.4, 5.1, :rectangle:\}$. The more complex the tuple structure, the more complex the
 definition required.
 
 
@@ -787,9 +787,11 @@ to.
 
 \section{Conclusion}
 
-Solace is a simple functional programming language built as a toy project language. This language is meant to be simplistic to read and write programs with.
-Solace is written utilizing Yacc, Bison, and C, with the clang compiler. The goal right now is getting the language up and off the ground by implementing the
-specifications defined above. From there, the language will be evaluated and this document will be updated on where the language will build from there.
+Solace is a simple functional programming language built to act as a bridge between the imperive and declarative domains. Solace is built to be easy to read and write programs with. While
+in the early stages of its development, Solace is capable of handling common types and operations as well as complex data structures. Understandably, there are still some limitations
+with the language in terms of its capabilities and what it has to offer symantically, but there are plans to expand on the language in the future.
+Solace is written utilizing Yacc, Bison, and C, with the clang compiler. Solace will compile down to LLVM intermediate code to then be interpreted and compiled down further
+to machine code.
 
 
 \end{document}
