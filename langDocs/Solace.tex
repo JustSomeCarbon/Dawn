@@ -540,7 +540,57 @@ we simply return n. If the base case is not met we want to multiply n by itself 
 lambda function again with the parameters $n$ and $r-1$.
 
 
-\section{Lists for Collections of Data}
+\section{Pattern Blocks and Control Flow}
+
+In any programming language control flow is essential in dictating how a program executes given specific conditions. Solace is no different, and offers what are called
+pattern blocks to assist in managing the control flow of programs. Patterns blocks are shown and used in the previous section within functions. Pattern blocks are defined
+through the use of brackets to denote a new block, followed by an expression, and arrow operator, and expressions to be executed if the pattern expression is found to be true.
+
+\begin{lstlisting}
+space::Main;
+
+func main int ()
+{
+	{ true != false ->
+ 		IO::out("true does not equal false");
+	}
+ 
+	0;
+}
+\end{lstlisting}
+
+In the pattern block, the pattern expression, $true$ $!=$ $false$, dictates whether or not the proceeding expressions within the pattern block are executed. If the pattern
+results in $true$ then the block is executed, if the pattern results in $false$ then it does not, and is skipped over.
+
+There are some cases in which we need more pattern expressions within a pattern block to dictate complex control. In this case, we can use the bar operator to separate different
+expression patterns without having to completely define a new pattern block. If there is a situation in which we want to perform a specific task within a pattern block if no other
+pattern branch was executed, we are able to leave the pattern expression empty and just apply the arrow operator followed by the execution expressions.
+
+\begin{lstlisting}
+space::Main;
+
+func main int ()
+{
+	value char = "c";
+
+ 	{ value == "a" ->
+  		IO::out("the value is a");
+    	| value == "b" ->
+     		IO::out("the value is b");
+        | value == "c" ->
+		IO::out("the value is c");
+  	| ->
+   		IO::out("unsure value");
+  	}
+
+	0;
+}
+\end{lstlisting}
+
+
+\section{Lists and Tuples for Collections of Data}
+
+\subsection{Lists}
 
 When we want to group a number of values together, we can use a list. For example, let us assume we are storing the average temperature for each month in our program.
 We could define 12 separate variables, each coresponding to a different month in the year, but then if we wanted to pass those values to a function we would have to pass
@@ -630,6 +680,46 @@ list, it eventually leads to the condition where there is only one value in the 
 reason, the base case condition is to check if the tail variable is an empty list, we return. In the case the function is given a list that is initially empty, the tail
 variable remains the empty list, while the head variable is assigned to the zero value of the type of the values of the list.
 
+\subsection{Tuples}
+
+Tuples are another collection type. Like lists, tuples are able to store data in an organized fashion. However, unlike lists, tuples are able to store data values that are
+not of the same type. For example, if we want to ensure that our program functions and exits correctly, we can return a tuple of the desired output value and a symbol designating
+if the function performed as it should ($:ok:$ or $:err:$). In this case, we are able to wrap our return values into a list like structure that we can pass back to our caller. In
+the following example, we have a game character position represented as an integer. We call a function that tries to move the character one space more, but if the character is
+at step 15 or more, we don't want to move the character. To represent that this computation fails in this case, we wrap the returning position integer in a tuple with a symbol
+value representing if the computation moved the character or not.
+
+\begin{lstlisting}
+space::Main;
+
+func main int ()
+{
+	characterPosition {int, :sym:} = moveCharacter(4);
+ 	{ characterPosition[1] == :ok: ->
+  		IO::out("character position moved");
+    	| characterPosition[1] == :err: ->
+     		IO::out("character position did not move");
+	}
+
+	0;
+}
+
+// move the character one space, if the character position is
+// over 15, do nothing and return an error symbol.
+func moveCharacter {int, :sym:} (position int)
+{
+	{ position >= 15 ->
+ 		return {position + 1, :ok:};
+	}
+ 	{position, :err:};
+}
+\end{lstlisting}
+
+Tuples can contain any combination of types, even other tuples. Because of this, however, we must explicitly define the structure of the tuple in its type definition. If
+we want to define a tuple named $rectangle$ and we want it to contain all the information we would want including the length of its sides, and whether or not its a square,
+we would explicitly need to define it as follows: $rectangle$ ${float, float, :sym:}$ = ${3.4, 5.1, :rectangle:}$. The more complex the tuple structure, the more complex the
+definition required.
+
 
 \section{Using Structures to Store Data}
 
@@ -670,7 +760,29 @@ and name it $PlayerTwo$ with different values.
 
 \section{Including Other Module Spaces}
 
-things
+Solace enables the use of different module spaces in programs through the $use$ keyword. When building our program, we can state what external module spaces we want to include in
+our compilation for the compiler to find and link with our current program. There are two different ways we are able to include external module spaces in the current space: the
+standard inclusion, and the specified inclusion.
+
+\begin{lstlisting}
+space::Main;
+
+use::IO;
+use::Math::{pow};
+
+func main int ()
+{
+	IO::out(pow(10, 2)); // prints 100
+
+ 	0;
+}
+\end{lstlisting}
+
+The standard inclusion, shwocased with the third line $use::IO;$, is comprized of the $use$ keyword followed by the module space name. This lets the compiler know to include the
+entire specified module space for use. However, when using a function or structure defined in the included module space, the module name must still be specified before using the desired
+functionality. The second inclusion possible is shown on the fourth line with $use::Math::{pow};$. In this case, we include a small part of the $Math$ module space, but only the specified
+named functionality within the brackets. Then, when we go to use the included functionality, unlike the first inclusion, we are able to use it without specifying what module space it belongs
+to.
 
 
 \section{Conclusion}
