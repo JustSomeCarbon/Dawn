@@ -3,9 +3,10 @@
  * Author: Noe Garcia
  * Date: February, 2023
  * Description: Header file contains external variables used for the syntax
- *  tree of the Solace compiler. The following enumeration contains all
- *  integer values corresponding to terminal values. Finally, all token and
- *  tree structures are defined.
+ *   tree of the Solace compiler. The following enumeration contains all
+ *   integer values corresponding to terminal values. All token and
+ *   tree structures are defined bellow. Finally, all tree and token funciton
+ *   prototypes are defined at the end of the file.
  */
 #include <stdio.h>
 
@@ -63,7 +64,7 @@ enum sol_terms {
     SYNTAX_ERROR,
 };
 
-// Code Structures
+/* TOKEN AND TREE STRUCTURES */
 
 struct token {
     int category;   // integer return code from yylex
@@ -85,7 +86,7 @@ struct tree {
     struct token* leaf;   // if nkids == 0; Null for ε productions
 };
 
-// Function Prototypes
+/* FUNCTION PROTOTYPES */
 
 int allocToken(int code);
 struct tree* allocTree(int code, char* symb, int numkids, ...);
