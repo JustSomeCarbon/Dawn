@@ -14,6 +14,7 @@
 #include <string.h>
 #include "sgram.tab.h"
 #include "tree.h"
+#include "symtable.h"
 
 // external and globals
 extern FILE* yyin;
@@ -68,6 +69,9 @@ int main(int argc, char* argv[])
             // Parse the source file given
             yyparse();
             //printf("File parse returns:: %d\n\n", yyparse());
+
+            // create the symbol table for the project
+            populate_symboltable(root);
 
             // close the file
             fclose(yyin);

@@ -14,8 +14,7 @@ extern FILE* yyin; // !- contains file to compile -!
 extern char* yytext;
 extern int yylineno;
 extern char* yyfile;
-// contains the root of the tree generated from parsing
-extern struct tree* root;
+extern struct tree* root; // contains the root of the tree generated from parsing
 
 enum sol_terms {
     FILE_ROOT=1001,
