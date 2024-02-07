@@ -21,6 +21,7 @@ extern FILE* yyin;
 char* yyfile;
 extern int yylex_destroy();
 extern struct tree* root;
+SymbolTable root_symtable;
 
 // Local Prototypes
 
@@ -71,7 +72,7 @@ int main(int argc, char* argv[])
             //printf("File parse returns:: %d\n\n", yyparse());
 
             // create the symbol table for the project
-            populate_symboltable(root);
+            root_symtable = populate_symboltable(root);
 
             // close the file
             fclose(yyin);

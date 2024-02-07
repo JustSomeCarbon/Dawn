@@ -41,3 +41,8 @@ To run the debugger to print the abstract syntax tree of the compiled file to th
 ~~~
 $ ./solx -s example_file.solc
 ~~~
+
+To print the symbols capured by the compiler during execution, set the symbol_table_flag during compilation.
+~~~
+$ ./solx -t example_file.solc
+~~~

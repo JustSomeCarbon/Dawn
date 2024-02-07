@@ -18,11 +18,13 @@ char* alloc(int n);
 
 /*
  * Traverse through the given abstract syntax tree and populate the symbol tables for each
- * nested scope in the given tree.
+ * nested scope in the given tree. returns the overarching symbol table of the compiled program.
  */
-void populate_symboltable(struct tree* ast)
+SymbolTable populate_symboltable(struct tree* ast)
 {
-    //
+    // look through the ast and create new symbol tables
+
+    // return the root symbol table
 }
 
 /*
@@ -30,9 +32,18 @@ void populate_symboltable(struct tree* ast)
  * by creating a new symbol table and adding it as an entry to the current symbol
  * table. Nothing is returned.
  */
-void enter_new_scope(char* scope_name)
+SymbolTable enter_new_scope(SymbolTable current_scope, char* scope_name)
 {
-    //
+    int buckets = B_SIZE;
+    // create a new entry and create a new scope
+    SymbolTable new_table = generate_symboltable(buckets, scope_name);
+    insert_symbol_entry(current_scope, scope_name);
+    SymbolEntry new_entry = lookup_symbol_entry(current_scope, scope_name);
+    new_entry->table = new_table;
+
+    // set the new current scope to
+    current_scope = new_table;
+    return current_scope;
 }
 
 /*
@@ -42,18 +53,23 @@ void enter_new_scope(char* scope_name)
  */
 SymbolTable generate_symboltable(int buckets, char* name)
 {
-    SymbolTable new_table = (SymbolTable)calloc(1, sizeof(struct sym_table));
+    SymbolTable new_table = (SymbolTable)alloc(sizeof(struct sym_table));
+
     new_table->nbuckets = buckets;
     new_table->symtable = 0;
     new_table->symtable_name = strdup(name);
-    new_table->symtable = (SymbolTable*)calloc(buckets, sizeof(struct sym_entry));
+    new_table->symtable = (SymbolTable*)alloc((unsigned int)(buckets * sizeof(SymbolEntry)));
 
     return new_table;
 }
 
+/*
+ * takes a new string and generates a new symbol table entry with the given string as
+ * the name.
+ */
 SymbolEntry generate_new_entry(char* name)
 {
-    SymbolEntry new_entry = (SymbolEntry)calloc(1, sizeof(struct sym_entry));
+    SymbolEntry new_entry = (SymbolEntry)alloc(sizeof(struct sym_entry));
     new_entry->name = strdup(name);
 
     return new_entry;
@@ -82,14 +98,30 @@ int insert_symbol_entry(SymbolTable table, char* name)
     return index;
 }
 
+/*
+ * takes a symbol table and a symbol table name as a string and checks to
+ * try and find the symbol table. If the table is not found, NULL is returned.
+ */
 SymbolTable lookup_symboltable(SymbolTable table, char* name)
 {
-    //
+    return NULL;
 }
 
+/*
+ * takes a symbol table and an entry and tries to look for the entry within the given
+ * symbol table. If the entry is not found, NULL is returned.
+ */
 SymbolEntry lookup_symbol_entry(SymbolTable table, char* name)
 {
-    //
+    int index = hash(table, name);
+    SymbolEntry entry = table->symtable[index];
+    while(strcmp(entry->name, name) != 0) {
+        entry = entry->next;
+        if (entry == NULL) {
+            return NULL;
+        }
+    }
+    return entry;
 }
 
 /*
@@ -98,7 +130,13 @@ SymbolEntry lookup_symbol_entry(SymbolTable table, char* name)
  */
 void free_symboltable(SymbolTable table)
 {
-    //
+    // free all chained entries in the hash table
+    for (int i = 0; i < table->nbuckets; i++) {
+        free_symbolentry(table->symtable[i]);
+    }
+    // free the symbol table on memory
+    free(table->symtable);
+    free(table);
 }
 
 /*
@@ -107,15 +145,19 @@ void free_symboltable(SymbolTable table)
  */
 void free_symbolentry(SymbolEntry entry)
 {
-    //
-}
-
-/*
- * Takes a symbol table and frees its data from memory. Nothing gets returned.
- */
-void delete_symboltable(SymbolTable table)
-{
-    //
+    // if there is no entry, return
+    if (entry == NULL) {
+        return;
+    }
+    if (entry->table != NULL) {
+        free_symboltable(entry->table);
+    }
+    if (entry->next != NULL) {
+        free_symbolentry(entry->next);
+    }
+    // free the entry
+    free(entry->name);
+    free(entry);
 }
 
 /*
@@ -136,10 +178,17 @@ int hash(SymbolTable table, char* val)
 }
 
 /*
- * takes a given string size and allocates the memory on the heap as zeroed our values
- * and returns the allocated pointer to that memory.
+ * Takes a given size for an object and allocates memory on the heap and checks that
+ * the memory allocated correctly, if not throws an error and exits the compiler
  */
 char* alloc(int n)
 {
-    //
+    char* new_allocation = calloc(n, sizeof(char));
+    if (!new_allocation) {
+        // throw an error
+        printf("\nError: no more memory to allocate\n\tfailed on %d bytes\n\n", n);
+        exit(-1);
+    }
+
+    return new_allocation;
 }

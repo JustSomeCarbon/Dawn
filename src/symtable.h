@@ -12,11 +12,11 @@
 #ifndef SYMT_H
 #define SYMT_H
 
-// standardize the number of buckets to use.
+// global number of buckets to use
 #define B_SIZE 25;
 
-extern SymbolTable root_symtable;
-extern SymbolTable current_symtable;
+extern struct sym_table* root_symtable;
+extern struct sym_table* current_symtable;
 
 /* STRUCTURE DEFINITIONS */
 
@@ -42,14 +42,13 @@ typedef struct sym_entry
 
 /* FUNCTION PROTOTYPES */
 
-void populate_symboltable(struct tree* ast);
-void enter_new_scope(char* scope_name);
+SymbolTable populate_symboltable(struct tree* ast);
+SymbolTable enter_new_scope(SymbolTable current_scope, * scope_name);
 SymbolTable generate_symboltable(int buckets, char* name);
 SymbolEntry generate_new_entry(char* name);
 int insert_symbol_entry(SymbolTable table, char* name);
 SymbolTable lookup_symboltable(SymbolTable table, char* name);
 SymbolEntry lookup_symbol_entry(SymbolTable table, char* name);
 void free_symboltable(SymbolTable table);
-void delete_symboltable(SymbolTable table);
 
 #endif
