@@ -27,15 +27,13 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "float"         {return allocToken(FLOAT);}
 "char"          {return allocToken(CHAR);}
 "string"        {return allocToken(STRING);}
-"func"          {return allocToken(FUNCTION);}
-":sym:"          {return allocToken(SYMBOL);}
+"fn"            {return allocToken(FUNCTION);}
+":sym:"         {return allocToken(SYMBOL);}
 "struct"        {return allocToken(STRUCT);}
 "use"           {return allocToken(USE);}
 "space"         {return allocToken(MODSPACE);}
 "main"          {return allocToken(MAINFUNC);}
 "return"        {return allocToken(RETURN);}
-"head"          {return allocToken(HEADVAR);}
-"tail"          {return allocToken(TAILVAR);}
 "self"          {return allocToken(SELF);}
 
 "+"             {return allocToken(ADD);}

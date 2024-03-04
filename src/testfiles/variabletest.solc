@@ -1,6 +1,6 @@
 space::VariableTest;
 
-func variableTest int ()
+fn variableTest int ()
 {
 	// local variable definitions
 	a int = 1;

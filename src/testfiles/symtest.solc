@@ -1,6 +1,6 @@
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	/* compare symbols to one another and print comparisons */
 	IO::out(:apple: == :apple:);

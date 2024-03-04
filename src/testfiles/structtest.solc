@@ -9,7 +9,7 @@ struct example {
 	b bool;
 };
 
-func main int ()
+fn main int ()
 {
 	// construct a new example structure
 	ex example = {32, 1.0, "example struct", 'y', false};

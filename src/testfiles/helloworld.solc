@@ -4,7 +4,7 @@ use IO;
 use IO::{out};
 
 // this is a hello world test program
-func main int ()
+fn main int ()
 {
 	/* This is a test
 	hello,

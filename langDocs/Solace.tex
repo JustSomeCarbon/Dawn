@@ -88,9 +88,11 @@ toy language to play around with and to understand its respective use cases bett
 
 \section{Getting Started}
 Solace is written in C and compiled with the $Clang$ compiler. Apart from this, the lexer for Solace is written in $Flex$
-(also known as fast lexical analysis generator), and the parser is written with GNU Bison. Solace is hosted on github
-\href{https://github.com/JustSomeCarbon/Solace/tree/main}{here} and can be cloned to a local machine using git. After
-Solace is installed, it can be built by typing the following into the console while within the $Solace/src$ project directory:
+(also known as fast lexical analysis generator), and the parser is written with GNU Bison. There is currently \textbf{NOT} a 
+build tool available, so all library requirements should be installed independentally. Solace Relies on Clang, Bison, and Flex.
+Solace is hosted on github \href{https://github.com/JustSomeCarbon/Solace/tree/main}{here} and can be cloned to a local machine
+using git. After Solace is installed, it can be built by typing the following into the console while within the $Solace/src$
+project directory:
 
 \begin{lstlisting}
  $ make
@@ -112,20 +114,20 @@ is appended to the end of the file name.
 \subsection{Writing Solace for the First time}
 Solace is easy to get started with. Similar to the C language, Solace requires a few things in order to compile
 and run. The first is a $module$ $space$ $name$ definition, and then a main function (although main functions are not required when
-writing library functions). The following is an example of writing the most simple algorithm we can in Solace: A program
+writing library functions). The following is an example of writing the most simple program we can in Solace: A program
 that exits.
 
 \begin{lstlisting}
 space::Main;
 
-func main int() {
+fn main int() {
 	0;
 }
 \end{lstlisting}
 
 Disecting the source code above, we can see the first line of the program explicitly defining the module space to be $Main$. Solace
 picks the $Main$ module space as the space to run when executing the project; it is where the compiler looks for the main function.
-The next line is the \textit{main function} definition. We denote that we are defining a function with the $func$ keyword followed by
+The next line is the \textit{main function} definition. We denote that we are defining a function with the $fn$ keyword followed by
 the name of the function and then its return value. All functions must have a return value. Main functions should return an integer
 to signal the exit value of the program. Within the main function there is a single expression: $0;$ This tells the main funciton
 to return $0$ and exit.
@@ -147,7 +149,7 @@ first given followed by the type of the variable, and then the assignment of the
 
 Types can be broken down into two different classifications for Solace: atomic and composite. Atomic types are the basic
 building blocks of the typing system within the language, while composite types are types that are built on top of atomic
-types, used to handle the structure and storage of data.
+types, used to handle the complex structure and storage of data.
 
 Solace has general atomic types that are present in many other programming languages: integers, floating point numbers, characters,
 strings, booleans, functions, and symbols. In Solace (like in many other functional programming languages) functions are considered
@@ -166,7 +168,6 @@ to be basic atomic types.
 	string & stores multiple conjoined character values between "" \\
 	bool & either a true or a false value \\
 	:sym: & symbolic literal values \\
-	func & defines funciton definitions and types \\
 	\hline
 \end{tabular}
 \end{center}
@@ -180,11 +181,12 @@ to itself, and represents its literal value as defined by the author. Symbols ca
 characters and white space).
 
 Composite types, as previously defined, are built on top of atomic types as a coalition enabling the structure and storage of
-information. Solace provides the following composite types: list/arrays, tupples, and structures. These types are more complex than
-atomic types. Arrays are able to store a collection of values within its definition, enabling storage of multiple values within a single
+information. Solace provides the following composite types: functions, list/arrays, tupples, and structures. These types are more complex than
+atomic types. Functions are collection blocks of algorithmic logic that we use to group the functionality of our program.
+Arrays are able to store a collection of values within its definition, enabling storage of multiple values within a single
 variable. Tupples are similar but more flexible than arrays. Arrays are a collection of values that are of the same type, tupples are able
 to store multiple values of different types. Structures are the most flexible of the composite types, enabling the construction of a data
-store capable of storing multiple variable values.
+store capable of storing multiple different named type values.
 
 \subsection{Composite Types}
 \begin{center}
@@ -193,6 +195,7 @@ store capable of storing multiple variable values.
 	type name & description \\
 	\hline
 	\hline
+	fn & defines blocks of algorithmic logic \\
 	list & contains a number of same type values. \\
 	tupple & can contain number of different type values. \\
 	struct & designating a structure object definition for more complex data objects. \\
@@ -208,7 +211,7 @@ as well as the data information they want to store within the variable. Variable
 \begin{lstlisting}
 space::Main;
 
-func main int() {
+fn main int() {
 	n int = 32;
  	0;
 }
@@ -221,7 +224,7 @@ line. This syntax definition is standard for defining any variable of any type.
 \begin{lstlisting}
 space::Main;
 
-func main int() {
+fn main int() {
 	letter char = 'c';
 	passage string = "hello, world!";
  	example bool = true;
@@ -238,7 +241,7 @@ or special characters ($'\$'$). Strings are able to hold entire segments of char
 contains the passage \textit{"hello, world!"}. Boolean values are a set of values, true or fasle. Above, the variable $example$ holds the boolean value $true$, but could also
 hold the value for $false$. The $apple$ is a symbol type variable. Symbols are defined by encasing a name within colons on each side. the $apple$ variable contains the $:apple:$
 symbol value. Floats are real number values. The variable $pie$ contains the value $3.14$ but can also contain different types of floats like $1.0$ and $3.000007$. The last 
-type to mention is the function type. Functions are a little different than the rest of the types. Typically, to define a function the $func$ keyword is placed before the
+type to mention is the function type. Functions are a little different than the rest of the types. Typically, to define a function the $fn$ keyword is placed before the
 name of the function, followed by the return type of the function. Functions are the only type to have such syntactic behaviours.
 
 
@@ -264,7 +267,6 @@ space & declare the module space for the following program \\
 main & declare the main function of the program, used in the Main space \\
 use & include external packages/libraries \\
 return & keyword used to return value(s) from function \\
-head/tail & variables used to split arrays \\
 self & reference to the parent function \\
 \hline
 \hline
@@ -272,9 +274,9 @@ int & integer type keyword \\
 float & floating point type keyword \\
 char & character type keyword \\
 string & string type keyword \\
-symbol & symbol type keyword \\
+:sym: & symbol type keyword \\
 bool & boolean type keyword \\
-func & function type keyword \\
+fn & function type keyword \\
 struct & structure definition type keyword \\
 \hline
 \end{tabular}
@@ -333,7 +335,7 @@ simple showcase of how to perform the basic mathematical operations on integer a
 \begin{lstlisting}
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	2 + 2; // returns 4
 	5 - 2; // returns 3
@@ -360,7 +362,7 @@ string rather than a character.
 \begin{lstlisting}
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	character1 char = 'h';
 	character2 char = 'i';
@@ -389,7 +391,7 @@ values being compared.
 \begin{lstlisting}
 space::Main;
 
-func main int()
+fn main int()
 {
 	8 > 7;  // returns true
 	1 < 0;  // returns false
@@ -435,13 +437,13 @@ examples of defining functions (we defined a main function to use). We can easil
 \begin{lstlisting}
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	IO::out(double(5)); // prints 10;
 	0;
 }
 
-func double int (n int)
+fn double int (n int)
 {
 	n * 2;
 }
@@ -460,14 +462,14 @@ with no reference bounding them.
 \begin{lstlisting}
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	// we can bind a function to a local variable by defining it 
 	// as the assignment expression
-	double1 func = (int n) -> { n * 2; };
+	double1 fn = (int n) -> { n * 2; };
 
 	// we can bind a function from a return value of another function
-	double2 func = returnAFunction();
+	double2 fn = returnAFunction();
 
 	// we can call the functions like any other function
 	double1(5); // returns 10
@@ -476,7 +478,7 @@ func main int ()
 	0;
 }
 
-func returnAFunction func ()
+fn returnAFunction fn ()
 {
 	(n int) int -> { n * 2; };
 }
@@ -493,12 +495,12 @@ Let us assume we are building a summation function for values from 1 to the give
 \begin{lstlisting}
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	summation(5); // returns 15 (5 + 4 + 3 + 2 + 1)
 }
 
-func summation int (n int)
+fn summation int (n int)
 {
 	{ (n <= 1) ->
 		return n;
@@ -520,10 +522,10 @@ to recurse.
 \begin{lstlisting}
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	// define a lambda function that requires looping to complete
-	raiseToPower func = (n int, r int) int -> {
+	raiseToPower fn = (n int, r int) int -> {
 		{ r <= 1 ->
 			return n;
 		}
@@ -549,7 +551,7 @@ through the use of brackets to denote a new block, followed by an expression, an
 \begin{lstlisting}
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	{ true != false ->
  		IO::out("true does not equal false");
@@ -569,7 +571,7 @@ pattern branch was executed, we are able to leave the pattern expression empty a
 \begin{lstlisting}
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	value char = "c";
 
@@ -600,7 +602,7 @@ Later, when we want to access a specific value in the list, we use bracket notat
 \begin{lstlisting}
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	// define an array to contain temperatures
 	tempuratures [float] = {32.7, 46.9, 53.1, 68.4, 73.1};
@@ -622,7 +624,7 @@ different lists and concatenate them together so long as the types of their valu
 \begin{lstlisting}
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	n int = 0;
 	nums [int] = {1,2,3};
@@ -640,45 +642,6 @@ func main int ()
 Looking above, we can see that we can add a single integer to the beginning of a list of integers through the use of the bar operator. We can also concatenate two
 different lists together as we combine both integer lists and store it in another variable.
 
-Since Solace does not provide looping other than recursion this makes moving through lists different than other values. To make life easier when attempting to loop
-through a list, Solace provides a helper in the form of the head and tail variables. These two variables are defined in the header of the function rather than the
-body, and dictate how the list is split when it enters the function. A list of three values given to a function that utilized the head/tail variables has, on its
-inital iteration of the function, the edge value assigned to the head variable, and the rest of the list assigned to the tail variable. this makes it so that 
-we are able to easily walk through the list and split a part off for computation.
-
-\begin{lstlisting}
-space::Main;
-
-func main int ()
-{
-	vals [float] = {4.2, 7.0, -3.1, 1.0};
-
-	// find the max value in a list of floats
-	maxVal float = FindMaxVal(vals, vals[0]);
-
-	IO::out(maxVal);
-
-	0;
-}
-
-func FindMaxVal float ([head | tail] [float], max float)
-{
-	{ head > max ->
-		max = head;
-	}
-	{ tail == [] ->
-		return max;
-	}
-	return self(tail, max);
-}
-\end{lstlisting}
-
-In this example, we define a function named $FindMaxVal$. In this function, we take a list of floats and a float value set to be our max value. Looking at the function
-header, we can see that the float list is defined as head/tail variables. In this situation, every time the function is called and is passed a list and a value, the list
-is split into the head and tail variables in which head contains the first value of the list and the tail contains the rest of the list. As the function moves through the
-list, it eventually leads to the condition where there is only one value in the list, in this case the head takes the value and the tail is set to an empty list. For this
-reason, the base case condition is to check if the tail variable is an empty list, we return. In the case the function is given a list that is initially empty, the tail
-variable remains the empty list, while the head variable is assigned to the zero value of the type of the values of the list.
 
 \subsection{Tuples}
 
@@ -692,7 +655,7 @@ value representing if the computation moved the character or not.
 \begin{lstlisting}
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	characterPosition {int, :sym:} = moveCharacter(4);
  	{ characterPosition[1] == :ok: ->
@@ -706,7 +669,7 @@ func main int ()
 
 // move the character one space, if the character position is
 // over 15, do nothing and return an error symbol.
-func moveCharacter {int, :sym:} (position int)
+fn moveCharacter {int, :sym:} (position int)
 {
 	{ position >= 15 ->
  		return {position + 1, :ok:};
@@ -738,7 +701,7 @@ struct PlayerCharacter {
 	exp float;
 };
 
-func main int ()
+fn main int ()
 {
 	playerOne PlayerCharacter = {"Echo", 14, 186.9};
 
@@ -770,7 +733,7 @@ space::Main;
 use::IO;
 use::Math::{pow};
 
-func main int ()
+fn main int ()
 {
 	IO::out(pow(10, 2)); // prints 100
 

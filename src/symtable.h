@@ -42,13 +42,20 @@ typedef struct sym_entry
 
 /* FUNCTION PROTOTYPES */
 
-SymbolTable populate_symboltable(struct tree* ast);
-SymbolTable enter_new_scope(SymbolTable current_scope, * scope_name);
+SymbolTable build_symboltable(struct tree* ast);
+SymbolTable populate_symboltable(struct tree* ast, struct sym_table* global_symtable, struct sym_table* current_symtable);
+SymbolTable enter_new_scope(SymbolTable current_scope, char* scope_name);
 SymbolTable generate_symboltable(int buckets, char* name);
 SymbolEntry generate_new_entry(char* name);
 int insert_symbol_entry(SymbolTable table, char* name);
 SymbolTable lookup_symboltable(SymbolTable table, char* name);
 SymbolEntry lookup_symbol_entry(SymbolTable table, char* name);
 void free_symboltable(SymbolTable table);
+
+// Symbol Table Population helper functions
+SymbolEntry is_struct_decl();
+SymbolEntry is_function_header();
+SymbolEntry is_variable_decl();
+
 
 #endif

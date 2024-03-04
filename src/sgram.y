@@ -18,7 +18,7 @@
 %token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON MODSPACE
 %token <treeptr> LBRACE RBRACE LPAREN RPAREN
 %token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL DOT SELF
-%token <treeptr> BOOLEAN INT FLOAT CHAR STRING SYMBOL HEADVAR TAILVAR
+%token <treeptr> BOOLEAN INT FLOAT CHAR STRING SYMBOL
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION
 %token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
@@ -132,7 +132,6 @@ ParameterList: ParameterList COMA Parameter {$$ = allocTree(PARAM_LIST, "param_l
     | Parameter {$$ = allocTree(PARAM_LIST, "param_list", 1, $1);}
 ;
 Parameter: Name Type {$$ = allocTree(PARAM, "parameter", 2, $1, $2);}
-    | LBRACKET HEADVAR BAR TAILVAR RBRACKET Type {$$ = allocTree(PARAM, "parameter", 3, $2, $4, $6);}
 ;
 FunctionBody: LBRACE FunctionBodyDecls RBRACE {$$ = allocTree(FUNC_BODY, "func_body", 1, $2);}
     | LBRACE RBRACE {$$ = NULL;}

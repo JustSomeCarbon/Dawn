@@ -1,6 +1,6 @@
 space::Main;
 
-func main int ()
+fn main int ()
 {
 	a char = 'a';
 	b char = 'b';

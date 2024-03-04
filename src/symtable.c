@@ -16,13 +16,37 @@ int hash(SymbolTable table, char* val);
 char* alloc(int n);
 
 
+SymbolTable build_symboltable(struct tree* ast)
+{
+    int buckets = B_SIZE;
+    // create a new global and local symbol table pointer
+    
+
+    // pass the values to the populate function
+}
+
 /*
  * Traverse through the given abstract syntax tree and populate the symbol tables for each
  * nested scope in the given tree. returns the overarching symbol table of the compiled program.
  */
-SymbolTable populate_symboltable(struct tree* ast)
+SymbolTable populate_symboltable(struct tree* ast, struct sym_table* global_symtable, struct sym_table* current_symtable)
 {
     // look through the ast and create new symbol tables
+    if (ast == NULL)
+    {
+        // end of the abstract syntax tree
+        return;
+    }
+
+    switch (ast->prodrule)
+    {
+    case /* */:
+        /* code */
+        break;
+    
+    default:
+        break;
+    }
 
     // return the root symbol table
 }

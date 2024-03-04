@@ -1,7 +1,7 @@
 space::Main;
 
 // test defining and using strings
-func main int ()
+fn main int ()
 {
 	a string = "hello, ";
 	b string = "world!";

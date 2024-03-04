@@ -1,6 +1,6 @@
 space::LambdaTest;
 
-func lambdsTest int () {
+fn lambdaTest int () {
     raiseToPower func = (n int, r int) int -> {
         { r == 1 ->
             return n;
