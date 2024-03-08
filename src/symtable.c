@@ -9,27 +9,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sgram.tab.h"
 #include "tree.h"
 #include "symtable.h"
+
+extern struct sym_table* root_symtable;
 
 int hash(SymbolTable table, char* val);
 char* alloc(int n);
 
 
-SymbolTable build_symboltable(struct tree* ast)
+/*
+ *
+ */
+SymbolTable build_symtable(struct tree* ast)
 {
-    int buckets = B_SIZE;
-    // create a new global and local symbol table pointer
-    
+    // initialize the root of the symbol table
+    if (ast->kids[0]->nkids != 1) {
+        /* throw an error, complex module space defined */
+        /* ex: space:Foo:Bar */
+    }
 
-    // pass the values to the populate function
+    // call the population symtable function and return the global symbol table
+    return root_symtable;
 }
+
 
 /*
  * Traverse through the given abstract syntax tree and populate the symbol tables for each
  * nested scope in the given tree. returns the overarching symbol table of the compiled program.
  */
-SymbolTable populate_symboltable(struct tree* ast, struct sym_table* global_symtable, struct sym_table* current_symtable)
+SymbolTable populate_symboltable(struct tree* ast)
 {
     // look through the ast and create new symbol tables
     if (ast == NULL)
@@ -40,10 +50,10 @@ SymbolTable populate_symboltable(struct tree* ast, struct sym_table* global_symt
 
     switch (ast->prodrule)
     {
-    case /* */:
-        /* code */
+    case FILE_ROOT:
+        /* define the domule space tree */
         break;
-    
+
     default:
         break;
     }
