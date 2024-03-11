@@ -66,7 +66,7 @@ SymbolTable populate_symboltable(struct tree* ast, SymbolTable symtable)
     case FILE_DEFINITIONS:
         if (ast->nkids == 2) {
             // return right ast symtable
-            return populate_symboltable(ast->kids[1], symtable);
+            symtable = populate_symboltable(ast->kids[1], symtable);
             // return left ast symtable
             return populate_symboltable(ast->kids[0], symtable);
         } else {
@@ -75,7 +75,30 @@ SymbolTable populate_symboltable(struct tree* ast, SymbolTable symtable)
         break;
     
     case STRUCT_DEFINITION:
-        //
+        char* name = obtain_name(ast->kids[1]);
+        SymbolTable new_scope = enter_new_scope(symtable, name);
+        free(name);
+        // recurse for all structure parameters in struct delcaration
+        return populate_symboltable(ast->kids[3], new_scope);
+        break;
+    
+    case STRUCT_PARAMS:
+        // recurse through all parameters
+        if (ast->nkids == 2) {
+            symtable = populate_symboltable(ast->kids[1], symtable);
+            symtable = populate_symboltable(ast->kids[0], symtable);
+        } else {
+            symtable = populate_symboltable(ast->kids[0], symtable);
+        }
+        // move to the parent scope
+        return symtable->parent;
+        break;
+    case STRUCT_PARAM:
+        // create a new symbol for the structure parameter
+        char* name = obtain_name(ast->kids[0]);
+        int index = insert_symbol_entry(symtable, name);
+        free(name);
+        return symtable;
         break;
 
     default:
@@ -83,6 +106,7 @@ SymbolTable populate_symboltable(struct tree* ast, SymbolTable symtable)
     }
 
     // return the root symbol table
+    return symtable;
 }
 
 /*
