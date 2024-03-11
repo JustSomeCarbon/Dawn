@@ -11,6 +11,7 @@
 #ifndef ERR_H
 #define ERR_H
 
+void throw_err(char* msg, int status);
 void check_allocation(void* mem, char* msg);
 void cleanup_ast();
 void cleanup_symtable();

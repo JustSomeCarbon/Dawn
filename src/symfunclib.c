@@ -17,9 +17,9 @@
 
 /*
  * Expects to take an ast of a Name rule. Returns the name of the ast rule
- * as a char*.
- * ex: an ast containing Name COLON IDENTIFIER(bar) with the Name being an IDENTIFIER(foo)
- * would return "foo:bar"
+ * as a malloced char*. Character pointers returned are allocated on the heap and must be freed
+ * ex: an ast containing: `Name COLON IDENTIFIER(bar)` with the Name being an `IDENTIFIER(foo)`
+ * would return `"foo:bar"`
  */
 char* obtain_name(struct tree* ast)
 {
@@ -31,11 +31,24 @@ char* obtain_name(struct tree* ast)
         name = (char*)malloc(strlen(front) + strlen(ast->kids[2]) + 2);
         check_allocation(name);
         strcpy(name, front);
+        if (strcmp(ast->kids[1], ":") == 0) {
+            strcat(name, ":");
+        } else if (strcmp(ast->kids[1], ".") == 0) {
+            strcat(name, ".");
+        } else {
+            // throw an error, something went wrong
+            char buf[100];
+            snprintf(buf, sizeof(buf), "Given character %s not supported in name\n", ast->kids[1]);
+            throw_err(buf, 1);
+        }
+
         strcat(name, ast->kids[2]->leaf->text);
+        name[strlen(name)-1] = "\0";
 
         free(front);
     } else if (ast->nkids == 2) {
         // throw an error, this is an access to a field of an array
+        throw_err("Field value access not allowed in name definition\n", 1);
     } else {
         // copy the string name to the return value
         // and return it

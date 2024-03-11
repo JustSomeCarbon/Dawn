@@ -43,7 +43,7 @@ typedef struct sym_entry
 /* FUNCTION PROTOTYPES */
 
 SymbolTable build_symtable(struct tree* ast);
-SymbolTable populate_symboltable(struct tree* ast);
+SymbolTable populate_symboltable(struct tree* ast, SymbolTable current_table);
 SymbolTable enter_new_scope(SymbolTable current_scope, char* scope_name);
 SymbolTable generate_symboltable(int buckets, char* name);
 SymbolEntry generate_new_entry(char* name);
@@ -52,7 +52,7 @@ SymbolTable lookup_symboltable(SymbolTable table, char* name);
 SymbolEntry lookup_symbol_entry(SymbolTable table, char* name);
 void free_symboltable(SymbolTable table);
 
-// Symbol Table Population helper functions
+
 char* obtain_name(struct tree* ast);
 SymbolEntry is_struct_decl();
 SymbolEntry is_function_header();

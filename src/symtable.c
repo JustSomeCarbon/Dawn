@@ -20,26 +20,29 @@ char* alloc(int n);
 
 
 /*
- *
+ * initializes a symbol table and calls the populate symbol table
+ * function to walk through the ast and populate the table
+ * Returns
  */
 SymbolTable build_symtable(struct tree* ast)
 {
-    // initialize the root of the symbol table
-    if (ast->kids[0]->nkids != 1) {
-        /* throw an error, complex module space defined */
-        /* ex: space:Foo:Bar */
-    }
+    // create a symbol table to use
+    char* name = obtain_name(ast->kids[0]);
+    int buckets = B_SIZE;
+    SymbolTable symtable = generate_symboltable(buckets, name);
+    free(name);
+    symtable = populate_symboltable(ast, symtable);
 
-    // call the population symtable function and return the global symbol table
-    return root_symtable;
+    return symtable;
 }
 
 
 /*
- * Traverse through the given abstract syntax tree and populate the symbol tables for each
- * nested scope in the given tree. returns the overarching symbol table of the compiled program.
+ * Traverse through the given abstract syntax tree and populate the symbol tables for
+ * each nested scope in the given tree. returns the overarching symbol table of the
+ * compiled program.
  */
-SymbolTable populate_symboltable(struct tree* ast)
+SymbolTable populate_symboltable(struct tree* ast, SymbolTable symtable)
 {
     // look through the ast and create new symbol tables
     if (ast == NULL)
@@ -48,10 +51,31 @@ SymbolTable populate_symboltable(struct tree* ast)
         return;
     }
 
+    /*
+    Assess production rules for the given abstract syntax tree given
+    */
     switch (ast->prodrule)
     {
     case FILE_ROOT:
-        /* define the domule space tree */
+        if (ast->nkids == 1) {
+            return symtable;
+        }
+        return populate_symboltable(ast->kids[1], symtable);
+        break;
+
+    case FILE_DEFINITIONS:
+        if (ast->nkids == 2) {
+            // return right ast symtable
+            return populate_symboltable(ast->kids[1], symtable);
+            // return left ast symtable
+            return populate_symboltable(ast->kids[0], symtable);
+        } else {
+            return populate_symboltable(ast->kids[0], symtable);
+        }
+        break;
+    
+    case STRUCT_DEFINITION:
+        //
         break;
 
     default:
@@ -81,9 +105,9 @@ SymbolTable enter_new_scope(SymbolTable current_scope, char* scope_name)
 }
 
 /*
- * generates a new symbol table with a given ammount of buckets as an integer value
- * and a name for the new symbol table as a character pointer. A pointer to the new
- * symbol table is returned.
+ * generates a new symbol table with a given ammount of buckets as an integer
+ * value and a name for the new symbol table as a character pointer. A
+ * pointer to the new symbol table is returned.
  */
 SymbolTable generate_symboltable(int buckets, char* name)
 {

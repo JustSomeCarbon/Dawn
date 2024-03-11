@@ -26,11 +26,16 @@ SymbolTable root_symtable;
 // Local Prototypes
 
 void check_extension(char* file);
-void step_through_dbFlags(int ast_flag);
+void step_through_dbFlags(int flag);
 
 
 // Main Solace Compiler Function
 
+/*
+ * Solace compiler main function
+ * The main Solace language function that executes the compiler helper functions
+ * to parse and process the given source files
+ */
 int main(int argc, char* argv[])
 {
     // Solace compiler
@@ -72,14 +77,15 @@ int main(int argc, char* argv[])
             //printf("File parse returns:: %d\n\n", yyparse());
 
             // create the symbol table for the project
-            root_symtable = populate_symboltable(root);
+            root_symtable = build_symtable(root);
 
             // close the file
             fclose(yyin);
         }
         // move to next source file
         filearg++;
-    } // No more source files: end lexer
+    } // end of while
+    // No more source files: end lexer
 
     step_through_dbFlags(astFlag);
 
@@ -91,19 +97,23 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void step_through_dbFlags(int ast_flag)
+
+/*
+ * take the given flag integer and execute flag action
+ */
+void step_through_dbFlags(int flag)
 {
-    if (ast_flag) {
+    if (flag) {
         printTree(root, 0);
     }
 }
 
 
 /*
- * check_extension: takes a file name and checks whether the extension of the file matches the .solc file extension.
- *  Populates the yyfile global for further compilation.
- *  If it does not throw an error and exits (-1).
- *  If the file does not have an extension, add the .solc extension to the file and populate yyfile.
+ * Takes a file name and checks whether the extension of the file matches the .solc file extension
+ * and populates the yyfile global variable
+ * If the given file extension is not a Solace extension, throw an error and exit (-1)
+ * If the file does not have an extension, add the .solc extension to the file and populate yyfile
  */
 void check_extension(char* file)
 {
