@@ -1,6 +1,6 @@
 /*
  * File: err.h
- * Author: Noe garcia
+ * Author: Noe Garcia
  * Date: March 4, 2024
  * Description: header file for the error handling functions for the Solace language.
  *   All error functions should be defined here and implemented in err.c within the

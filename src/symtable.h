@@ -43,13 +43,14 @@ typedef struct sym_entry
 /* FUNCTION PROTOTYPES */
 
 SymbolTable build_symtable(struct tree* ast);
-SymbolTable populate_symboltable(struct tree* ast, SymbolTable current_table);
+void populate_symboltable(struct tree* ast, SymbolTable current_table);
 SymbolTable enter_new_scope(SymbolTable current_scope, char* scope_name);
 SymbolTable generate_symboltable(int buckets, char* name);
 SymbolEntry generate_new_entry(char* name);
 int insert_symbol_entry(SymbolTable table, char* name);
 SymbolTable lookup_symboltable(SymbolTable table, char* name);
 SymbolEntry lookup_symbol_entry(SymbolTable table, char* name);
+void print_symtable(SymbolTable table);
 void free_symboltable(SymbolTable table);
 
 

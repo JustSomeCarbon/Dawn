@@ -31,7 +31,7 @@ SymbolTable build_symtable(struct tree* ast)
     int buckets = B_SIZE;
     SymbolTable symtable = generate_symboltable(buckets, name);
     free(name);
-    symtable = populate_symboltable(ast, symtable);
+    populate_symboltable(ast, symtable);
 
     return symtable;
 }
@@ -41,8 +41,10 @@ SymbolTable build_symtable(struct tree* ast)
  * Traverse through the given abstract syntax tree and populate the symbol tables for
  * each nested scope in the given tree. returns the overarching symbol table of the
  * compiled program.
+ * All of the heavy lifting involved in moving through the abstract syntax tree and
+ * building the symbol table is handled by this function.
  */
-SymbolTable populate_symboltable(struct tree* ast, SymbolTable symtable)
+void populate_symboltable(struct tree* ast, SymbolTable current_table)
 {
     // look through the ast and create new symbol tables
     if (ast == NULL)
@@ -58,47 +60,64 @@ SymbolTable populate_symboltable(struct tree* ast, SymbolTable symtable)
     {
     case FILE_ROOT:
         if (ast->nkids == 1) {
-            return symtable;
+            return;
         }
-        return populate_symboltable(ast->kids[1], symtable);
+        populate_symboltable(ast->kids[1], current_table);
         break;
 
     case FILE_DEFINITIONS:
         if (ast->nkids == 2) {
-            // return right ast symtable
-            symtable = populate_symboltable(ast->kids[1], symtable);
-            // return left ast symtable
-            return populate_symboltable(ast->kids[0], symtable);
+            // step into right of ast
+            populate_symboltable(ast->kids[1], current_table);
+            // recurse on the left of ast
+            populate_symboltable(ast->kids[0], current_table);
         } else {
-            return populate_symboltable(ast->kids[0], symtable);
+            populate_symboltable(ast->kids[0], current_table);
         }
         break;
     
     case STRUCT_DEFINITION:
         char* name = obtain_name(ast->kids[1]);
-        SymbolTable new_scope = enter_new_scope(symtable, name);
+        SymbolTable new_scope = enter_new_scope(current_table, name);
         free(name);
         // recurse for all structure parameters in struct delcaration
-        return populate_symboltable(ast->kids[3], new_scope);
+        populate_symboltable(ast->kids[3], new_scope);
         break;
     
     case STRUCT_PARAMS:
         // recurse through all parameters
         if (ast->nkids == 2) {
-            symtable = populate_symboltable(ast->kids[1], symtable);
-            symtable = populate_symboltable(ast->kids[0], symtable);
+            populate_symboltable(ast->kids[1], current_table);
+            populate_symboltable(ast->kids[0], current_table);
         } else {
-            symtable = populate_symboltable(ast->kids[0], symtable);
+            populate_symboltable(ast->kids[0], current_table);
         }
-        // move to the parent scope
-        return symtable->parent;
+        // this returns and moves back to the parent scope
         break;
     case STRUCT_PARAM:
         // create a new symbol for the structure parameter
         char* name = obtain_name(ast->kids[0]);
-        int index = insert_symbol_entry(symtable, name);
+        int index = insert_symbol_entry(current_table, name);
         free(name);
-        return symtable;
+        return current_table;
+        break;
+
+    case FUNC_DEFINITION:
+        // break apart into function header and function body
+        SymbolTable new_scope = populate_symboltable(ast->kids[0], current_table);
+        break;
+
+    case FUNC_HEADER:
+        // if the function name is not main
+        if (ast->kids[1]->prodrule == NAME) {
+            char* name = obtain_name(ast->kids[1]);
+            SymbolTable new_scope = enter_new_scope();
+            free(name);
+        } else if (ast->kids[1]->prodrule == MAINFUNC) {
+            //
+        } else {
+            throw_err("Function header not defined correctly", 1);
+        }
         break;
 
     default:
@@ -106,7 +125,7 @@ SymbolTable populate_symboltable(struct tree* ast, SymbolTable symtable)
     }
 
     // return the root symbol table
-    return symtable;
+    return;
 }
 
 /*

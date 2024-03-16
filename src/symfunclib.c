@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "sgram.tab.h"
 #include "tree.h"
 #include "symtable.h"
 #include "err.h"
@@ -28,12 +27,12 @@ char* obtain_name(struct tree* ast)
         // concatenate the return value of calling obtain name with the next
         // Name rule bellow
         char* front = obtain_name(ast->kids[0]);
-        name = (char*)malloc(strlen(front) + strlen(ast->kids[2]) + 2);
-        check_allocation(name);
+        name = (char*)malloc(strlen(front) + strlen(ast->kids[2]->leaf->text) + 2);
+        check_allocation(name, "Error in Name memory allocation during symbol parse...");
         strcpy(name, front);
-        if (strcmp(ast->kids[1], ":") == 0) {
+        if (strcmp(ast->kids[1]->leaf->text, ":") == 0) {
             strcat(name, ":");
-        } else if (strcmp(ast->kids[1], ".") == 0) {
+        } else if (strcmp(ast->kids[1]->leaf->text, ".") == 0) {
             strcat(name, ".");
         } else {
             // throw an error, something went wrong
@@ -53,7 +52,7 @@ char* obtain_name(struct tree* ast)
         // copy the string name to the return value
         // and return it
         name = (char*)malloc(strlen(ast->kids[0]->leaf->text) + 1);
-        check_allocation(name);
+        check_allocation(name, "Error in Name memory allocation during symbol parse...");
         strcpy(name, ast->kids[0]->leaf->text);
     }
     return name;
