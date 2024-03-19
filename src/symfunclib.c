@@ -59,25 +59,11 @@ char* obtain_name(struct tree* ast)
 }
 
 /*
- *
+ * takes the abstract syntax tree and walk through the function body expressions.
+ * This function expects the ast given to be the function body declarations.
+ * Nothing is returned
  */
-SymbolEntry is_struct_decl()
-{
-    //
-}
-
-/*
- *
- */
-SymbolEntry is_function_header()
-{
-    //
-}
-
-/*
- *
- */
-SymbolEntry is_variable_decl()
+void func_body_walkthrough(struct tree* ast, SymbolTable current_symtable)
 {
     //
 }

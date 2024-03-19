@@ -55,9 +55,7 @@ void free_symboltable(SymbolTable table);
 
 
 char* obtain_name(struct tree* ast);
-SymbolEntry is_struct_decl();
-SymbolEntry is_function_header();
-SymbolEntry is_variable_decl();
+void func_body_walkthrough(struct tree* ast, SymbolTable current_symtable);
 
 
 #endif
