@@ -366,15 +366,18 @@ fn main int ()
 {
 	character1 char = 'h';
 	character2 char = 'i';
-	// results in a string
+
+	// result is a string
 	concat1 string = character1 | character2;
 
 	unfinishedString string = "ello";
-	// results in a string: "hello"
+
+	// result is a string: "hello"
 	concat2 string = character1 | unfinishedString;
 
 	unfinishedString2 string = ", world!";
-	// results in a string: "hello, world!"
+
+	// result is a string: "hello, world!"
 	concat3 string = concat2 | unfinishedString2;
 
 	0;
@@ -741,7 +744,7 @@ fn main int ()
 }
 \end{lstlisting}
 
-The standard inclusion, shwocased with the third line $use::IO;$, is comprized of the $use$ keyword followed by the module space name. This lets the compiler know to include the
+The standard inclusion, shwocased with the third line $use::IO;$ is comprized of the $use$ keyword followed by the module space name. This lets the compiler know to include the
 entire specified module space for use. However, when using a function or structure defined in the included module space, the module name must still be specified before using the desired
 functionality. The second inclusion possible is shown on the fourth line with $use::Math::{pow};$. In this case, we include a small part of the $Math$ module space, but only the specified
 named functionality within the brackets. Then, when we go to use the included functionality, unlike the first inclusion, we are able to use it without specifying what module space it belongs
