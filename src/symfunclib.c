@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tree.h"
+#include "sgram.tab.h"
 #include "symtable.h"
 #include "err.h"
 
@@ -59,9 +60,66 @@ char* obtain_name(struct tree* ast)
 }
 
 /*
+ * take an abstract syntax tree at a function definition and walk through the entire
+ * function populating the symbol table. A new scope is created for the function to
+ * contain all defined symbols.
+ * nothing is returned
+ */
+void func_walkthrough(struct tree* ast, SymbolTable current_table)
+{
+    // break apart into function header and function body
+        // if the function name is not main
+        SymbolTable new_scope = NULL;
+        if (ast->kids[1]->prodrule == NAME) {
+            char* name = obtain_name(ast->kids[1]);
+            new_scope = enter_new_scope(current_table, name);
+            free(name);
+        } else if (ast->kids[1]->prodrule == MAINFUNC) {
+            new_scope = enter_new_scope(current_symtable, "mainf");
+        } else {
+            // something went wrong, should have been caught
+            throw_err("Function header not defined correctly", 1);
+        }
+        
+        // check if the function header has parameters. if it does, call the
+        // function header walkthrough
+        if (ast->kids[0]->kids[2] != NULL) {
+            // pass ast at ParamList
+            func_header_walkthrough(ast->kids[0]->kids[2]->kids[0], current_table);
+        }
+        // check if the function body has expression, if it does, call the
+        // function body walkthrough
+        if (ast->kids[1] != NULL) {
+            // pass ast at FunctionBodyDecls
+            func_body_walkthrough(ast->kids[1]->kids[0]);
+        }
+}
+
+
+/*
+ * walks through the given function header abstract syntax tree and populates the
+ * symbol table with the parameters passed.
+ * nothing is returned
+ */
+void func_header_walkthrough(struct tree* ast, SymbolTable current_table)
+{
+    if (ast->nkids == 2) {
+            // Populate symtable with parameter
+            char* name = obtain_name(ast->kids[1]->kids[0]);
+            int index = insert_symbol_entry(current_symtable, name);
+            free(name);
+
+            func_header_walkthrough(ast->kids[1], current_symtable);
+        }
+        //
+        func_header_walkthrough(ast->kids[0], current_symtable);
+}
+
+
+/*
  * takes the abstract syntax tree and walk through the function body expressions.
  * This function expects the ast given to be the function body declarations.
- * Nothing is returned
+ * nothing is returned
  */
 void func_body_walkthrough(struct tree* ast, SymbolTable current_symtable)
 {

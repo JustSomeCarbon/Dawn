@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "sgram.tab.h"
 #include "tree.h"
 #include "symtable.h"
 
@@ -102,39 +101,11 @@ void populate_symboltable(struct tree* ast, SymbolTable current_table)
         break;
 
     case FUNC_DEFINITION:
-        // break apart into function header and function body
-        // if the function name is not main
-        SymbolTable new_scope = NULL;
-        if (ast->kids[1]->prodrule == NAME) {
-            char* name = obtain_name(ast->kids[1]);
-            new_scope = enter_new_scope(current_table, name);
-            free(name);
-        } else if (ast->kids[1]->prodrule == MAINFUNC) {
-            new_scope = enter_new_scope(current_symtable, "main");
-        } else {
-            // something went wrong, should have been caught
-            throw_err("Function header not defined correctly", 1);
-        }
-        // populate the symtable with function parameters
-        populate_symboltable(ast->kids[0], new_scope);
-
-        // populate symtable for function body
-        populate_symboltable(ast->kids[1], new_scope);
+        // call the function walkthrough
+        // return
         break;
 
-    case FUNC_HEADER:
-        if (ast->kids[2] != NULL) {
-            populate_symboltable(ast->kids[2]->kids[0], current_symtable);
-        }
-        break;
-    
-    case PARAM_LIST:
-        if (ast->nkids == 2) {
-            populate_symboltable(ast->kids[1], current_symtable);
-        }
-        populate_symboltable(ast->kids[0], current_symtable);
-        break;
-
+    // move these to the function body walkthrough
     case PARAM:
         char* name = obtain_name(ast->kids[0]);
         int index = insert_symbol_entry(current_symtable, name);
