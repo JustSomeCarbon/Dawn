@@ -15,6 +15,15 @@
 #include "symtable.h"
 #include "err.h"
 
+
+/* -- local function prototypes -- */
+void func_param_walkthrough(struct tree* ast, SymbolTable current_table);
+void func_body_walkthrough(struct tree* ast, SymbolTable current_table);
+void parse_body_decl(struct tree* ast, SymbolTable current_symtable);
+void parse_expression(struct tree* ast, SymbolTable current_symtable);
+void parse_pattern_block(struct tree* ast, SymbolTable current_symtable);
+
+
 /*
  * Expects to take an ast of a Name rule. Returns the name of the ast rule
  * as a malloced char*. Character pointers returned are allocated on the heap and must be freed
@@ -77,21 +86,21 @@ void func_walkthrough(struct tree* ast, SymbolTable current_table)
         } else if (ast->kids[1]->prodrule == MAINFUNC) {
             new_scope = enter_new_scope(current_symtable, "mainf");
         } else {
-            // something went wrong, should have been caught
+            // something went wrong, function does not have a name
             throw_err("Function header not defined correctly", 1);
         }
         
         // check if the function header has parameters. if it does, call the
         // function header walkthrough
         if (ast->kids[0]->kids[2] != NULL) {
-            // pass ast at ParamList
-            func_header_walkthrough(ast->kids[0]->kids[2]->kids[0], current_table);
+            // pass ast at ParameterList
+            func_param_walkthrough(ast->kids[0]->kids[2]->kids[0], current_table);
         }
-        // check if the function body has expression, if it does, call the
+        // check if the function body has expression(s), if it does, call the
         // function body walkthrough
         if (ast->kids[1] != NULL) {
             // pass ast at FunctionBodyDecls
-            func_body_walkthrough(ast->kids[1]->kids[0]);
+            func_body_walkthrough(ast->kids[1]->kids[0], current_table);
         }
 }
 
@@ -101,7 +110,7 @@ void func_walkthrough(struct tree* ast, SymbolTable current_table)
  * symbol table with the parameters passed.
  * nothing is returned
  */
-void func_header_walkthrough(struct tree* ast, SymbolTable current_table)
+void func_param_walkthrough(struct tree* ast, SymbolTable current_table)
 {
     if (ast->nkids == 2) {
             // Populate symtable with parameter
@@ -109,10 +118,9 @@ void func_header_walkthrough(struct tree* ast, SymbolTable current_table)
             int index = insert_symbol_entry(current_symtable, name);
             free(name);
 
-            func_header_walkthrough(ast->kids[1], current_symtable);
+            func_param_walkthrough(ast->kids[0], current_symtable);
         }
-        //
-        func_header_walkthrough(ast->kids[0], current_symtable);
+        func_param_walkthrough(ast->kids[0], current_symtable);
 }
 
 
@@ -122,6 +130,63 @@ void func_header_walkthrough(struct tree* ast, SymbolTable current_table)
  * nothing is returned
  */
 void func_body_walkthrough(struct tree* ast, SymbolTable current_symtable)
+{
+    if (ast->nkids == 2) {
+        parse_body_decl(ast->kids[1], current_symtable);
+        func_body_walkthrough(ast->kids[0], current_symtable);
+    }
+    parse_body_decl(ast->kids[0], current_symtable);
+}
+
+
+/*
+ * takes an individual function body declaration and populates the symbol table
+ * with the appropriate symbols that are defined within the given expression.
+ * if the experssion is instead a pattern block, this function passes control to
+ * the pattern block parsing function.
+ * nothing is returned
+ */
+void parse_body_decl(struct tree* ast, SymbolTable current_symtable)
+{
+    if (ast->nkids == 2) {
+        // return expression: RETURN expr
+        // return type magic ...
+        parse_expression();
+    } else {
+        if (ast->kids[0]->prodrule == PATTERN_BLOCK) {
+            // pass to pattern block parser
+            SymbolTable new_scope = enter_new_scope(current_symtable, "pattern_block");
+            parse_pattern_block(ast->kids[0], new_scope);
+        } else {
+            // parse the expression
+            parse_expression(ast->kids[0], current_symtable);
+        }
+    }
+}
+
+
+/*
+ * takes an expression found in a function body and parses the symbols defined.
+ * the symbols defined in the expression are added to the symbol table of the 
+ * nothing is returned
+ */
+void parse_expression(struct tree* ast, SymbolTable current_symtable)
+{
+    if (ast->kids[0]->prodrule == VAR_ASSIGNMENT) {
+        // variable assignment operation
+        char* name = obtain_name(ast->kids[0]->kids[0]->kids[0]);
+        int index = insert_symbol_entry(current_symtable, name);
+        free(name);
+    } else {
+        //
+    }
+}
+
+
+/*
+ *
+ */
+void parse_pattern_block(struct tree* ast, SymbolTable current_symtable)
 {
     //
 }

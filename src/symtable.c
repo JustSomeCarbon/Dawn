@@ -66,9 +66,8 @@ void populate_symboltable(struct tree* ast, SymbolTable current_table)
 
     case FILE_DEFINITIONS:
         if (ast->nkids == 2) {
-            // step into right of ast
+            // right to left evaluation
             populate_symboltable(ast->kids[1], current_table);
-            // recurse on the left of ast
             populate_symboltable(ast->kids[0], current_table);
         } else {
             populate_symboltable(ast->kids[0], current_table);
@@ -94,41 +93,19 @@ void populate_symboltable(struct tree* ast, SymbolTable current_table)
         // this returns and moves back to the parent scope
         break;
     case STRUCT_PARAM:
-        // create a new symbol for the structure parameter
         char* name = obtain_name(ast->kids[0]);
         int index = insert_symbol_entry(current_table, name);
         free(name);
         break;
 
     case FUNC_DEFINITION:
-        // call the function walkthrough
-        // return
-        break;
-
-    // move these to the function body walkthrough
-    case PARAM:
-        char* name = obtain_name(ast->kids[0]);
-        int index = insert_symbol_entry(current_symtable, name);
-        free(name);
-        break;
-    
-    case FUNC_BODY:
-        populate_symboltable(ast->kids[0], current_symtable);
-        break;
-    
-    case FUNC_BODY_DECLS:
-        if (ast->nkids == 2) {
-            populate_symboltable(ast->kids[1], current_symtable);
-        }
-        populate_symboltable(ast->kids[0], current_symtable);
-        break;
-    
-    case FUNC_BODY_DECL:
-        // break down the function body declarations
-        // call the helper function to walk through the function body decls
+        // walk through the defined function
+        func_walkthrough(ast, current_table);
         break;
 
     default:
+        // This should never run, if it does something went wrong
+        printf("  Error: uncaught syntax node\n");
         break;
     }
 
