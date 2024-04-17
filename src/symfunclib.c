@@ -243,3 +243,15 @@ void parse_pattern_block(struct tree* ast, SymbolTable current_symtable)
         func_body_walkthrough(ast->kids[0]->kids[last_kid], current_symtable);
     }
 }
+
+
+/* -- For future error checking -- */
+
+/*
+ * check if the given expression is an assignment. if it is,
+ * return 1 (true), otherwise, return 0 (false)
+ */
+int check_if_expr_assignment(struct tree* ast)
+{
+    return 0;
+}
