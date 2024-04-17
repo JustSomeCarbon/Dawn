@@ -16,6 +16,7 @@ extern int yylineno;
 extern char* yyfile;
 extern struct tree* root; // contains the root of the tree generated from parsing
 
+
 enum sol_terms {
     FILE_ROOT=1001,
     SOURCE_SPACE,

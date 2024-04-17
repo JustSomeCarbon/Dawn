@@ -21,7 +21,11 @@ void func_param_walkthrough(struct tree* ast, SymbolTable current_table);
 void func_body_walkthrough(struct tree* ast, SymbolTable current_table);
 void parse_body_decl(struct tree* ast, SymbolTable current_symtable);
 void parse_expression(struct tree* ast, SymbolTable current_symtable);
+void walk_to_postfix(struct tree* ast);
+void parse_postfix(struct tree* ast, SymbolTable current_symtable);
 void parse_pattern_block(struct tree* ast, SymbolTable current_symtable);
+
+int check_if_expr_assignment(struct tree* ast);
 
 
 /*
@@ -125,7 +129,7 @@ void func_param_walkthrough(struct tree* ast, SymbolTable current_table)
 
 
 /*
- * takes the abstract syntax tree and walk through the function body expressions.
+ * takes the abstract syntax tree and walk through the function body declarations.
  * This function expects the ast given to be the function body declarations.
  * nothing is returned
  */
@@ -151,7 +155,7 @@ void parse_body_decl(struct tree* ast, SymbolTable current_symtable)
     if (ast->nkids == 2) {
         // return expression: RETURN expr
         // return type magic ...
-        parse_expression();
+        parse_expression(ast->kids[1], current_symtable);
     } else {
         if (ast->kids[0]->prodrule == PATTERN_BLOCK) {
             // pass to pattern block parser
@@ -174,19 +178,68 @@ void parse_expression(struct tree* ast, SymbolTable current_symtable)
 {
     if (ast->kids[0]->prodrule == VAR_ASSIGNMENT) {
         // variable assignment operation
-        char* name = obtain_name(ast->kids[0]->kids[0]->kids[0]);
-        int index = insert_symbol_entry(current_symtable, name);
-        free(name);
+        if (ast->kids[0]->kids[0]->nkids == 2) {
+            char* name = obtain_name(ast->kids[0]->kids[0]->kids[0]);
+            int index = insert_symbol_entry(current_symtable, name);
+            free(name);
+        }
+        // if not, drop val
     } else {
-        //
+        // walk to postfix expression
+        struct tree* tmp_ast = ast;
+        walk_to_postfix(tmp_ast);
+        parse_postfix(tmp_ast, current_symtable);
     }
 }
 
 
 /*
- *
+ * takes an ast at an expression and walks to the postfix expression for further processing.
+ * moves the given ast pointer down the ast to postfix.
+ * nothing is returned
+ */
+void walk_to_postfix(struct tree* ast)
+{
+    while (ast->prodrule != POST_FIX_EXPR) {
+        if (ast->nkids == 3) {
+            ast = ast->kids[2];
+        } else if (ast->nkids == 2) {
+            ast = ast->kids[1];
+        } else {
+            ast = ast->kids[0];
+        }
+    }
+}
+
+
+/*
+ * takes a postfix expression and ensures validity of the program.
+ */
+void parse_postfix(struct tree* ast, SymbolTable current_symtable)
+{
+    // if expression pass to expression walkthrough
+    if (ast->kids[0]->prodrule == PRIMARY) {
+        if (ast->kids[0]->kids[0]->prodrule == EXPR) {
+            parse_expression(ast->kids[0]->kids[0], current_symtable);
+            return;
+        }
+    }
+}
+
+
+/*
+ * takes a pattern block ast and parses the symbols. symbols are placed in the
+ * given symbol table.
+ * nothing is returned
  */
 void parse_pattern_block(struct tree* ast, SymbolTable current_symtable)
 {
-    //
+    if (ast->nkids == 2) {
+        int last_kid = ast->kids[1]->nkids - 1;
+        func_body_walkthrough(ast->kids[1]->kids[last_kid], current_symtable);
+        parse_pattern_block(ast->kids[0], current_symtable);
+    } else {
+        int last_kid = ast->kids[0]->nkids - 1;
+        func_body_walkthrough(ast->kids[0]->kids[last_kid], current_symtable);
+    }
 }

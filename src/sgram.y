@@ -151,7 +151,7 @@ PatternBlock: PatternBlock BAR PatternStmt {$$ = allocTree(PATTERN_BLOCK, "patte
     | PatternStmt {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 1, $1);}
 ;
 PatternStmt: Expr ARROWOP FunctionBodyDecls {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 2, $1, $3);}
-    | ARROWOP FunctionBodyDecl {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 1, $2);}
+    | ARROWOP FunctionBodyDecls {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 1, $2);}
 ;
 
 
