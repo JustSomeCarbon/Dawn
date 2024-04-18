@@ -52,6 +52,7 @@ SymbolTable lookup_symboltable(SymbolTable table, char* name);
 SymbolEntry lookup_symbol_entry(SymbolTable table, char* name);
 void print_symtable(SymbolTable table, int depth);
 void free_symboltable(SymbolTable table);
+void free_symbolentry(SymbolEntry entry);
 
 
 char* obtain_name(struct tree* ast);

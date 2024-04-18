@@ -9,7 +9,8 @@
     struct tree* root;
 %}
 
-%error-verbose
+//%error-verbose
+%define parse.error verbose
 
 %union {
     struct tree* treeptr;

@@ -8,6 +8,10 @@
  *   tree structures are defined bellow. Finally, all tree and token funciton
  *   prototypes are defined at the end of the file.
  */
+
+#ifndef TREE_H
+#define TREE_H
+
 #include <stdio.h>
 
 extern FILE* yyin; // !- contains file to compile -!
@@ -97,3 +101,5 @@ void returnOnError(int code, char* status, char* errType);
 // Dependant functions
 int yylex_destroy();
 extern int yyparse();
+
+#endif

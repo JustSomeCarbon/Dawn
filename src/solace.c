@@ -78,6 +78,7 @@ int main(int argc, char* argv[])
 
             // build: Symbol Table
             root_symtable = build_symtable(root);
+            print_symtable(root_symtable, 0);
 
             fclose(yyin);
         }

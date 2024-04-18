@@ -55,8 +55,7 @@ void populate_symboltable(struct tree* ast, SymbolTable current_table)
     /*
     Assess production rules for the given abstract syntax tree given
     */
-    switch (ast->prodrule)
-    {
+    switch (ast->prodrule) {
     case FILE_ROOT:
         if (ast->nkids == 1) {
             return;
@@ -144,7 +143,7 @@ SymbolTable generate_symboltable(int buckets, char* name)
     new_table->nbuckets = buckets;
     new_table->symtable = 0;
     new_table->symtable_name = strdup(name);
-    new_table->symtable = (SymbolTable*)alloc((unsigned int)(buckets * sizeof(SymbolEntry)));
+    new_table->symtable = (SymbolEntry*)alloc((unsigned int)(buckets * sizeof(SymbolEntry)));
 
     return new_table;
 }
@@ -257,7 +256,7 @@ void free_symboltable(SymbolTable table)
 
 /*
  * Takes an entry to a symbol table and frees the allocated memory associated
- with the symbol value. Nothing is returned.
+ * with the symbol value. Nothing is returned.
  */
 void free_symbolentry(SymbolEntry entry)
 {
@@ -284,7 +283,7 @@ int hash(SymbolTable table, char* val)
 {
     register char current_char;
     register int sum = 0;
-    while (current_char = *val++)
+    while ((current_char = *val++))
     {
         sum += current_char & 0377;
         sum *= 13;
