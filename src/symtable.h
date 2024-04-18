@@ -32,7 +32,7 @@ typedef struct sym_table
 
 typedef struct sym_entry
 {
-    SymbolTable table; // the table the entry belongs to
+    SymbolTable table; // pointer to new table scope
     char* name;        // the name of the symbol
 
     // The next entry in the table
@@ -50,7 +50,7 @@ SymbolEntry generate_new_entry(char* name);
 int insert_symbol_entry(SymbolTable table, char* name);
 SymbolTable lookup_symboltable(SymbolTable table, char* name);
 SymbolEntry lookup_symbol_entry(SymbolTable table, char* name);
-void print_symtable(SymbolTable table);
+void print_symtable(SymbolTable table, int depth);
 void free_symboltable(SymbolTable table);
 
 

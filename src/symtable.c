@@ -21,12 +21,12 @@ char* alloc(int n);
 /*
  * initializes a symbol table and calls the populate symbol table
  * function to walk through the ast and populate the table
- * Returns
+ * Returns the complete symbol table
  */
 SymbolTable build_symtable(struct tree* ast)
 {
     // create a symbol table to use
-    char* name = obtain_name(ast->kids[0]);
+    char* name = obtain_name(ast->kids[0]->kids[0]);
     int buckets = B_SIZE;
     SymbolTable symtable = generate_symboltable(buckets, name);
     free(name);
@@ -209,6 +209,36 @@ SymbolEntry lookup_symbol_entry(SymbolTable table, char* name)
     }
     return entry;
 }
+
+
+/*
+ * takes a symbol table and prints the table and its entries,
+ * printing all nested table scopes within.
+ * returns nothing
+ */
+void print_symtable(SymbolTable table, int depth)
+{
+    int buckets = B_SIZE;
+    // print the table name
+    printf("%*s\ttable:: %s\n", depth, " ", table->symtable_name);
+    // loop through all entries
+    for (int i = 0; i < buckets; i++) {
+        if (table->symtable[i] == NULL) {
+            continue;
+        }
+        SymbolEntry entry = table->symtable[i];
+        while(entry != NULL) {
+            if (entry->table != NULL) {
+                print_symtable(entry->table, depth + 1);
+            } else {
+                printf("%*s\tentry:: %s\n", depth * 2, " ", entry->name);
+            }
+            // move to the next entry in the hash table
+            entry = entry->next;
+        }
+    }
+}
+
 
 /*
  * Takes a symbol table and frees all successive symbol tables bellow it.

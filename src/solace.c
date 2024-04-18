@@ -30,6 +30,7 @@ void step_through_dbFlags(int flag);
 
 
 // Main Solace Compiler Function
+// TODO :: rework input to only take a single source file.
 
 /*
  * Solace compiler main function
@@ -72,14 +73,12 @@ int main(int argc, char* argv[])
                 fclose(yyin);
                 exit(1);
             }
-            // Parse the source file given
+            // build: AST
             yyparse();
-            //printf("File parse returns:: %d\n\n", yyparse());
 
-            // create the symbol table for the project
+            // build: Symbol Table
             root_symtable = build_symtable(root);
 
-            // close the file
             fclose(yyin);
         }
         // move to next source file

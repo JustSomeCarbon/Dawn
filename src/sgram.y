@@ -87,7 +87,7 @@
 FileRoot: SourceSpace FileDefinitions {root = allocTree(FILE_ROOT, "file_root", 2, $1, $2);}
     | SourceSpace                     {root = allocTree(FILE_ROOT, "file_root", 1, $1);}
 ;
-SourceSpace: MODSPACE COLON Name SEMICOLON {$$ = allocTree(SOURCE_SPACE, "source_space", 2, $1, $3);}
+SourceSpace: MODSPACE COLON Name SEMICOLON {$$ = allocTree(SOURCE_SPACE, "source_space", 1, $3);}
 ;
 FileDefinitions: FileDefinitions StructDefinition {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 2, $1, $2);}
     | FileDefinitions UseDefinition      {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 2, $1, $2);}
