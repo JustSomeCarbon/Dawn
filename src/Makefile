@@ -2,8 +2,8 @@ CC=clang
 CFLAGS=-Wall -ggdb3
 OBJFLAG=-Wall -ggdb3 -c
 
-solx: solace.o sgram.tab.o lex.yy.o tree.o symtab.o symfunclib.o
-	$(CC) $(CFLAGS) sgram.tab.o lex.yy.o tree.o symtab.o symfunclib.o solace.o -o solx
+solx: solace.o sgram.tab.o lex.yy.o tree.o symtable.o symfunclib.o
+	$(CC) $(CFLAGS) sgram.tab.o lex.yy.o tree.o symtable.o symfunclib.o solace.o -o solx
 
 solace.o: solace.c tree.h sgram.tab.h
 	$(CC) $(OBJFLAG) solace.c
@@ -11,11 +11,11 @@ solace.o: solace.c tree.h sgram.tab.h
 tree.o: tree.c tree.h
 	$(CC) $(OBJFLAG) tree.c
 
-symtab.o: symtable.c symtable.h
+symtable.o: symtable.c symtable.h tree.h symfunclib.o
 	$(CC) $(OBJFLAG) symtable.c
 
-symfunclib.o: symfunclib.c symtab.h
-	$(CC) $(OBJFLAG) symfunclib.clang
+symfunclib.o: symfunclib.c symtable.h tree.h
+	$(CC) $(OBJFLAG) symfunclib.c
 
 lex.yy.o: lex.yy.c
 	$(CC) $(OBJFLAG) lex.yy.c

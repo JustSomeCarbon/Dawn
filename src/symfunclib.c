@@ -51,12 +51,12 @@ char* obtain_name(struct tree* ast)
         } else {
             // throw an error, something went wrong
             char buf[100];
-            snprintf(buf, sizeof(buf), "Given character %s not supported in name\n", ast->kids[1]);
+            snprintf(buf, sizeof(buf), "Given character %s not supported in name\n", ast->kids[1]->leaf->text);
             throw_err(buf, 1);
         }
 
         strcat(name, ast->kids[2]->leaf->text);
-        name[strlen(name)-1] = "\0";
+        name[strlen(name)-1] = '\0';
 
         free(front);
     } else if (ast->nkids == 2) {
@@ -83,11 +83,11 @@ void func_walkthrough(struct tree* ast, SymbolTable current_table)
     // break apart into function header and function body
         // if the function name is not main
         SymbolTable new_scope = NULL;
-        if (ast->kids[1]->prodrule == NAME) {
+        if (ast->kids[0]->kids[0]->prodrule == NAME) {
             char* name = obtain_name(ast->kids[1]);
             new_scope = enter_new_scope(current_table, name);
             free(name);
-        } else if (ast->kids[1]->prodrule == MAINFUNC) {
+        } else if (ast->kids[0]->kids[0]->prodrule == MAINFUNC) {
             new_scope = enter_new_scope(current_symtable, "mainf");
         } else {
             // something went wrong, function does not have a name
@@ -98,13 +98,14 @@ void func_walkthrough(struct tree* ast, SymbolTable current_table)
         // function header walkthrough
         if (ast->kids[0]->kids[2] != NULL) {
             // pass ast at ParameterList
-            func_param_walkthrough(ast->kids[0]->kids[2]->kids[0], current_table);
+            func_param_walkthrough(ast->kids[0]->kids[2]->kids[0], new_scope);
         }
+        
         // check if the function body has expression(s), if it does, call the
         // function body walkthrough
         if (ast->kids[1] != NULL) {
             // pass ast at FunctionBodyDecls
-            func_body_walkthrough(ast->kids[1]->kids[0], current_table);
+            func_body_walkthrough(ast->kids[1]->kids[0], new_scope);
         }
 }
 
