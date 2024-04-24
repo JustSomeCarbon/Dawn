@@ -19,11 +19,11 @@
 /* -- local function prototypes -- */
 void func_param_walkthrough(struct tree* ast, SymbolTable current_table);
 void func_body_walkthrough(struct tree* ast, SymbolTable current_table);
-void parse_body_decl(struct tree* ast, SymbolTable current_symtable);
-void parse_expression(struct tree* ast, SymbolTable current_symtable);
+void parse_body_decl(struct tree* ast, SymbolTable current_table);
+void parse_expression(struct tree* ast, SymbolTable current_table);
 void walk_to_postfix(struct tree* ast);
-void parse_postfix(struct tree* ast, SymbolTable current_symtable);
-void parse_pattern_block(struct tree* ast, SymbolTable current_symtable);
+void parse_postfix(struct tree* ast, SymbolTable current_table);
+void parse_pattern_block(struct tree* ast, SymbolTable current_table);
 
 int check_if_expr_assignment(struct tree* ast);
 
@@ -88,7 +88,7 @@ void func_walkthrough(struct tree* ast, SymbolTable current_table)
             new_scope = enter_new_scope(current_table, name);
             free(name);
         } else if (ast->kids[0]->kids[0]->prodrule == MAINFUNC) {
-            new_scope = enter_new_scope(current_symtable, "mainf");
+            new_scope = enter_new_scope(current_table, "mainf");
         } else {
             // something went wrong, function does not have a name
             throw_err("Function header not defined correctly", 1);
@@ -120,16 +120,16 @@ void func_param_walkthrough(struct tree* ast, SymbolTable current_table)
     if (ast->nkids == 2) {
             // Populate symtable with parameter
             char* name = obtain_name(ast->kids[1]->kids[0]);
-            //int index = insert_symbol_entry(current_symtable, name);
-            insert_symbol_entry(current_symtable, name);
+            //int index = insert_symbol_entry(current_table, name);
+            insert_symbol_entry(current_table, name);
             free(name);
 
-            func_param_walkthrough(ast->kids[0], current_symtable);
+            func_param_walkthrough(ast->kids[0], current_table);
         }
 
         char* name = obtain_name(ast->kids[1]->kids[0]);
-        //int index = insert_symbol_entry(current_symtable, name);
-        insert_symbol_entry(current_symtable, name);
+        //int index = insert_symbol_entry(current_table, name);
+        insert_symbol_entry(current_table, name);
         free(name);
 }
 
@@ -139,13 +139,13 @@ void func_param_walkthrough(struct tree* ast, SymbolTable current_table)
  * This function expects the ast given to be the function body declarations.
  * nothing is returned
  */
-void func_body_walkthrough(struct tree* ast, SymbolTable current_symtable)
+void func_body_walkthrough(struct tree* ast, SymbolTable current_table)
 {
     if (ast->nkids == 2) {
-        parse_body_decl(ast->kids[1], current_symtable);
-        func_body_walkthrough(ast->kids[0], current_symtable);
+        parse_body_decl(ast->kids[1], current_table);
+        func_body_walkthrough(ast->kids[0], current_table);
     }
-    parse_body_decl(ast->kids[0], current_symtable);
+    parse_body_decl(ast->kids[0], current_table);
 }
 
 
@@ -156,20 +156,20 @@ void func_body_walkthrough(struct tree* ast, SymbolTable current_symtable)
  * the pattern block parsing function.
  * nothing is returned
  */
-void parse_body_decl(struct tree* ast, SymbolTable current_symtable)
+void parse_body_decl(struct tree* ast, SymbolTable current_table)
 {
     if (ast->nkids == 2) {
         // return expression: RETURN expr
         // return type magic ...
-        parse_expression(ast->kids[1], current_symtable);
+        parse_expression(ast->kids[1], current_table);
     } else {
         if (ast->kids[0]->prodrule == PATTERN_BLOCK) {
             // pass to pattern block parser
-            SymbolTable new_scope = enter_new_scope(current_symtable, "pattern_block");
+            SymbolTable new_scope = enter_new_scope(current_table, "pattern_block");
             parse_pattern_block(ast->kids[0], new_scope);
         } else {
             // parse the expression
-            parse_expression(ast->kids[0], current_symtable);
+            parse_expression(ast->kids[0], current_table);
         }
     }
 }
@@ -180,14 +180,14 @@ void parse_body_decl(struct tree* ast, SymbolTable current_symtable)
  * the symbols defined in the expression are added to the symbol table of the 
  * nothing is returned
  */
-void parse_expression(struct tree* ast, SymbolTable current_symtable)
+void parse_expression(struct tree* ast, SymbolTable current_table)
 {
     if (ast->kids[0]->prodrule == VAR_ASSIGNMENT) {
         // variable assignment operation
         if (ast->kids[0]->kids[0]->nkids == 2) {
             char* name = obtain_name(ast->kids[0]->kids[0]->kids[0]);
-            //int index = insert_symbol_entry(current_symtable, name);
-            insert_symbol_entry(current_symtable, name);
+            //int index = insert_symbol_entry(current_table, name);
+            insert_symbol_entry(current_table, name);
             free(name);
         }
 
@@ -197,7 +197,7 @@ void parse_expression(struct tree* ast, SymbolTable current_symtable)
         // walk to postfix expression
         struct tree* tmp_ast = ast;
         walk_to_postfix(tmp_ast);
-        parse_postfix(tmp_ast, current_symtable);
+        parse_postfix(tmp_ast, current_table);
     }
 }
 
@@ -224,12 +224,12 @@ void walk_to_postfix(struct tree* ast)
 /*
  * takes a postfix expression and ensures validity of the program.
  */
-void parse_postfix(struct tree* ast, SymbolTable current_symtable)
+void parse_postfix(struct tree* ast, SymbolTable current_table)
 {
     // if expression pass to expression walkthrough
     if (ast->kids[0]->prodrule == PRIMARY) {
         if (ast->kids[0]->kids[0]->prodrule == EXPR) {
-            parse_expression(ast->kids[0]->kids[0], current_symtable);
+            parse_expression(ast->kids[0]->kids[0], current_table);
             return;
         }
     }
@@ -241,15 +241,15 @@ void parse_postfix(struct tree* ast, SymbolTable current_symtable)
  * given symbol table.
  * nothing is returned
  */
-void parse_pattern_block(struct tree* ast, SymbolTable current_symtable)
+void parse_pattern_block(struct tree* ast, SymbolTable current_table)
 {
     if (ast->nkids == 2) {
         int last_kid = ast->kids[1]->nkids - 1;
-        func_body_walkthrough(ast->kids[1]->kids[last_kid], current_symtable);
-        parse_pattern_block(ast->kids[0], current_symtable);
+        func_body_walkthrough(ast->kids[1]->kids[last_kid], current_table);
+        parse_pattern_block(ast->kids[0], current_table);
     } else {
         int last_kid = ast->kids[0]->nkids - 1;
-        func_body_walkthrough(ast->kids[0]->kids[last_kid], current_symtable);
+        func_body_walkthrough(ast->kids[0]->kids[last_kid], current_table);
     }
 }
 
