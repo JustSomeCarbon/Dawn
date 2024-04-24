@@ -100,7 +100,7 @@ void func_walkthrough(struct tree* ast, SymbolTable current_table)
             // pass ast at ParameterList
             func_param_walkthrough(ast->kids[0]->kids[2]->kids[0], new_scope);
         }
-        
+
         // check if the function body has expression(s), if it does, call the
         // function body walkthrough
         if (ast->kids[1] != NULL) {
@@ -120,12 +120,17 @@ void func_param_walkthrough(struct tree* ast, SymbolTable current_table)
     if (ast->nkids == 2) {
             // Populate symtable with parameter
             char* name = obtain_name(ast->kids[1]->kids[0]);
-            int index = insert_symbol_entry(current_symtable, name);
+            //int index = insert_symbol_entry(current_symtable, name);
+            insert_symbol_entry(current_symtable, name);
             free(name);
 
             func_param_walkthrough(ast->kids[0], current_symtable);
         }
-        func_param_walkthrough(ast->kids[0], current_symtable);
+
+        char* name = obtain_name(ast->kids[1]->kids[0]);
+        //int index = insert_symbol_entry(current_symtable, name);
+        insert_symbol_entry(current_symtable, name);
+        free(name);
 }
 
 
@@ -181,10 +186,13 @@ void parse_expression(struct tree* ast, SymbolTable current_symtable)
         // variable assignment operation
         if (ast->kids[0]->kids[0]->nkids == 2) {
             char* name = obtain_name(ast->kids[0]->kids[0]->kids[0]);
-            int index = insert_symbol_entry(current_symtable, name);
+            //int index = insert_symbol_entry(current_symtable, name);
+            insert_symbol_entry(current_symtable, name);
             free(name);
         }
-        // if not, drop val
+
+        // !-- if not, drop val --!
+
     } else {
         // walk to postfix expression
         struct tree* tmp_ast = ast;
