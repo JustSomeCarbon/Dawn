@@ -26,7 +26,7 @@ SymbolTable root_symtable;
 // Local Prototypes
 
 void check_extension(char* file);
-void step_through_dbFlags(int flag);
+void eval_flag(int flag);
 
 
 // Main Solace Compiler Function
@@ -43,6 +43,7 @@ int main(int argc, char* argv[])
     //  - version 0.0.1 pre-alpha
 
     int astFlag = 0;
+    int symtabFlag = 0;
 
     if (argc == 0) {
         // no file given :: throw error
@@ -61,6 +62,9 @@ int main(int argc, char* argv[])
         } else if (strcmp(argv[filearg], "-s") == 0) {
             // print the abstract syntax tree
             astFlag = 1;
+        } else if (strcmp(argv[filearg], "-y") == 0) {
+            // print the symbol table tree
+            symtabFlag = 1;
         } else {
             // compile the source file
             check_extension(argv[filearg]);
@@ -78,7 +82,6 @@ int main(int argc, char* argv[])
 
             // build: Symbol Table
             root_symtable = build_symtable(root);
-            print_symtable(root_symtable, 0);
 
             fclose(yyin);
         }
@@ -87,7 +90,8 @@ int main(int argc, char* argv[])
     } // end of while
     // No more source files: end lexer
 
-    step_through_dbFlags(astFlag);
+    eval_flag(astFlag);
+    eval_flag(symtabFlag);
 
     // Free the root of the AST
     freeTree(root);
@@ -101,7 +105,7 @@ int main(int argc, char* argv[])
 /*
  * take the given flag integer and execute flag action
  */
-void step_through_dbFlags(int flag)
+void eval_flag(int flag)
 {
     if (flag) {
         printTree(root, 0);
