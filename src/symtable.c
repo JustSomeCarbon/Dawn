@@ -28,6 +28,7 @@ SymbolTable build_symtable(struct tree* ast)
     // create a symbol table to use
     char* name = obtain_name(ast->kids[0]->kids[0]);
     int buckets = B_SIZE;
+    // symtable parent value is NULL
     SymbolTable symtable = generate_symboltable(buckets, name);
     free(name);
     populate_symboltable(ast, symtable);
@@ -125,6 +126,7 @@ SymbolTable enter_new_scope(SymbolTable current_scope, char* scope_name)
     int buckets = B_SIZE;
     // create a new entry and create a new scope
     SymbolTable new_table = generate_symboltable(buckets, scope_name);
+    new_table->parent = current_scope;
     insert_symbol_entry(current_scope, scope_name);
     SymbolEntry new_entry = lookup_symbol_entry(current_scope, scope_name);
     new_entry->table = new_table;
@@ -144,8 +146,9 @@ SymbolTable generate_symboltable(int buckets, char* name)
     SymbolTable new_table = (SymbolTable)alloc(sizeof(struct sym_table));
 
     new_table->nbuckets = buckets;
-    new_table->symtable = 0;
+    new_table->nentries = 0;
     new_table->symtable_name = strdup(name);
+    new_table->parent = NULL;
     new_table->symtable = (SymbolEntry*)alloc((unsigned int)(buckets * sizeof(SymbolEntry)));
 
     return new_table;
@@ -176,6 +179,7 @@ int insert_symbol_entry(SymbolTable table, char* name)
     SymbolEntry insert_chain = table->symtable[index];
     if (insert_chain == NULL) {
         table->symtable[index] = entry;
+        table->nentries += 1;
         return index;
     }
     while (insert_chain->next != NULL) {
@@ -183,6 +187,7 @@ int insert_symbol_entry(SymbolTable table, char* name)
     }
     insert_chain->next = entry;
 
+    table->nentries += 1;
     return index;
 }
 
@@ -192,24 +197,39 @@ int insert_symbol_entry(SymbolTable table, char* name)
  */
 SymbolTable lookup_symboltable(SymbolTable table, char* name)
 {
-    return NULL;
+    SymbolTable current_lookup = table;
+
+    while (current_lookup) {
+        if (strcmp(current_lookup->symtable_name, name) == 0) {
+            return current_lookup;
+        } else {
+            current_lookup = current_lookup->parent;
+        }
+    }
+
+    return current_lookup;
 }
 
 /*
  * takes a symbol table and an entry and tries to look for the entry within the given
- * symbol table. If the entry is not found, NULL is returned.
+ * symbol table. If the entry is not found, move to parent symbol table and look. if
+ * the entry is not found, return NULL.
  */
 SymbolEntry lookup_symbol_entry(SymbolTable table, char* name)
 {
-    int index = hash(table, name);
-    SymbolEntry entry = table->symtable[index];
-    while(strcmp(entry->name, name) != 0) {
-        entry = entry->next;
-        if (entry == NULL) {
-            return NULL;
+    SymbolTable tmp = table;
+    while (tmp) {
+        int index = hash(tmp, name);
+        SymbolEntry entry = tmp->symtable[index];
+        while(strcmp(entry->name, name) != 0) {
+            entry = entry->next;
+            if (entry == NULL) {
+                tmp = tmp->parent;
+                break;
+            }
         }
     }
-    return entry;
+    return NULL;
 }
 
 
@@ -254,6 +274,7 @@ void free_symboltable(SymbolTable table)
     }
     // free the symbol table on memory
     free(table->symtable);
+    free(table->symtable_name);
     free(table);
 }
 

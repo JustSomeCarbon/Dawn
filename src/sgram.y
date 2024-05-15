@@ -10,7 +10,7 @@
 %}
 
 //%error-verbose
-%define parse.error verbose
+//%define parse.error verbose
 
 %union {
     struct tree* treeptr;
@@ -18,7 +18,7 @@
 
 %token <treeptr> LBRACKET RBRACKET COMA COLON SEMICOLON MODSPACE
 %token <treeptr> LBRACE RBRACE LPAREN RPAREN
-%token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL DOT SELF
+%token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL DOT SELF ON DO WHEN
 %token <treeptr> BOOLEAN INT FLOAT CHAR STRING SYMBOL
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL FUNCTION
@@ -140,9 +140,11 @@ FunctionBody: LBRACE FunctionBodyDecls RBRACE {$$ = allocTree(FUNC_BODY, "func_b
 FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl {$$ = allocTree(FUNC_BODY_DECLS, "func_body_decls", 2, $1, $2);}
     | FunctionBodyDecl {$$ = allocTree(FUNC_BODY_DECLS, "func_body_decls", 1, $1);}
 ;
-FunctionBodyDecl: LBRACE PatternBlock RBRACE {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $2);}
-    | Expr SEMICOLON             {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $1);}
-    | RETURN Expr SEMICOLON      {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 2, $1, $2);}
+FunctionBodyDecl: Expr SEMICOLON  {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $1);}
+    | RETURN Expr SEMICOLON       {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 2, $1, $2);}
+    | LBRACE PatternBlock RBRACE  {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $2);}
+    | ON Expr DO LBRACE PatternBlock RBRACE
+    {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 2, $2, $5);}
 ;
 
 
@@ -151,7 +153,8 @@ FunctionBodyDecl: LBRACE PatternBlock RBRACE {$$ = allocTree(FUNC_BODY_DECL, "fu
 PatternBlock: PatternBlock BAR PatternStmt {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $1, $3);}
     | PatternStmt {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 1, $1);}
 ;
-PatternStmt: Expr ARROWOP FunctionBodyDecls {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 2, $1, $3);}
+PatternStmt: Expr ARROWOP FunctionBodyDecls    {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 2, $1, $3);}
+    | Expr WHEN Expr ARROWOP FunctionBodyDecls {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 3, $1, $3, $5);}
     | ARROWOP FunctionBodyDecls {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 1, $2);}
 ;
 

@@ -35,6 +35,9 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "main"          {return allocToken(MAINFUNC);}
 "return"        {return allocToken(RETURN);}
 "self"          {return allocToken(SELF);}
+"on"            {return allocToken(ON);}
+"do"            {return allocToken(DO);}
+"when"          {return allocToken(WHEN);}
 
 "+"             {return allocToken(ADD);}
 "-"             {return allocToken(SUBTRACT);}
