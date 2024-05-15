@@ -53,8 +53,6 @@ void populate_symboltable(struct tree* ast, SymbolTable current_table)
         return;
     }
 
-    char* name = NULL;
-
     /*
     Assess production rules for the given abstract syntax tree given
     */
@@ -77,12 +75,14 @@ void populate_symboltable(struct tree* ast, SymbolTable current_table)
         break;
     
     case STRUCT_DEFINITION:
-        name = obtain_name(ast->kids[0]);
+        {
+        char* name = obtain_name(ast->kids[0]);
         SymbolTable new_scope = enter_new_scope(current_table, name);
         free(name);
         // recurse for all structure parameters in struct delcaration
         populate_symboltable(ast->kids[1], new_scope);
         break;
+        }
     
     case STRUCT_PARAMS:
         // recurse through all parameters
@@ -95,11 +95,13 @@ void populate_symboltable(struct tree* ast, SymbolTable current_table)
         // this returns and moves back to the parent scope
         break;
     case STRUCT_PARAM:
-        name = obtain_name(ast->kids[0]);
+        {
+        char* name = obtain_name(ast->kids[0]);
         //int index = insert_symbol_entry(current_table, name);
         insert_symbol_entry(current_table, name);
         free(name);
         break;
+        }
 
     case FUNC_DEFINITION:
         // walk through the defined function
