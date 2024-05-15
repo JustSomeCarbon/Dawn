@@ -1,6 +1,5 @@
 space::Main;
 
-use IO;
 use IO::{out};
 
 // this is a hello world test program
