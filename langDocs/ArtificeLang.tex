@@ -121,7 +121,7 @@ writing library functions). The following is an example of writing the most simp
 that exits.
 
 \begin{lstlisting}
-mod Main do
+mod Main
 	def main () do
 		0;
 	end
@@ -213,7 +213,7 @@ Variables are essential to storing and retrieving data in programs. Within Artif
 as well as the data information they want to store within the variable. Variables are defined using simple syntax rules:
 
 \begin{lstlisting}
-mod Main do
+mod Main
 	def main() int do
 		n int = 32
 		n;
@@ -226,7 +226,7 @@ to define a variable $n$ that stores an integer value of $32$, and we end the li
 line. This syntax definition is standard for defining any variable of any type.
 
 \begin{lstlisting}
-mod Main do 
+mod Main
 	def main() int do
 		letter char = 'c'
 		passage string = "hello, world!"
@@ -337,7 +337,7 @@ operations in Artifice will be easy to understand and pick up. Artifice allows t
 simple showcase of how to perform the basic mathematical operations on integer and float values.
 
 \begin{lstlisting}
-mod Main do
+mod Main
 	def main () int do
 		2 + 2 // returns 4
 		5 - 2 // returns 3
@@ -365,7 +365,7 @@ result will reflect that order. Concatenation always results in a larger value, 
 string rather than a character.
 
 \begin{lstlisting}
-mod Main do
+mod Main
 	def main () int do
 		character1 char = 'h'
 		character2 char = 'i'
@@ -396,7 +396,7 @@ Comparison and logical operations are performed similar to that of mathematical 
 values being compared.
 
 \begin{lstlisting}
-mod Main do
+mod Main
 	def main() int do
 		8 > 7  // returns true
 		1 < 0  // returns false
@@ -441,7 +441,7 @@ the use of the function keyword followed by the name of the function, the return
 examples of defining functions (we defined a main function to use). We can easily define and call functions within our programs.
 
 \begin{lstlisting}
-mod Main do
+mod Main
 	def main() int do
 		IO::out(double(5))  // prints 10
 		0;
@@ -464,7 +464,7 @@ To do so we use lambda functions. These special functions are essentially namele
 with no reference bounding them.
 
 \begin{lstlisting}
-mod Main do
+mod Main
 	def main() int do
 			// we can bind a function to a local variable by defining it 
 			// as the assignment expression
@@ -504,7 +504,7 @@ Lets take a look at more complex use cases for functions. In Artifice, there are
 Let us assume we are building a summation function for values from 1 to the given limit. We can build it as follows:
 
 \begin{lstlisting}
-mod Main do
+mod Main
 	def main () int do
 		summation(5); 	// returns 15 or (5 + 4 + 3 + 2 + 1)
 	end
@@ -529,7 +529,7 @@ Artifice provides the $self$ keyword. To reference the parent function the progr
 to recurse.
 
 \begin{lstlisting}
-mod Main do
+mod Main
 	def main () int do
 			// define a lambda function that requires looping to complete
 		raiseToPower fn = (n int, r int) int do
