@@ -20,19 +20,20 @@
 %token <treeptr> LBRACE RBRACE LPAREN RPAREN
 %token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL DOT SELF ON DO END
 %token <treeptr> BOOLEAN INT FLOAT CHAR STRING SYMBOL FUNCTION
-%token <treeptr> THEN IF ELSEIF ELSE ENDOR
+%token <treeptr> THEN IF ELSEIF ELSE ENDOR MATCH
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL DEFINE
 %token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
-%token <treeptr> ASSIGNMENT BAR ARROWOP RETURN
+%token <treeptr> ASSIGNMENT BAR ARROWOP MATCHTO
 %token <treeptr> ISEQUALTO NOTEQUALTO LOGICALAND LOGICALOR NOT
 %token <treeptr> GREATERTHANOREQUAL LESSTHANOREQUAL GREATERTHAN LESSTHAN
 
 %type <treeptr> FileRoot
-%type <treeptr> SourceSpace
-%type <treeptr> FileDefinitions
+%type <treeptr> ModSpace
+%type <treeptr> ModSpaceDefinitions
 
 %type <treeptr> UseDefinition
+%type <treeptr> ImportPath
 %type <treeptr> ImportList
 
 %type <treeptr> StructDefinition
@@ -44,11 +45,14 @@
 %type <treeptr> ParameterListOpt
 %type <treeptr> ParameterList
 %type <treeptr> Parameter
+%type <treeptr> ParameterMatch
 %type <treeptr> FunctionBody
+%type <treeptr> FunctionBodyPattern
 %type <treeptr> FunctionBodyDecls
 %type <treeptr> FunctionBodyDecl
 
 %type <treeptr> PatternBlock
+%type <treeptr> PatternStmts
 %type <treeptr> PatternStmt
 
 %type <treeptr> Expr
@@ -86,37 +90,41 @@
 
 /* -- SOURCE FILE DEFINITION -- */
 
-FileRoot: SourceSpace FileDefinitions {root = allocTree(FILE_ROOT, "file_root", 2, $1, $2);}
-    | SourceSpace                     {root = allocTree(FILE_ROOT, "file_root", 1, $1);}
+FileRoot: ModSpace ModSpaceDefinitions END {root = allocTree(FILE_ROOT, "file_root", 2, $1, $2);}
+    | ModSpace END                    {root = allocTree(FILE_ROOT, "file_root", 1, $1);}
 ;
-SourceSpace: MODSPACE COLON Name SEMICOLON {$$ = allocTree(SOURCE_SPACE, "source_space", 1, $3);}
+ModSpace: MODSPACE Name {$$ = allocTree(MOD_SPACE, "source_space", 1, $3);}
 ;
-FileDefinitions: FileDefinitions StructDefinition {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 2, $1, $2);}
-    | FileDefinitions UseDefinition      {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 2, $1, $2);}
-    | FileDefinitions FunctionDefinition {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 2, $1, $2);}
-    | UseDefinition      {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 1, $1);}
-    | StructDefinition   {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 1, $1);}
-    | FunctionDefinition {$$ = allocTree(FILE_DEFINITIONS, "file_definitions", 1, $1);}
+ModSpaceDefinitions: ModSpace ModSpaceDefinitions END {$$ = allocTree(MOD_SPACE_DEFINITIONS, "mod_space_definitions", 2, $1, $2);}
+    | ModSpaceDefinitions DEFINE StructDefinition   {$$ = allocTree(MOD_SPACE_DEFINITIONS, "mod_space_definitions", 2, $1, $3);}
+    | ModSpaceDefinitions UseDefinition      {$$ = allocTree(MOD_SPACE_DEFINITIONS, "mod_space_definitions", 2, $1, $2);}
+    | ModSpaceDefinitions DEFINE FunctionDefinition {$$ = allocTree(MOD_SPACE_DEFINITIONS, "mod_space_definitions", 2, $1, $3);}
+    | UseDefinition      {$$ = allocTree(MOD_SPACE_DEFINITIONS, "mod_space_definitions", 1, $1);}
+    | DEFINE StructDefinition   {$$ = allocTree(MOD_SPACE_DEFINITIONS, "mod_space_definitions", 1, $1);}
+    | DEFINE FunctionDefinition {$$ = allocTree(MOD_SPACE_DEFINITIONS, "mod_space_definitions", 1, $1);}
 ;
 
-/*  -- USE GRAMAR DEFINITIONS -- */
+/*  -- MOD INCLUSION GRAMAR DEFINITION -- */
 
-UseDefinition: USE Name SEMICOLON                       {$$ = allocTree(USE_DEFINITIONS, "use_definitions", 1, $2);}
-    | USE Name COLON LBRACE ImportList RBRACE SEMICOLON {$$ = allocTree(USE_DEFINITIONS, "use_definitions", 2, $2, $5);}
+UseDefinition: USE ImportPath                 {$$ = allocTree(USE_DEFINITIONS, "use_definitions", 1, $2);}
+    | USE ImportPath COLON LBRACE ImportList RBRACE {$$ = allocTree(USE_DEFINITIONS, "use_definitions", 2, $2, $5);}
 ;
-ImportList: ImportList COMA Name {$$ = allocTree(IMPORT_LIST, "import_list", 2, $1, $3);}
-    | Name {$$ = allocTree(IMPORT_LIST, "import_list", 1, $1);}
+ImportPath: IDENTIFIER {$$ = allocTree(IMPORT_PATH, "import_path", 1, $1);}
+    | ImportPath COLON IDENTIFIER {$$ = allocTree(IMPORT_PATH, "import_path", 2, $1, $3);}
+;
+ImportList: ImportList COMA IDENTIFIER {$$ = allocTree(IMPORT_LIST, "import_list", 2, $1, $3);}
+    | IDENTIFIER {$$ = allocTree(IMPORT_LIST, "import_list", 1, $1);}
 ;
 
 
 /* -- STRUCT GRAMAR DEFINITIONS -- */
 
-StructDefinition: STRUCT Name LBRACE StructParams RBRACE SEMICOLON {$$ = allocTree(STRUCT_DEFINITION, "struct_definition", 2, $2, $4);}
+StructDefinition: Name STRUCT LBRACE StructParams RBRACE {$$ = allocTree(STRUCT_DEFINITION, "struct_definition", 2, $2, $5);}
 ;
-StructParams: StructParams StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 2, $1, $2);}
+StructParams: StructParams COMA StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 2, $1, $3);}
     | StructParam {$$ = allocTree(STRUCT_PARAMS, "struct_params", 1, $1);}
 ;
-StructParam: Name Type SEMICOLON {$$ = allocTree(STRUCT_PARAM, "struct_param", 2, $1, $2);}
+StructParam: Name Type {$$ = allocTree(STRUCT_PARAM, "struct_param", 2, $1, $2);}
 ;
 
 
@@ -124,8 +132,8 @@ StructParam: Name Type SEMICOLON {$$ = allocTree(STRUCT_PARAM, "struct_param", 2
 
 FunctionDefinition: FunctionHeader FunctionBody {$$ = allocTree(FUNC_DEFINITION, "func_definition", 2, $1, $2);}
 ;
-FunctionHeader: FUNCTION Name Type ParameterListOpt {$$ = allocTree(FUNC_HEADER, "func_header", 3, $2, $3, $4);}
-    | FUNCTION MAINFUNC Type ParameterListOpt       {$$ = allocTree(FUNC_HEADER, "func_header", 3, $2, $3, $4);}
+FunctionHeader: Name ParameterListOpt Type {$$ = allocTree(FUNC_HEADER, "func_header", 3, $1, $2, $3);}
+    | MAINFUNC ParameterListOpt Type       {$$ = allocTree(FUNC_HEADER, "func_header", 3, $1, $2, $3);}
 ;
 ParameterListOpt: LPAREN ParameterList RPAREN {$$ = allocTree(PARAM_LIST_OPT, "param_list_opt", 1, $2);}
     | LPAREN RPAREN {$$ = NULL;}
@@ -134,30 +142,41 @@ ParameterList: ParameterList COMA Parameter {$$ = allocTree(PARAM_LIST, "param_l
     | Parameter {$$ = allocTree(PARAM_LIST, "param_list", 1, $1);}
 ;
 Parameter: Name Type {$$ = allocTree(PARAM, "parameter", 2, $1, $2);}
+    | ParameterMatch {$$ = allocTree(PARAM, "parameter", 1, $1);}
 ;
-FunctionBody: LBRACE FunctionBodyDecls RBRACE {$$ = allocTree(FUNC_BODY, "func_body", 1, $2);}
-    | LBRACE RBRACE {$$ = NULL;}
+ParameterMatch: Name Type MATCHTO Expr {$$ = allocTree(PARAM_MATCH, "param_match", 3, $1, $2, $4);}
+;
+FunctionBody: DO FunctionBodyDecls END {$$ = allocTree(FUNC_BODY, "func_body", 1, $2);}
+    | DO FunctionBodyDecls ENDOR FunctionBodyPattern {$$ = allocTree(FUNC_BODY, "func_body", 2, $2, $4)}
+    | DO END {$$ = NULL;}
+;
+FunctionBodyPattern: ParameterListOpt Type FunctionBody {$$ = allocTree(FUNC_BODY_PATTERN, "func_body_pattern", 3, $1, $2, $3);}
 ;
 FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl {$$ = allocTree(FUNC_BODY_DECLS, "func_body_decls", 2, $1, $2);}
     | FunctionBodyDecl {$$ = allocTree(FUNC_BODY_DECLS, "func_body_decls", 1, $1);}
 ;
-FunctionBodyDecl: Expr SEMICOLON  {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $1);}
-    | RETURN Expr SEMICOLON       {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 2, $1, $2);}
-    | LBRACE PatternBlock RBRACE  {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $2);}
-    | ON Expr DO LBRACE PatternBlock RBRACE
-    {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 2, $2, $5);}
+FunctionBodyDecl: Expr  {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $1);}
+    | Expr SEMICOLON    {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 2, $1, $2);}
+    | PatternBlock      {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $2);}
 ;
 
 
 /* -- PATTERN EXPRESSION GRAMMAR -- */
 
-PatternBlock: PatternBlock BAR PatternStmt {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $1, $3);}
-    | PatternStmt {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 1, $1);}
+PatternBlock: ON Expr MATCH PatternStmts END {$$ = allocTree(PATTERN_BLOCK, "pattern_block", 2, $2, $4);}
+;
+PatternStmts: PatternStmts PatternStmt {$$ = allocTree(PATTERN_STMTS, "pattern_stmts", 2, $1, $2);}
+    | PatternStmt {$$ = allocTree(PATTERN_STMTS, "pattern_stmts", 1, $1);}
 ;
 PatternStmt: Expr ARROWOP FunctionBodyDecls    {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 2, $1, $3);}
-    | Expr WHEN Expr ARROWOP FunctionBodyDecls {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 3, $1, $3, $5);}
-    | ARROWOP FunctionBodyDecls {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 1, $2);}
+    | DROPVAL ARROWOP FunctionBodyDecls {$$ = allocTree(PATTERN_STMT, "pattern_stmt", 1, $2);}
 ;
+
+
+/* TODO -> */
+
+/* CONDITION GRAMAR DEFINITIONS */
+// THINGS
 
 
 /* -- EXPRESSION GRAMAR DEFINITIONS -- */

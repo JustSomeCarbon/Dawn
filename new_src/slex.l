@@ -35,9 +35,9 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "use"           {return allocToken(USE);}
 "struct"        {return allocToken(STRUCT);}
 "main"          {return allocToken(MAINFUNC);}
-"return"        {return allocToken(RETURN);}
 "self"          {return allocToken(SELF);}
 "on"            {return allocToken(ON);}
+"match"         {return allocToken(MATCH);}
 "do"            {return allocToken(DO);}
 "then"          {return allocTken(THEN);}
 "if"            {return allocToken(IF);}
@@ -54,6 +54,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 
 "="             {return allocToken(ASSIGNMENT);}
 "=="            {return allocToken(ISEQUALTO);}
+"~="            {return allocToken(MATCHTO);}
 ">"             {return allocToken(GREATERTHAN);}
 "<"             {return allocToken(LESSTHAN);}
 ">="            {return allocToken(GREATERTHANOREQUAL);}

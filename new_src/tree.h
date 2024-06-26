@@ -23,9 +23,10 @@ extern struct tree* root; // contains the root of the tree generated from parsin
 
 enum sol_terms {
     FILE_ROOT=1001,
-    SOURCE_SPACE,
-    FILE_DEFINITIONS,
+    MOD_SPACE,
+    MOD_SPACE_DEFINITIONS,
     USE_DEFINITIONS,
+    IMPORT_PATH,
     IMPORT_LIST,        // 1005
     STRUCT_DEFINITION,
     STRUCT_PARAMS,
@@ -35,10 +36,13 @@ enum sol_terms {
     PARAM_LIST_OPT,
     PARAM_LIST,
     PARAM,
+    PARAM_MATCH,
     FUNC_BODY,
+    FUNC_BODY_PATTERN,
     FUNC_BODY_DECLS,    // 1015
     FUNC_BODY_DECL,
     PATTERN_BLOCK,
+    PATTERN_STMTS,
     PATTERN_STMT,
     EXPR,
     COND_OR_EXPR,       // 1020
