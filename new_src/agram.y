@@ -20,7 +20,7 @@
 %token <treeptr> LBRACE RBRACE LPAREN RPAREN
 %token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL DOT SELF ON DO END
 %token <treeptr> BOOLEAN INT FLOAT CHAR STRING SYMBOL FUNCTION
-%token <treeptr> THEN IF ELSEIF ELSE ENDOR MATCH
+%token <treeptr> THEN IF ELSEIF ELSE ORMATCH MATCH
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL DEFINE
 %token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
@@ -54,6 +54,9 @@
 %type <treeptr> PatternBlock
 %type <treeptr> PatternStmts
 %type <treeptr> PatternStmt
+
+%type <treeptr> CondStmts
+%type <treeptr> TrailingConds
 
 %type <treeptr> Expr
 %type <treeptr> CondOrExpr
@@ -147,7 +150,7 @@ Parameter: Name Type {$$ = allocTree(PARAM, "parameter", 2, $1, $2);}
 ParameterMatch: Name Type MATCHTO Expr {$$ = allocTree(PARAM_MATCH, "param_match", 3, $1, $2, $4);}
 ;
 FunctionBody: DO FunctionBodyDecls END {$$ = allocTree(FUNC_BODY, "func_body", 1, $2);}
-    | DO FunctionBodyDecls ENDOR FunctionBodyPattern {$$ = allocTree(FUNC_BODY, "func_body", 2, $2, $4)}
+    | DO FunctionBodyDecls END ORMATCH FunctionBodyPattern {$$ = allocTree(FUNC_BODY, "func_body", 2, $2, $5);}
     | DO END {$$ = NULL;}
 ;
 FunctionBodyPattern: ParameterListOpt Type FunctionBody {$$ = allocTree(FUNC_BODY_PATTERN, "func_body_pattern", 3, $1, $2, $3);}
@@ -173,10 +176,18 @@ PatternStmt: Expr ARROWOP FunctionBodyDecls    {$$ = allocTree(PATTERN_STMT, "pa
 ;
 
 
-/* TODO -> */
+/* -- CONDITION GRAMAR DEFINITIONS -- */
 
-/* CONDITION GRAMAR DEFINITIONS */
-// THINGS
+CondStmts: IF Expr THEN FunctionBodyDecls END          {$$ = allocTree(COND_STMTS, "cond_stmts", 2, $2, $4);}
+    | IF Expr THEN FunctionBodyDecls TrailingConds END {$$ = allocTree(COND_STMTS, "cond_stmts", 3, $2, $4, $5);}
+;
+TrailingConds: ELSEIF Expr THEN FunctionBodyDecls TrailingConds {$$ = allocTree(TRAILING_CONDS, "trailing_cond", 3, $2, $4, $5);}
+    | ELSEIF Expr THEN FunctionBodyDecls {$$ = allocTree(TRAILING_CONDS, "trailing_cond", 2, $2, $4);}
+    | ELSE THEN FunctionBodyDecls        {$$ = allocTree(TRAILING_CONDS, "trailing_cond", 1, $3);}
+;
+
+
+/* TODO -> */
 
 
 /* -- EXPRESSION GRAMAR DEFINITIONS -- */

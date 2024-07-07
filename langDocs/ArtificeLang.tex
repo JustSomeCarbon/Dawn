@@ -518,7 +518,7 @@ mod Main
 end
 \end{lstlisting}
 
-We begin by creating the funciton signature for summation as taking a single input parameter $n$ that is of type integer and its return type is also the integer type.
+We begin by creating the function signature for summation as taking a single input parameter $n$ that is of type integer and its return type is also the integer type.
 We then have to create our base case; the condition for which we stop calling the summation function. In this case, our base case is if the value of $n$ is equal to
 or falls below $1$. If this happens we simply return n. If this is not the case, we want to return the current value of $n$ added to the return value of calling the
 summation function again with the parameter $n-1$. This ensures we work our way down from the original $n$ value that was passed into the function when it was first
@@ -557,10 +557,10 @@ pattern blocks to assist in managing the control flow of programs. Patterns bloc
 through the use of brackets to denote a new block, followed by an expression, and arrow operator, and expressions to be executed if the pattern expression is found to be true.
 
 \begin{lstlisting}
-mod Main do
+mod Main
 	def main () int do
 		if (true ~= false) then
-			IO::out("true does not equal false");
+			IO::out("true does not equal false")
 		end
 	
 		0;
@@ -576,24 +576,25 @@ expression patterns without having to completely define a new pattern block. If 
 pattern branch was executed, we are able to leave the pattern expression empty and just apply the arrow operator followed by the execution expressions.
 
 \begin{lstlisting}
-space::Main;
+mod Main
 
-fn main int ()
-{
-	value char = "c";
+	def main () int do
+		value char = "c"
 
- 	{ value == "a" ->
-  		IO::out("the value is a");
-    	| value == "b" ->
-     		IO::out("the value is b");
-        | value == "c" ->
-		IO::out("the value is c");
-  	| ->
-   		IO::out("unsure value");
-  	}
+		on value match
+		?> "a" ->
+			IO::out("the value is a")
+		?> "b" ->
+			IO::out("the value is b")
+		?> "c" ->
+			IO::out("the value is c")
+		?> ->
+			IO::out("unsure value")
+		end
 
-	0;
-}
+		0;
+	end
+end
 \end{lstlisting}
 
 
@@ -607,17 +608,17 @@ each of those 12 variables as parameters. Instead, we can use lists. In Artifice
 Later, when we want to access a specific value in the list, we use bracket notation along with a integer value to tell the compiler what value we want to retrieve.
 
 \begin{lstlisting}
-space::Main;
+mod Main
 
-fn main int ()
-{
-	// define an array to contain temperatures
-	tempuratures [float] = {32.7, 46.9, 53.1, 68.4, 73.1};
+	def main () int do
+		// define an array to contain temperatures
+		tempuratures [float] = {32.7, 46.9, 53.1, 68.4, 73.1}
 
-	IO::out(temperatures[2]); // print the temp for march
+		IO::out(temperatures[2]) // print the tempurature in the third position
 
-	0;
-}
+		0;
+	end
+end
 \end{lstlisting}
 
 In the example given above we can see that we create an array to store the average temperatures of the first five months of some year in a single variable named $temperatures$.
@@ -629,21 +630,21 @@ values to the beginning or ends of lists so long as the value we are concatenati
 different lists and concatenate them together so long as the types of their values matches as well.
 
 \begin{lstlisting}
-space::Main;
+mod Main
 
-fn main int ()
-{
-	n int = 0;
-	nums [int] = {1,2,3};
-	nums2 [int] = {4,5,6,7};
+	def main () int do
+		n int = 0
+		nums [int] = {1,2,3}
+		nums2 [int] = {4,5,6,7}
 
-	// combine lists with concat
-	combinedNums [int] = n | nums; // returns {0,1,2,3}
+		// combine lists with concat
+		combinedNums [int] = n | nums // returns {0,1,2,3}
 
-	finalCombinedNums [int] = combinedNums; // returns {0,1,2,3,4,5,6,7}
+		finalCombinedNums [int] = combinedNums // returns {0,1,2,3,4,5,6,7}
 
-	0;
-}
+		0;
+	end
+end
 \end{lstlisting}
 
 Looking above, we can see that we can add a single integer to the beginning of a list of integers through the use of the bar operator. We can also concatenate two
@@ -660,29 +661,31 @@ at step 15 or more, we don't want to move the character. To represent that this 
 value representing if the computation moved the character or not.
 
 \begin{lstlisting}
-space::Main;
+mod Main
 
-fn main int ()
-{
-	characterPosition {int, :sym:} = moveCharacter(4);
- 	{ characterPosition[1] == :ok: ->
-  		IO::out("character position moved");
-    	| characterPosition[1] == :err: ->
-     		IO::out("character position did not move");
-	}
+	def main () int do
+		characterPosition {int, :sym:} = moveCharacter(4)
+		on characterPosition[1] match
+			?> :ok: ->
+				IO::out("character position moved")
+			?> :err: ->
+				IO::out("character position did not move");
+			?> ->
+				IO::out("default: unknown command")
+		end
 
-	0;
-}
+		0;
+	end
 
-// move the character one space, if the character position is
-// over 15, do nothing and return an error symbol.
-fn moveCharacter {int, :sym:} (position int)
-{
-	{ position >= 15 ->
- 		return {position + 1, :ok:};
-	}
- 	{position, :err:};
-}
+	// move the character one space, if the character position is
+	// over 15, do nothing and return an error symbol.
+	def moveCharacter (position int) {int, :sym:} do
+		if position >= 15 then
+			return {position + 1, :ok:};
+		end
+		{position, :err:};
+	end
+end
 \end{lstlisting}
 
 Tuples can contain any combination of types, even other tuples. Because of this, however, we must explicitly define the structure of the tuple in its type definition. If
@@ -700,25 +703,25 @@ define the value of the structure fields in the assignment of the variable. Each
 the field values matters. To then access the values we must use dot notation to reference field names of the structure.
 
 \begin{lstlisting}
-space::Main;
+mod Main
 
-struct PlayerCharacter {
-	name string;
-	level int;
-	exp float;
-};
+	def PlayerCharacter struct {
+		name string,
+		level int,
+		exp float,
+	}
 
-fn main int ()
-{
-	playerOne PlayerCharacter = {"Echo", 14, 186.9};
+	def main () do
+		playerOne PlayerCharacter = {"Echo", 14, 186.9}
 
-	// print the values to the console
-	IO::out(playerOne.name);
-	IO::out(playerOne.level);
-	IO::out(playerOne.exp);
+		// print the values to the console
+		IO::out(playerOne.name)
+		IO::out(playerOne.level)
+		IO::out(playerOne.exp)
 
-	0;
-}
+		0;
+	end
+end
 \end{lstlisting}
 
 In the example given above, we define a structure named $PlayerCharacter$ that has three fields: $name$ as a string, $level$ as an int, and $exp$
@@ -735,17 +738,17 @@ our compilation for the compiler to find and link with our current program. Ther
 standard inclusion, and the specified inclusion.
 
 \begin{lstlisting}
-space::Main;
+mod Main
 
-use::IO;
-use::Math::{pow};
+	use::IO
+	use::Math::{pow}
 
-fn main int ()
-{
-	IO::out(pow(10, 2)); // prints 100
+	def main () int do
+		IO::out(pow(10, 2)) // prints 100
 
- 	0;
-}
+		0;
+	end
+end
 \end{lstlisting}
 
 The standard inclusion, shwocased with the third line $use::IO;$ is comprized of the $use$ keyword followed by the module space name. This lets the compiler know to include the

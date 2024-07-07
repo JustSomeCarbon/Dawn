@@ -44,7 +44,6 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "else if"       {return allocToken(ELSEIF);}
 "else"          {return allocToken(ELSE);}
 "end"           {return allocToken(END);}
-"end?>"         {return allocToken(ENDOR);}
 
 "+"             {return allocToken(ADD);}
 "-"             {return allocToken(SUBTRACT);}
@@ -63,6 +62,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "&&"            {return allocToken(LOGICALAND);}
 "||"            {return allocToken(LOGICALOR);}
 "!"             {return allocToken(NOT);}
+"?>"            {return allocToken(ORMATCH);}
 
 "|"             {return allocToken(BAR);}
 "_"             {return allocToken(DROPVAL);}

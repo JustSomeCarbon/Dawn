@@ -44,6 +44,8 @@ enum sol_terms {
     PATTERN_BLOCK,
     PATTERN_STMTS,
     PATTERN_STMT,
+    COND_STMTS,
+    TRAILING_CONDS,
     EXPR,
     COND_OR_EXPR,       // 1020
     COND_AND_EXPR,
