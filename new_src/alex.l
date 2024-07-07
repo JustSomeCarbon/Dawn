@@ -87,7 +87,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 \"([^"]|ESC_CHAR|\w|\W)*\"    {return allocToken(LITERALSTRING);}
 \'([^']|ESC_CHAR|\w|\W)?\'    {return allocToken(LITERALCHAR);}
 [a-zA-Z_][0-9a-zA-Z_]*        {return allocToken(IDENTIFIER);}
-":"[a-zA-Z_][0-9a-zA-Z_]*":"  {return allocToken(LITERALSYMBOL);}
+":"[a-zA-Z_][0-9a-zA-Z_]*     {return allocToken(LITERALSYMBOL);}
 
 \n              { /* do nothing */ }
 \"              {returnOnError(SYNTAX_ERROR, "syntax_error", "string error");}

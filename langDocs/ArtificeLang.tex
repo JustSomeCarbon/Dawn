@@ -170,7 +170,7 @@ to be basic atomic types.
 	char & stores a single character \\
 	string & stores multiple conjoined character values between "" \\
 	bool & either a true or a false value \\
-	:sym & symbolic literal values \\
+	:symbol & symbolic literal values \\
 	\hline
 \end{tabular}
 \end{center}
@@ -231,7 +231,7 @@ mod Main
 		letter char = 'c'
 		passage string = "hello, world!"
 		example bool = true
-		apple :sym = :apple
+		apple :symbol = :apple
 		pie float = 3.14
 
 		0;
@@ -277,7 +277,7 @@ int & integer type keyword \\
 float & floating point type keyword \\
 char & character type keyword \\
 string & string type keyword \\
-:sym & symbol type keyword \\
+:symbol & symbol type keyword \\
 bool & boolean type keyword \\
 fn & function type keyword \\
 struct & structure definition type keyword \\
@@ -443,7 +443,7 @@ examples of defining functions (we defined a main function to use). We can easil
 \begin{lstlisting}
 mod Main
 	def main() int do
-		IO::out(double(5))  // prints 10
+		IO.out(double(5))  // prints 10
 		0;
 	end
 
@@ -560,7 +560,7 @@ through the use of brackets to denote a new block, followed by an expression, an
 mod Main
 	def main () int do
 		if (true ~= false) then
-			IO::out("true does not equal false")
+			IO.out("true does not equal false")
 		end
 	
 		0;
@@ -583,13 +583,13 @@ mod Main
 
 		on value match
 		?> "a" ->
-			IO::out("the value is a")
+			IO.out("the value is a")
 		?> "b" ->
-			IO::out("the value is b")
+			IO.out("the value is b")
 		?> "c" ->
-			IO::out("the value is c")
+			IO.out("the value is c")
 		?> ->
-			IO::out("unsure value")
+			IO.out("unsure value")
 		end
 
 		0;
@@ -614,7 +614,7 @@ mod Main
 		// define an array to contain temperatures
 		tempuratures [float] = {32.7, 46.9, 53.1, 68.4, 73.1}
 
-		IO::out(temperatures[2]) // print the tempurature in the third position
+		IO.out(temperatures[2]) // print the tempurature in the third position
 
 		0;
 	end
@@ -664,14 +664,14 @@ value representing if the computation moved the character or not.
 mod Main
 
 	def main () int do
-		characterPosition {int, :sym:} = moveCharacter(4)
+		characterPosition {int, :symbol} = moveCharacter(4)
 		on characterPosition[1] match
-			?> :ok: ->
-				IO::out("character position moved")
-			?> :err: ->
-				IO::out("character position did not move");
+			?> :ok ->
+				IO:out("character position moved")
+			?> :err ->
+				IO:out("character position did not move")
 			?> ->
-				IO::out("default: unknown command")
+				IO:out("default: unknown command")
 		end
 
 		0;
@@ -679,18 +679,18 @@ mod Main
 
 	// move the character one space, if the character position is
 	// over 15, do nothing and return an error symbol.
-	def moveCharacter (position int) {int, :sym:} do
+	def moveCharacter (position int) {int, :sybol} do
 		if position >= 15 then
 			return {position + 1, :ok:};
 		end
-		{position, :err:};
+		{position, :err};
 	end
 end
 \end{lstlisting}
 
 Tuples can contain any combination of types, even other tuples. Because of this, however, we must explicitly define the structure of the tuple in its type definition. If
 we want to define a tuple named $rectangle$ and we want it to contain all the information we would want including the length of its sides, and whether or not its a square,
-we would explicitly need to define it as follows: $rectangle$ $\{float, float, :sym:\}$ = $\{3.4, 5.1, :rectangle:\}$. The more complex the tuple structure, the more complex the
+we would explicitly need to define it as follows: $rectangle$ $\{float, float, :sybol\}$ = $\{3.4, 5.1, :rectangle:\}$. The more complex the tuple structure, the more complex the
 definition required.
 
 
@@ -715,9 +715,9 @@ mod Main
 		playerOne PlayerCharacter = {"Echo", 14, 186.9}
 
 		// print the values to the console
-		IO::out(playerOne.name)
-		IO::out(playerOne.level)
-		IO::out(playerOne.exp)
+		IO.out(playerOne.name)
+		IO.out(playerOne.level)
+		IO.out(playerOne.exp)
 
 		0;
 	end
@@ -740,20 +740,20 @@ standard inclusion, and the specified inclusion.
 \begin{lstlisting}
 mod Main
 
-	use::IO
-	use::Math::{pow}
+	use:IO
+	use:Math:{pow}
 
 	def main () int do
-		IO::out(pow(10, 2)) // prints 100
+		IO.out(pow(10, 2)) // prints 100
 
 		0;
 	end
 end
 \end{lstlisting}
 
-The standard inclusion, shwocased with the third line $use::IO;$ is comprized of the $use$ keyword followed by the module space name. This lets the compiler know to include the
+The standard inclusion, shwocased with the third line $use:IO;$ is comprized of the $use$ keyword followed by the module space name. This lets the compiler know to include the
 entire specified module space for use. However, when using a function or structure defined in the included module space, the module name must still be specified before using the desired
-functionality. The second inclusion possible is shown on the fourth line with $use::Math::{pow};$. In this case, we include a small part of the $Math$ module space, but only the specified
+functionality. The second inclusion possible is shown on the fourth line with $use:Math:{pow};$. In this case, we include a small part of the $Math$ module space, but only the specified
 named functionality within the brackets. Then, when we go to use the included functionality, unlike the first inclusion, we are able to use it without specifying what module space it belongs
 to.
 

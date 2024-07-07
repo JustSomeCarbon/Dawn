@@ -240,8 +240,7 @@ LeftHandSide: Name Type {$$ = allocTree(LEFT_HAND_SIDE, "left_hand_side", 2, $1,
 
 /* -- NAMES AND FUNCTION CALLS GRAMMAR DEFINITIONS -- */
 
-Name: Name COLON IDENTIFIER {$$ = allocTree(NAME, "name", 3, $1, $2, $3);}
-    | Name DOT IDENTIFIER   {$$ = allocTree(NAME, "name", 3, $1, $2, $3);}
+Name: Name DOT IDENTIFIER   {$$ = allocTree(NAME, "name", 3, $1, $2, $3);}
     | Name FieldAccess      {$$ = allocTree(NAME, "name", 2, $1, $2);}
     | IDENTIFIER            {$$ = allocTree(NAME, "name", 1, $1);}
 ;
