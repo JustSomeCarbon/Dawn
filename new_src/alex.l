@@ -44,6 +44,7 @@ ESC_CHAR \\(n|t|\\|\'|\"|\?)
 "else if"       {return allocToken(ELSEIF);}
 "else"          {return allocToken(ELSE);}
 "end"           {return allocToken(END);}
+"return"        {return allocToken(RETURN);}
 
 "+"             {return allocToken(ADD);}
 "-"             {return allocToken(SUBTRACT);}

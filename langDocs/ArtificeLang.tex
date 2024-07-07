@@ -106,12 +106,12 @@ Once this completes, the executable $arc$ file will be available. This is the Ar
 To compile a Artifice file run the following with the Artifice source file to compile:
 
 \begin{lstlisting}
- $ ./mana solaceFileToCompile.arc
+ $ ./anvl solaceFileToCompile.arfc
 \end{lstlisting}
 
-All Artifice source files should have the $.arc$ file extension to signal to the compiler that what its looking at is a
+All Artifice source files should have the $.arfc$ file extension to signal to the compiler that what its looking at is a
 Artifice source code file. The compiler is also able to handle Artifice source code files that do not have file extionsions.
-If a source code file named $Fibonacci$ (with no file extension) is given to the compiler, it is taken and the $.arc$ extension
+If a source code file named $Fibonacci$ (with no file extension) is given to the compiler, it is taken and the $.arfc$ extension
 is appended to the end of the file name.
 
 \subsection{Writing Artifice for the First time}
@@ -122,7 +122,7 @@ that exits.
 
 \begin{lstlisting}
 mod Main
-	def main () do
+	def main () int do
 		0;
 	end
 end
@@ -470,7 +470,7 @@ mod Main
 			// as the assignment expression
 			// this lambda function is a single line and as such can use
 			// the arrow operator
-		double1 fn = (int n) int -> n * 2; end
+		double1 fn = (int n) int -> n * 2;
 
 			// building a lambda function that spans multiple lines uses the
 			// do .. end blocks
@@ -490,7 +490,7 @@ mod Main
 	end
 
 	def returnAFunction() fn do
-		(n int) int -> { n * 2; };
+		return (n int) int -> n * 2;
 	end
 end
 \end{lstlisting}
