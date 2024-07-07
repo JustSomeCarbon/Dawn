@@ -20,7 +20,7 @@
 %token <treeptr> LBRACE RBRACE LPAREN RPAREN
 %token <treeptr> MAINFUNC IDENTIFIER USE DROPVAL DOT SELF ON DO END
 %token <treeptr> BOOLEAN INT FLOAT CHAR STRING SYMBOL FUNCTION
-%token <treeptr> THEN IF ELSEIF ELSE ORMATCH MATCH
+%token <treeptr> THEN IF ELSEIF ELSE ORMATCH MATCH RETURN
 %token <treeptr> LITERALBOOL LITERALINT LITERALHEX LITERALFLOAT
 %token <treeptr> LITERALCHAR LITERALSTRING LITERALSYMBOL DEFINE
 %token <treeptr> STRUCT ADD SUBTRACT MULTIPLY DIVIDE MODULO
@@ -160,6 +160,7 @@ FunctionBodyDecls: FunctionBodyDecls FunctionBodyDecl {$$ = allocTree(FUNC_BODY_
 ;
 FunctionBodyDecl: Expr  {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $1);}
     | Expr SEMICOLON    {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 2, $1, $2);}
+    | RETURN Expr       {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 2, $1, $2);}
     | PatternBlock      {$$ = allocTree(FUNC_BODY_DECL, "func_body_decl", 1, $2);}
 ;
 
@@ -246,7 +247,7 @@ Name: Name DOT IDENTIFIER   {$$ = allocTree(NAME, "name", 3, $1, $2, $3);}
 ;
 Primary: Literal         {$$ = allocTree(PRIMARY, "primary", 1, $1);}
     | LPAREN Expr RPAREN {$$ = allocTree(PRIMARY, "primary", 1, $2);}
-    | LambdaExpr {$$ = allocTree(PRIMARY, "primary", 1, $1);}
+    | LambdaExpr         {$$ = allocTree(PRIMARY, "primary", 1, $1);}
     | FunctionCall       {$$ = allocTree(PRIMARY, "primary", 1, $1);}
 ;
 FieldAccess: LBRACKET LITERALINT RBRACKET {$$ = allocTree(FIELD_ACCESS, "field_access", 1, $2);}

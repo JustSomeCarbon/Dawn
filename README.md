@@ -39,10 +39,10 @@ $ ./anvl example_file.arfc
 
 To run the debugger to print the abstract syntax tree of the compiled file to the console we set the flag.
 ~~~
-$ ./solx -s example_file.arfc
+$ ./anvl -s example_file.arfc
 ~~~
 
 To print the symbols capured by the compiler during execution, set the symbol_table_flag during compilation.
 ~~~
-$ ./solx -t example_file.arfc
+$ ./anvl -t example_file.arfc
 ~~~
