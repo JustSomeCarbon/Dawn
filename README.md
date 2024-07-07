@@ -31,18 +31,18 @@ Artifice relies on the `clang` compiler, along with the `Yacc` and `Flex` tools,
 To compile Artifice, clone the source directory, and perform `make` within the main `Artifice/src` directory.
 Currently only tested on Linux/Unix and Apple silicon systems.
 
-To run the Artifice compiler, run the resulting object file called `solx` followed by the name of the source file to
+To run the Artifice compiler, run the resulting object file called `anvl` followed by the name of the source file to
 be compiled.
 ~~~
-$ ./solx example_file.solc
+$ ./anvl example_file.ore
 ~~~
 
 To run the debugger to print the abstract syntax tree of the compiled file to the console we set the flag.
 ~~~
-$ ./solx -s example_file.solc
+$ ./solx -s example_file.ore
 ~~~
 
 To print the symbols capured by the compiler during execution, set the symbol_table_flag during compilation.
 ~~~
-$ ./solx -t example_file.solc
+$ ./solx -t example_file.ore
 ~~~
