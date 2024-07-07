@@ -21,57 +21,59 @@ extern char* yyfile;
 extern struct tree* root; // contains the root of the tree generated from parsing
 
 
-enum sol_terms {
+enum arc_terms {
     FILE_ROOT=1001,
     MOD_SPACE,
     MOD_SPACE_DEFINITIONS,
     USE_DEFINITIONS,
-    IMPORT_PATH,
-    IMPORT_LIST,        // 1005
+    IMPORT_PATH,        // 1005
+    IMPORT_LIST,
     STRUCT_DEFINITION,
     STRUCT_PARAMS,
     STRUCT_PARAM,
-    FUNC_DEFINITION,
-    FUNC_HEADER,        // 1010
+    FUNC_DEFINITION,    // 1010
+    FUNC_HEADER,
     PARAM_LIST_OPT,
     PARAM_LIST,
     PARAM,
-    PARAM_MATCH,
+    PARAM_MATCH,        // 1015
+    FUNC_BODYS,
     FUNC_BODY,
     FUNC_BODY_PATTERN,
-    FUNC_BODY_DECLS,    // 1015
+    FUNC_BODY_DECLS,
     FUNC_BODY_DECL,
-    PATTERN_BLOCK,
+    FUNC_RET_DECL,
+    PATTERN_BLOCK,      // 1020
     PATTERN_STMTS,
     PATTERN_STMT,
     COND_STMTS,
     TRAILING_CONDS,
-    EXPR,
-    COND_OR_EXPR,       // 1020
+    EXPR,               // 1025
+    COND_OR_EXPR,
     COND_AND_EXPR,
     EQ_EXPR,
     RELATION_EXPR,
-    ADD_EXPR,
-    MULT_EXPR,          // 1025
+    ADD_EXPR,           // 1030
+    MULT_EXPR,
     UNARY_EXPR,
     CONCAT_EXPR,
     POST_FIX_EXPR,
-    VAR_ASSIGNMENT,
-    LEFT_HAND_SIDE,     // 1030
+    VAR_ASSIGNMENT,     // 1035
+    LEFT_HAND_SIDE,
     NAME,
     PRIMARY,
     FIELD_ACCESS,
-    FUNC_CALL,
-    LAMBDA_EXPR,        // 1035
+    FUNC_CALL,          // 1040
+    LAMBDA_EXPR,
     ARG_LIST_OPT,
     ARG_LIST,
     RELATION_OP,
-    TYPE,
-    TUP_TYPE_DECL,      // 1040
+    TYPE,               // 1045
+    TUP_TYPE_DECL,
     LITERAL,
     LIST_LITERALS_OPT,
     LIST_LITERALS,
-    SYNTAX_ERROR,
+    SYNTAX_ERROR,       // 1050
 };
 
 /* TOKEN AND TREE STRUCTURES */
