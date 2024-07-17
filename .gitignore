@@ -7,5 +7,10 @@ src/lex.yy.c
 src/*.tab.c
 src/*.tab.h
 src/*.output
+new_src/*.0
+new_src/*.anvl
+new_src/*.tab.c
+new_src/*.tab.h
+new_src/*.output
 .DS_Store
 .vscode
