@@ -21,4 +21,15 @@ union literalValue {
     char* sval;
 };
 
+/*
+ * The stack that contains all the tokens that have
+ * been lexed
+ */
+struct tokenStack {
+    token tok;
+    tokenStack* next;
+};
+
+struct tokenStack* lex_source_file(char* file_name);
+
 #endif
