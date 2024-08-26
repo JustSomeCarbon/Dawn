@@ -10,7 +10,7 @@
 
 \title{
 	\vspace{2in}
-	\textmd{\textbf{The Artifice Programming Language}}
+	\textmd{\textbf{The Solace Programming Language}}
 	\vspace{3in}
 }
 \author{No\'e Garcia}
@@ -21,27 +21,27 @@
 \maketitle
 \newpage
 
-\section{Introduction to Artifice}
+\section{Introduction to Solace}
 
-Artifice is a small functional programming language developed as a hobby project starting in
-$2023$. Artifice is built to be a bridge between imperative and  declarative functional programming
-language domains. Built to be simple and easy to read and write with, Artifice is a statically typed,
+Solace is a small functional programming language developed as a hobby project starting in
+$2023$. Solace is built to be a bridge between imperative and  declarative functional programming
+language domains. Built to be simple and easy to read and write with, Solace is a statically typed,
 semi-pure functional language with basic support for simple tooling and functionality. While in
 its infant stages, the language will grow to support more common aspects found in other
 languages.
 
 Functional programming can be intimidating for those unfamiliar to many who have never worked
-with it before. For this reason, Artifice is a case study for a programming langauge which aims to
+with it before. For this reason, Solace is a case study for a programming langauge which aims to
 make the introduction to the functional paradigm more familiar and easily approachable.
 
-Artifice is a general programming langauge as constructed, but domain specific library extensions
-will be built to extend the capabilities of Artifice into specific use cases. As it stands, there are
-plans to epand on Artifice by adding the ability to write logic centric programs.
+Solace is a general programming langauge as constructed, but domain specific library extensions
+will be built to extend the capabilities of Solace into specific use cases. As it stands, there are
+plans to epand on Solace by adding the ability to write logic centric programs.
 
-Artifice is built to take advantage of the different types of declarative programming paradigms such as
+Solace is built to take advantage of the different types of declarative programming paradigms such as
 function and logic programming. All features are experimental and may be subject to change.
 
-This text is an introdution to the Artifice language as it is, and should be used by anyone who is looking
+This text is an introdution to the Solace language as it is, and should be used by anyone who is looking
 to learn how to read and write in the language.
 
 
@@ -72,52 +72,52 @@ impossible in the functional domain. Rather than using loops, however, recursion
 in some computation.
 
 Functional programming is a shift in how programs should be written. This shift makes for code that is more safe and easy to
-understand. In the following sections, this document will go into depth of the Artifice programming language and provide
+understand. In the following sections, this document will go into depth of the Solace programming language and provide
 information on the data types and structures of the language as well as how the language is written, used, and understood.
 
 
 \section{Domain Specific Language}
 
-Artifice is a general purpose functional programming language built without a specific domain in mind. There are a number of
+Solace is a general purpose functional programming language built without a specific domain in mind. There are a number of
 general purpose programming languages that exist today, so while there are a number of languages to choose from in that regard,
-Artifice aims to be a hobby/playground/research language. The functional domain, while gaining traction in use, is still
+Solace aims to be a hobby/playground/research language. The functional domain, while gaining traction in use, is still
 regarded as a fringe domain to build production level code with. There is plenty to be done in terms of functional language
-development, and Artifice is a testing ground for that.
+development, and Solace is a testing ground for that.
 
 Beyond functional programming, logic programming is another domain of programming development that has not been brought out
-of the academic sphere much. Artifice is the perfect language to begin to test aspects of logic programming being brought into a
+of the academic sphere much. Solace is the perfect language to begin to test aspects of logic programming being brought into a
 toy language to play around with and to understand its respective use cases better.
 
 
 \section{Getting Started}
-Artifice is written in C and compiled with the $Clang$ compiler and compiles down to llvm byte code. Apart from this, the lexer for Artifice is
+Solace is written in C and compiled with the $Clang$ compiler and compiles down to llvm byte code. Apart from this, the lexer for Solace is
 written in $Flex$ (also known as fast lexical analysis generator), and the parser is written with GNU Bison. There is currently
-\textbf{NOT} a  build tool available, so all library requirements should be installed independentally. Artifice Relies on Clang,
-Bison, and Flex. Artifice is hosted on github \href{https://github.com/JustSomeCarbon/Artifice/tree/main}{here} and can be cloned
-to a local machine using git. After Artifice is installed, it can be built by typing the following into the console while within the
-$Artifice/src$ project directory:
+\textbf{NOT} a  build tool available, so all library requirements should be installed independentally. Solace Relies on Clang,
+Bison, and Flex. Solace is hosted on github \href{https://github.com/JustSomeCarbon/Solace/tree/main}{here} and can be cloned
+to a local machine using git. After Solace is installed, it can be built by typing the following into the console while within the
+$Solace/src$ project directory:
 
 \begin{lstlisting}
  $ make
 \end{lstlisting}
 
 This will run the make the executable compiler file in the source directory and build the language from source.
-Once this completes, the executable $arc$ file will be available. This is the Artifice compiler program.
-To compile a Artifice file run the following with the Artifice source file to compile:
+Once this completes, the executable $arc$ file will be available. This is the Solace compiler program.
+To compile a Solace file run the following with the Solace source file to compile:
 
 \begin{lstlisting}
- $ ./anvl solaceFileToCompile.arfc
+ $ ./anvl solaceFileToCompile.solc
 \end{lstlisting}
 
-All Artifice source files should have the $.arfc$ file extension to signal to the compiler that what its looking at is a
-Artifice source code file. The compiler is also able to handle Artifice source code files that do not have file extionsions.
-If a source code file named $Fibonacci$ (with no file extension) is given to the compiler, it is taken and the $.arfc$ extension
+All Solace source files should have the $.solc$ file extension to signal to the compiler that what its looking at is a
+Solace source code file. The compiler is also able to handle Solace source code files that do not have file extionsions.
+If a source code file named $Fibonacci$ (with no file extension) is given to the compiler, it is taken and the $.solc$ extension
 is appended to the end of the file name.
 
-\subsection{Writing Artifice for the First time}
-Artifice is easy to get started with. Similar to the C language, Artifice requires a few things in order to compile
+\subsection{Writing Solace for the First time}
+Solace is easy to get started with. Similar to the C language, Solace requires a few things in order to compile
 and run. The first is a $module$ $space$ $name$ definition, and then a main function (although main functions are not required when
-writing library functions). The following is an example of writing the most simple program we can in Artifice: A program
+writing library functions). The following is an example of writing the most simple program we can in Solace: A program
 that exits.
 
 \begin{lstlisting}
@@ -128,18 +128,18 @@ mod Main
 end
 \end{lstlisting}
 
-Disecting the source code above, we can see the first line of the program explicitly defining the module space to be $Main$. Artifice
+Disecting the source code above, we can see the first line of the program explicitly defining the module space to be $Main$. Solace
 picks the $Main$ module space as the space to run when executing the project; it is where the compiler looks for the main function.
 The next line is the \textit{main function} definition. We denote that we are defining a function with the $fn$ keyword followed by
 the name of the function and then its return value. All functions must have a return value. Main functions should return an integer
 to signal the exit value of the program. Within the main function there is a single expression: $0;$ This tells the main funciton
 to return $0$ and exit.
 
-While this is a simple program we can see how Artifice files are structured. After saving the source file as $justExit.arc$ we can
+While this is a simple program we can see how Solace files are structured. After saving the source file as $justExit.arc$ we can
 then compile the program with \textit{./mana justExit.arc} .
 
-In the following sections this document will break down the Artifice language and introduce new concepts and how to use them in the
-Artifice language.
+In the following sections this document will break down the Solace language and introduce new concepts and how to use them in the
+Solace language.
 
 
 \section{Types}
@@ -147,15 +147,15 @@ Artifice language.
 Types are a foundational building block to all programming languages. Different types are represented to the computer using
 different sizes of bytes, and allow the computer to know what to expect when we define some value for it to store for later
 use. In languages like C, variables are statically typed. This means that the author has to explicitly define what type a
-variable is at its declaration. Artifice is also statically typed. To define a variable in Artifice, the name of the variable is
+variable is at its declaration. Solace is also statically typed. To define a variable in Solace, the name of the variable is
 first given followed by the type of the variable, and then the assignment of the variable.
 
-Types can be broken down into two different classifications for Artifice: atomic and composite. Atomic types are the basic
+Types can be broken down into two different classifications for Solace: atomic and composite. Atomic types are the basic
 building blocks of the typing system within the language, while composite types are types that are built on top of atomic
 types, used to handle the complex structure and storage of data.
 
-Artifice has general atomic types that are present in many other programming languages: integers, floating point numbers, characters,
-strings, booleans, functions, and symbols. In Artifice (like in many other functional programming languages) functions are considered
+Solace has general atomic types that are present in many other programming languages: integers, floating point numbers, characters,
+strings, booleans, functions, and symbols. In Solace (like in many other functional programming languages) functions are considered
 to be basic atomic types.
 
 \subsection{Atomic Types}
@@ -178,13 +178,13 @@ to be basic atomic types.
 Integers are used to handle and store whole numbers. Numbers like $0$ or $-14$ can be stored in a variable with the integer type. Float
 types are used to handle real numbers. Floats can store and handle values such as $0.1$ or $0.0001$. Characters handle single character
 values such as $'a'$, while strings can handles multiple characters strung together like \textit{"hello, world!"}. Booleans handles values like
-$true$ and $false$. Function types are used to store whole functions. In functional programming languages such as Artifice, functions are
+$true$ and $false$. Function types are used to store whole functions. In functional programming languages such as Solace, functions are
 treated like any other type. Symbols are an interesting type, as they store literal values. A symbol value $:apple:$ is only equivalent
 to itself, and represents its literal value as defined by the author. Symbols can be any string of characters (excluding special
 characters and white space).
 
 Composite types, as previously defined, are built on top of atomic types as a coalition enabling the structure and storage of
-information. Artifice provides the following composite types: functions, list/arrays, tupples, and structures. These types are more complex than
+information. Solace provides the following composite types: functions, list/arrays, tupples, and structures. These types are more complex than
 atomic types. Functions are collection blocks of algorithmic logic that we use to group the functionality of our program.
 Arrays are able to store a collection of values within its definition, enabling storage of multiple values within a single
 variable. Tupples are similar but more flexible than arrays. Arrays are a collection of values that are of the same type, tupples are able
@@ -209,30 +209,30 @@ store capable of storing multiple different named type values.
 
 \subsection{Defining and storing values}
 
-Variables are essential to storing and retrieving data in programs. Within Artifice users are able to define their own variable names and their types
+Variables are essential to storing and retrieving data in programs. Within Solace users are able to define their own variable names and their types
 as well as the data information they want to store within the variable. Variables are defined using simple syntax rules:
 
 \begin{lstlisting}
 mod Main
 	def main() int do
-		n int = 32
+		let n int = 32
 		n;
 	end
 end
 \end{lstlisting}
 
-Looking at the code given, the initial setup has been seen before, what's different is the line \textit{n int = 32;} . This tells the Artifice compiler that we want
+Looking at the code given, the initial setup has been seen before, what's different is the line \textit{n int = 32;} . This tells the Solace compiler that we want
 to define a variable $n$ that stores an integer value of $32$, and we end the line with the semicolon character ($;$) to signal to the compiler that we are ending our
 line. This syntax definition is standard for defining any variable of any type.
 
 \begin{lstlisting}
 mod Main
 	def main() int do
-		letter char = 'c'
-		passage string = "hello, world!"
-		example bool = true
-		apple :symbol = :apple
-		pie float = 3.14
+		let letter char = 'c'
+		let passage string = "hello, world!"
+		let example bool = true
+		let apple :symbol = :apple
+		let pie float = 3.14
 
 		0;
 	end
@@ -251,12 +251,12 @@ name of the function, followed by the return type of the function. Functions are
 
 \section{Syntax Rules}
 
-Like in many languages, Artifice has rules as to what constitutes legal syntax, as shown previously with variable declarations, function definitions, and naming criteria. Artifice
+Like in many languages, Solace has rules as to what constitutes legal syntax, as shown previously with variable declarations, function definitions, and naming criteria. Solace
 also utilizes different keywords to construct and enforce these syntax rules. Keywords are spercial words within a programming language that are not able to be used in variable,
 function, structure, or module space name defintions. They are standalone words that define specific meaning within the language.
-Artifice defines a number of reserved words that are used in defining types, describing function definitons, and establishing data structures. The reserved words chosen
-for Artifice are designed to be similar to other languages, such as $C$ and $Elixir$. A lot of the reserved words are defined for type declarations shown above, or the legal operators for the 
-language that are defined below. The following are a list of the reserved words Artifice utilizes.
+Solace defines a number of reserved words that are used in defining types, describing function definitons, and establishing data structures. The reserved words chosen
+for Solace are designed to be similar to other languages, such as $C$ and $Elixir$. A lot of the reserved words are defined for type declarations shown above, or the legal operators for the 
+language that are defined below. The following are a list of the reserved words Solace utilizes.
 
 
 \subsection{Reserved Words}
@@ -286,12 +286,12 @@ struct & structure definition type keyword \\
 \end{center}
 
 The names above the double line within the table are special words used to define specific parts of the program, while the names bellow the double line are type keywords that
-are used in defining or referencing the specific types of Artifice. These names cannot be overriden by the user when building programs. You may not name a variable
+are used in defining or referencing the specific types of Solace. These names cannot be overriden by the user when building programs. You may not name a variable
 \textit{int int = 4;} since the $int$ keyword is reserved for describing the type of the variable in this case.
 
 \section{Operators}
 
-Operators are special characters that perform some operation within Artifice. There are three different kinds of operations within Artifice, numerical operations, logical operations,
+Operators are special characters that perform some operation within Solace. There are three different kinds of operations within Solace, numerical operations, logical operations,
 and string operations. Numerical operations take two numerical values and apply a specified mathematical operation to obtain a numerical result. An example of this is addition:
 $2 + 2$ would result in the value $4$. The operation $3.0 / 2.0$ results in a value of $1.5$. Logical operations are operations that determine a logical result from one or two
 boolean values.Some logical operations only take boolean values. We can use the and operator to test two different boolean values and return a resulting value as such: $true \&\& false$
@@ -330,10 +330,10 @@ $|$ & concatenation operation, join two values together \\
 \end{center}
 
 
-\section{Performing Operations in Artifice}
+\section{Performing Operations in Solace}
 
-This section outlines how to operate on values and expressions in Artifice. If you are familiar with C or any other high level programming language, performing 
-operations in Artifice will be easy to understand and pick up. Artifice allows the ability to perform mathematical and logical operations on data. the following is a
+This section outlines how to operate on values and expressions in Solace. If you are familiar with C or any other high level programming language, performing 
+operations in Solace will be easy to understand and pick up. Solace allows the ability to perform mathematical and logical operations on data. the following is a
 simple showcase of how to perform the basic mathematical operations on integer and float values.
 
 \begin{lstlisting}
@@ -350,7 +350,7 @@ mod Main
 		2.5 * 2.0 // returns 5.0
 		7.0 / 3.0 // returns 2.5
 
-		// Artifice preserves the type of the highest precision value in the operation
+		// Solace preserves the type of the highest precision value in the operation
 		2.0 + 4  // returns 6.0
 		10.0 / 2 // returns 5.0
 
@@ -359,7 +359,7 @@ mod Main
 end
 \end{lstlisting}
 
-Artifice allows the concatenation of a number of different types, including characters, strings, and lists. To concatenate two values together, the bar operator 
+Solace allows the concatenation of a number of different types, including characters, strings, and lists. To concatenate two values together, the bar operator 
 is used between the two values you want to concatenate. The concatenation operation is ordinal, so in whatever order you place the values to concatenate, the
 result will reflect that order. Concatenation always results in a larger value, and for that reason, when characters are concatenated together the result is a
 string rather than a character.
@@ -367,30 +367,30 @@ string rather than a character.
 \begin{lstlisting}
 mod Main
 	def main () int do
-		character1 char = 'h'
-		character2 char = 'i'
+		let character1 char = 'h'
+		let character2 char = 'i'
 
 			// result is a string
-		concat1 string = character1 | character2
+		let concat1 string = character1 | character2
 
-		unfinishedString string = "ello"
+		let unfinishedString string = "ello"
 
 			// result is a string: "hello"
-		concat2 string = character1 | unfinishedString
+		let concat2 string = character1 | unfinishedString
 
-		unfinishedString2 string = ", world!"
+		let unfinishedString2 string = ", world!"
 
 			// result is a string: "hello, world!"
-		concat3 string = concat2 | unfinishedString2
+		let concat3 string = concat2 | unfinishedString2
 
 		0;
 	end
 end
 \end{lstlisting}
 
-Mathematical operations consist of two elements with the operation separating them in the middle. Artifice is able to handle addition, subtraction, multiplication
+Mathematical operations consist of two elements with the operation separating them in the middle. Solace is able to handle addition, subtraction, multiplication
 division, and remainder operations as showcased above. Mathematical operations consist of either integer values or floating point values. When performing an
-operation on an integer and a floating point number Artifice will return a floating point number to ensure the highest precision of the operation is maintained.
+operation on an integer and a floating point number Solace will return a floating point number to ensure the highest precision of the operation is maintained.
 
 Comparison and logical operations are performed similar to that of mathematical operations. When comparing two values, the comparison operation resides between the two
 values being compared.
@@ -427,7 +427,7 @@ end
 Comparison logical operations have a broad set of input capabilities. Unlike mathematical operations, which are only able to take numerical input,
 comparison operations can take numerical values, cahracter values, string values, boolean values, or symbolic values. When comparing if some value is
 greater than or less than another values, the comparison can only handle numberical values, however, as showcased above, when comparing whether two
-values are equal to each other or not, Artifice is able to handle any value type that is thrown at it. All operations return boolean values.
+values are equal to each other or not, Solace is able to handle any value type that is thrown at it. All operations return boolean values.
 
 Logical operations can only take boolean values as input and only return boolean values. There are three logical operations available: logical and,
 logical or, and logical not. Logical and only returns true when both values are true. Logical or only returns false when both values are false.
@@ -436,7 +436,7 @@ Logical not returns the negation of the value given.
 
 \section{Working with Functions}
 
-Artifice is a functional programming language and as such functions are treated the same way as any other type in the language. Functions are defined through
+Solace is a functional programming language and as such functions are treated the same way as any other type in the language. Functions are defined through
 the use of the function keyword followed by the name of the function, the return type, the parameter list, and then the function body. Seen above are a few
 examples of defining functions (we defined a main function to use). We can easily define and call functions within our programs.
 
@@ -454,9 +454,9 @@ end
 \end{lstlisting}
 
 Here we define two functions: the main function that runs when we execute the program, and the double function that takes an integer $n$ and returns
-double its value back. Within the main funciton, we call the double function and print its output to the console, and then we return $0$. With Artifice
+double its value back. Within the main funciton, we call the double function and print its output to the console, and then we return $0$. With Solace
 every function must return a value, and the type of the return value is specified in the heading of the function definition. To return a value from
-a function, Artifice automatically takes the last expression in the function and returns it. We are also able to use the $return$ keyword to explicitly
+a function, Solace automatically takes the last expression in the function and returns it. We are also able to use the $return$ keyword to explicitly
 state to the compiler that you want to return a value.
 
 Since functions are like any other type, we are able to define and bind full functions to variable names to use, we can even return functions if we want!
@@ -470,16 +470,16 @@ mod Main
 			// as the assignment expression
 			// this lambda function is a single line and as such can use
 			// the arrow operator
-		double1 fn = (int n) int -> n * 2;
+		let double1 fn = (int n) int -> n * 2;
 
 			// building a lambda function that spans multiple lines uses the
 			// do .. end blocks
-		double2 fn = (int n) int do
+		let double2 fn = (int n) int do
 			n * 2;
 		end
 
 			// we can bind a function from a return value of another function
-		double3 fn = returnAFunction()
+		let double3 fn = returnAFunction()
 
 			// we can call the functions like any other function
 		double1(1)  // returns 2
@@ -495,12 +495,12 @@ mod Main
 end
 \end{lstlisting}
 
-Above we can see some examples of how Artifice is able to handle functions as types. The $returnAFunction$ function returns a lambda function
+Above we can see some examples of how Solace is able to handle functions as types. The $returnAFunction$ function returns a lambda function
 that can then be stored within another variable to use later. Lkewise, we are able to define functions within other functions by binding them
 to another variable of the funciton type. Finally we are able to call the lambda functions like any other function, by referencing where its
 bound and providing any necessary paramters.
 
-Lets take a look at more complex use cases for functions. In Artifice, there are not any loops, and as such we have to make use of recursion.
+Lets take a look at more complex use cases for functions. In Solace, there are not any loops, and as such we have to make use of recursion.
 Let us assume we are building a summation function for values from 1 to the given limit. We can build it as follows:
 
 \begin{lstlisting}
@@ -525,14 +525,14 @@ summation function again with the parameter $n-1$. This ensures we work our way 
 called. Using this technique of recursion, we are able to simulate any looping we would need to do in the program.
 
 This creates a big problem, however. When working with a lambda function that does not have a name to reference, how can we use recursion? To deal with this problem
-Artifice provides the $self$ keyword. To reference the parent function the program is currently in, we can use $self$ followed by the necessary parameter list in order
+Solace provides the $self$ keyword. To reference the parent function the program is currently in, we can use $self$ followed by the necessary parameter list in order
 to recurse.
 
 \begin{lstlisting}
 mod Main
 	def main () int do
 			// define a lambda function that requires looping to complete
-		raiseToPower fn = (n int, r int) int do
+		let raiseToPower fn = (n int, r int) int do
 			if (r <= 1) then
 				return n;
 			end
@@ -552,7 +552,7 @@ lambda function again with the parameters $n$ and $r-1$.
 
 \section{Pattern Blocks and Control Flow}
 
-In any programming language control flow is essential in dictating how a program executes given specific conditions. Artifice is no different, and offers what are called
+In any programming language control flow is essential in dictating how a program executes given specific conditions. Solace is no different, and offers what are called
 pattern blocks to assist in managing the control flow of programs. Patterns blocks are shown and used in the previous section within functions. Pattern blocks are defined
 through the use of brackets to denote a new block, followed by an expression, and arrow operator, and expressions to be executed if the pattern expression is found to be true.
 
@@ -579,9 +579,9 @@ pattern branch was executed, we are able to leave the pattern expression empty a
 mod Main
 
 	def main () int do
-		value char = "c"
+		let value char = "c"
 
-		on value match
+		matchon val
 		?> "a" ->
 			IO.out("the value is a")
 		?> "b" ->
@@ -604,7 +604,7 @@ end
 
 When we want to group a number of values together, we can use a list. For example, let us assume we are storing the average temperature for each month in our program.
 We could define 12 separate variables, each coresponding to a different month in the year, but then if we wanted to pass those values to a function we would have to pass
-each of those 12 variables as parameters. Instead, we can use lists. In Artifice, lists enable us to define a list of values and store them in a single variable.
+each of those 12 variables as parameters. Instead, we can use lists. In Solace, lists enable us to define a list of values and store them in a single variable.
 Later, when we want to access a specific value in the list, we use bracket notation along with a integer value to tell the compiler what value we want to retrieve.
 
 \begin{lstlisting}
@@ -612,7 +612,7 @@ mod Main
 
 	def main () int do
 		// define an array to contain temperatures
-		tempuratures [float] = {32.7, 46.9, 53.1, 68.4, 73.1}
+		let tempuratures [float] = {32.7, 46.9, 53.1, 68.4, 73.1}
 
 		IO.out(temperatures[2]) // print the tempurature in the third position
 
@@ -633,14 +633,14 @@ different lists and concatenate them together so long as the types of their valu
 mod Main
 
 	def main () int do
-		n int = 0
-		nums [int] = {1,2,3}
-		nums2 [int] = {4,5,6,7}
+		let n int = 0
+		let nums [int] = {1,2,3}
+		let nums2 [int] = {4,5,6,7}
 
 		// combine lists with concat
-		combinedNums [int] = n | nums // returns {0,1,2,3}
+		let combinedNums [int] = n | nums // returns {0,1,2,3}
 
-		finalCombinedNums [int] = combinedNums // returns {0,1,2,3,4,5,6,7}
+		let finalCombinedNums [int] = combinedNums // returns {0,1,2,3,4,5,6,7}
 
 		0;
 	end
@@ -655,7 +655,7 @@ different lists together as we combine both integer lists and store it in anothe
 
 Tuples are another collection type. Like lists, tuples are able to store data in an organized fashion. However, unlike lists, tuples are able to store data values that are
 not of the same type. For example, if we want to ensure that our program functions and exits correctly, we can return a tuple of the desired output value and a symbol designating
-if the function performed as it should ($:ok:$ or $:err:$). In this case, we are able to wrap our return values into a list like structure that we can pass back to our caller. In
+if the function performed as it should ($:ok$ or $:err$). In this case, we are able to wrap our return values into a list like structure that we can pass back to our caller. In
 the following example, we have a game character position represented as an integer. We call a function that tries to move the character one space more, but if the character is
 at step 15 or more, we don't want to move the character. To represent that this computation fails in this case, we wrap the returning position integer in a tuple with a symbol
 value representing if the computation moved the character or not.
@@ -665,7 +665,7 @@ mod Main
 
 	def main () int do
 		characterPosition {int, :symbol} = moveCharacter(4)
-		on characterPosition[1] match
+		matchon characterPosition[1]
 			?> :ok ->
 				IO:out("character position moved")
 			?> :err ->
@@ -712,7 +712,7 @@ mod Main
 	}
 
 	def main () do
-		playerOne PlayerCharacter = {"Echo", 14, 186.9}
+		let playerOne PlayerCharacter = {"Echo", 14, 186.9}
 
 		// print the values to the console
 		IO.out(playerOne.name)
@@ -733,7 +733,7 @@ and name it $PlayerTwo$ with different values.
 
 \section{Including Other Module Spaces}
 
-Artifice enables the use of different module spaces in programs through the $use$ keyword. When building our program, we can state what external module spaces we want to include in
+Solace enables the use of different module spaces in programs through the $use$ keyword. When building our program, we can state what external module spaces we want to include in
 our compilation for the compiler to find and link with our current program. There are two different ways we are able to include external module spaces in the current space: the
 standard inclusion, and the specified inclusion.
 
@@ -760,10 +760,10 @@ to.
 
 \section{Conclusion}
 
-Artifice is a simple functional programming language built to act as a bridge between the imperive and declarative domains. Artifice is built to be easy to read and write programs with. While
-in the early stages of its development, Artifice is capable of handling common types and operations as well as complex data structures. Understandably, there are still some limitations
+Solace is a simple functional programming language built to act as a bridge between the imperive and declarative domains. Solace is built to be easy to read and write programs with. While
+in the early stages of its development, Solace is capable of handling common types and operations as well as complex data structures. Understandably, there are still some limitations
 with the language in terms of its capabilities and what it has to offer symantically, but there are plans to expand on the language in the future.
-Artifice is written utilizing Yacc, Bison, and C, with the clang compiler. Artifice will compile down to LLVM intermediate code to then be interpreted and compiled down further
+Solace is written utilizing Yacc, Bison, and C, with the clang compiler. Solace will compile down to LLVM intermediate code to then be interpreted and compiled down further
 to machine code.
 
 

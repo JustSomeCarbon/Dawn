@@ -21,6 +21,7 @@ void throwerr_file_extension(char* filename);
 void throwerr_file_open(char* filename);
 void throwerr_unclosed_string_lex(char* filename, char peek, int lineno);
 void throwerr_invalid_number_lex(char* filename, int lineno);
+void throwerr_invalid_stack_height(int stack_height);
 
 
 #endif
