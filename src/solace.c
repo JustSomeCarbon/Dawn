@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "solace.h"
 #include "solerr.h"
+#include "cleanup.h"
 
 char* sourcefile = NULL;
 
@@ -33,15 +34,4 @@ void valid_solace_source_file(char* givenfile) {
         throwerr_file_extension(givenfile);
         end_runtime();
     }
-}
-
-/*
- * Exits the compiler, cleaning up anything that needs to be cleaned up before
- * terminating the compiler.
- */
-void end_runtime() {
-    // cleanup runtime space...
-
-    // always ran last
-    exit(errflag);
 }

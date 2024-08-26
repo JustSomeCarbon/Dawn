@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "slex.h"
+#include "solerr.h"
+#include "cleanup.h"
 
 /*
  * Construct a new token and return it.
@@ -77,7 +79,8 @@ void free_token_stack(struct tokenStackPtr* stack) {
         free_token(tok);
     }
     if (stack->stack_height != 0) {
-        // throw an error
+        throwerr_invalid_stack_height(stack->stack_height);
+        end_runtime();
     }
 }
 
