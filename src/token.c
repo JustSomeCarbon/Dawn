@@ -50,15 +50,15 @@ struct token build_token(int category, char* string_val, int lineno, char* sourc
  * @param stack_ptr the stack pointer
  * @param new_token the token to be appended to the stack
  */
-void append_to_stack(struct tokenStackPtr* stack_ptr, struct token new_token) {
-    stack_ptr->tail->next = &new_token;
-    stack_ptr->stack_height += 1;
+void append_to_stack(struct tokenStack* stack, struct token new_token) {
+    stack->tail->next = &new_token;
+    stack->stack_height += 1;
 }
 
 /*
  * pops the top token from the stack and returns it.
  */
-struct token pop_token(struct tokenStackPtr* stack) {
+struct token pop_token(struct tokenStack* stack) {
     struct token top_token = stack->head->tok;
     stack->head = stack->head->next;
     stack->stack_height -= 1; // test stack height?
@@ -70,7 +70,10 @@ struct token pop_token(struct tokenStackPtr* stack) {
  * in memory. Nothing is returned.
  * @param stack the token stack
  */
-void free_token_stack(struct tokenStackPtr* stack) {
+void free_token_stack(struct tokenStack* stack) {
+    if (!stack) {
+        return;
+    }
     if (stack->stack_height == 0) {
         return;
     }

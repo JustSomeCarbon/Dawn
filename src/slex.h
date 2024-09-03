@@ -71,28 +71,28 @@ union literalValue {
  * The stack that contains all the tokens that have
  * been lexed
  */
-struct tokenStack {
+struct tokenStackPtr {
     struct token tok;
-    struct tokenStack* next;
+    struct tokenStackPtr* next;
 };
 
 /*
  * a stack pointer to maintain our position in the stack
  */
-struct tokenStackPtr {
-    struct tokenStack* head;
-    struct tokenStack* tail;
+struct tokenStack {
+    struct tokenStackPtr* head;
+    struct tokenStackPtr* tail;
     int stack_height;
 };
 
 /* Lexing Functions */
-struct tokenStack* lex_source_file(char* file_name);
+struct tokenStackPtr* lex_source_file(char* file_name);
 
 /* Token functions */
 struct token build_token(int category, char* string_val, int lineno, char* sourcefile);
-void append_to_stack(struct tokenStackPtr* stack, struct token new_token);
-struct token pop_token(struct tokenStackPtr* stack);
-void free_token_stack(struct tokenStackPtr* stack);
+void append_to_stack(struct tokenStack* stack, struct token new_token);
+struct token pop_token(struct tokenStack* stack);
+void free_token_stack(struct tokenStack* stack);
 void free_token(struct token tok);
 
 #endif
