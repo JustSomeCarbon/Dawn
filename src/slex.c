@@ -14,13 +14,14 @@ char peek(FILE* sourcefile);
 void walk_string(FILE* sourcefile, struct tokenStack* stack);
 void walk_number(FILE* sourcefile, struct tokenStack* stack, char first_num);
 void walk_word(FILE* sourcefile, struct tokenStack* stack, char first_char);
+int is_reserved_word(char* word);
 void walk_special_token(FILE* sourcefile,struct tokenStack* stack, char current_char);
 
 // line number of current position
 int lineno = 1;
 char* sourcefilename;
 
-/*
+/**
  * Takes the source file name and walks through the file to create
  * individual tokens that are stored into a stack that is
  * returned once the whole file is lexed.
@@ -70,7 +71,7 @@ struct tokenStackPtr* lex_source_file(char* file_name) {
     return stack;
 }
 
-/*
+/**
  * walk the source file and consume a character, return the character.
  * @param sourcefile the solace source file
  */
@@ -90,7 +91,7 @@ char peek(FILE* sourcefile) {
     return next_char;
 }
 
-/*
+/**
  * walk a string literal. when the closing double quote is found, create a token
  * of the string literal and add it to the stackptr.
  * @param sourcfile the solace source file
@@ -123,7 +124,7 @@ void walk_string(FILE* sourcefile, struct tokenStack* stack) {
     }
 }
 
-/*
+/**
  * walks a number value until its completion. The number can be either an integer
  * or a floating point number. create a token of the integer literal and
  * append it to the stack.
@@ -162,7 +163,7 @@ void walk_number(FILE* sourcefile, struct tokenStack* stack, char first_num) {
     ungetc(next_character, sourcefile);
 }
 
-/*
+/**
  * walks a word to its completion. Words are either reserved words or user defined
  * words. Creates a token with the completed word and appends it to the stack.
  * @param sourcefile the solace source file
@@ -173,7 +174,16 @@ void walk_word(FILE* sourcefile, struct tokenStack* stack, char first_char) {
     //
 }
 
-/*
+/**
+ * Takes a word and determines if it is a reserved word. If it is, the
+ * reserved word category value is returned, if not 0.
+ * @param word the given word to test
+ */
+int is_reserved_word(char* word) {
+    return 0;
+}
+
+/**
  * builds a token when encountering a special character. Unknown characters
  * throw an error and continue lexing.
  * @param sourcefile the solace source file
