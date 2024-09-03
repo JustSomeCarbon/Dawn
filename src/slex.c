@@ -14,7 +14,7 @@ char peek(FILE* sourcefile);
 void walk_string(FILE* sourcefile, struct tokenStack* stack);
 void walk_number(FILE* sourcefile, struct tokenStack* stack, char first_num);
 void walk_word(FILE* sourcefile, struct tokenStack* stack, char first_char);
-void build_special_token(FILE* sourcefile, char current_char);
+void walk_special_token(FILE* sourcefile,struct tokenStack* stack, char current_char);
 
 // line number of current position
 int lineno = 1;
@@ -50,8 +50,9 @@ struct tokenStackPtr* lex_source_file(char* file_name) {
     while ((current_char = walk(sourcefile)) != EOF) {
     if (current_char != EOF) {
         if (current_char == 10) { // /n
-            lineno += 1;
             // create an EOL token
+            append_to_stack(stack, build_token(EOL, "eol", lineno, sourcefilename));
+            lineno += 1;
         } else if (current_char == 34) { // \"
             // walk through a string
             walk_string(sourcefile, stack);
@@ -61,7 +62,7 @@ struct tokenStackPtr* lex_source_file(char* file_name) {
         } else if ((current_char >= 65 && current_char <= 90) || (current_char >= 97 && current_char <= 122) || (current_char == 95)) { // [A-Za-z_]
             // walk through defined word
         } else {
-            build_special_token(sourcefile, current_char);
+            walk_special_token(sourcefile, stack, current_char);
         }
     }
     }
@@ -178,26 +179,109 @@ void walk_word(FILE* sourcefile, struct tokenStack* stack, char first_char) {
  * @param sourcefile the solace source file
  * @param current_char the current special token found
  */
-void build_special_token(FILE* sourcefile, char current_char) {
+void walk_special_token(FILE* sourcefile, struct tokenStack* stack, char current_char) {
     // create special character token
     switch (current_char) {
         case 40: // (
+            append_to_stack(stack, build_token(LEFT_PAREN, '(', lineno, sourcefilename));
             break;
         case 41: // )
+            append_to_stack(stack, build_token(RIGHT_PAREN, ')', lineno, sourcefilename));
             break;
         case 91: // [
+            append_to_stack(stack, build_token(LEFT_BRACKET, '[', lineno, sourcefilename));
             break;
         case 93: // ]
+            append_to_stack(stack, build_token(RIGHT_BRACKET, ']', lineno, sourcefilename));
             break;
         case 123: // {
+            append_to_stack(stack, build_token(LEFT_BRACE, '{', lineno, sourcefilename));
             break;
         case 125: // }
+            append_to_stack(stack, build_token(RIGHT_BRACE, '}', lineno, sourcefilename));
             break;
         case 126: // ~
+            if (peek(sourcefile) == 61) {
+                append_to_stack(stack, build_token(MATCH_EQUALS, "~=", lineno, sourcefilename));
+                current_char = walk(sourcefile); // =
+            } else {
+                throwerr_invalid_syntax(sourcefilename, current_char, lineno);
+            }
             break;
         case 124: // |
+            if (peek(sourcefile) == 124) {
+                append_to_stack(stack, build_token(OR, "||", lineno, sourcefilename));
+            } else {
+                append_to_stack(stack, build_token(BAR, '|', lineno, sourcefilename));
+            }
+            break;
+        case 38: // &
+            // check if logical and, if not throw error
+            if (peek(sourcefile) == 38) {
+                append_to_stack(stack, build_token(AND, "&&", lineno, sourcefilename));
+            } else {
+                throwerr_invalid_syntax(sourcefilename, current_char, lineno);
+            }
+            break;
+        case 42: // *
+            if (peek(sourcefile) == 61) {
+                append_to_stack(stack, build_token(MULTIPLY_EQUAL, "*=", lineno, sourcefilename));
+            } else {
+                append_to_stack(stack, build_token(MULTIPLY, '*', lineno, sourcefilename));
+            }
+            break;
+        case 43: // +
+            if (peek(sourcefile) == 61) {
+                append_to_stack(stack, build_token(ADD_EQUAL, "+=", lineno, sourcefilename));
+            } else {
+                append_to_stack(stack, build_token(ADD, '+', lineno, sourcefilename));
+            }
+            break;
+        case 45: // -
+            if (peek(sourcefile) == 61) {
+                append_to_stack(stack, build_token(SUBTRACT_EQUAL, "-=", lineno, sourcefilename));
+            } else {
+                append_to_stack(stack, build_token(SUBTRACT, '-', lineno, sourcefilename));
+            }
+            break;
+        case 47: // /
+            if (peek(sourcefile) == 61) {
+                append_to_stack(stack, build_token(DIVIDE_EQUAL, "/=", lineno, sourcefilename));
+            } else {
+                append_to_stack(stack, build_token(DIVIDE, '/', lineno, sourcefilename));
+            }
+            break;
+        case 60: // <
+            if (peek(sourcefile) == 61) {
+                append_to_stack(stack, build_token(LESS_THAN_OR_EQ, "<=", lineno, sourcefilename));
+            } else {
+                append_to_stack(stack, build_token(LESS_THAN, '<', lineno, sourcefilename));
+            }
+            break;
+        case 61: // =
+            if (peek(sourcefile) == 61) {
+                append_to_stack(stack, build_token(IS_EQUAL_TO, "==", lineno, sourcefilename));
+            } else {
+                append_to_stack(stack, build_token(EQUALS, '=', lineno, sourcefilename));
+            }
+            break;
+        case 62: // >
+            if (peek(sourcefile) == 61) {
+                append_to_stack(stack, build_token(GREATER_THAN_OR_EQ, ">=", lineno, sourcefilename));
+            } else {
+                append_to_stack(stack, build_token(GREATER_THAN, '>', lineno, sourcefilename));
+            }
+            break;
+        case 63: // ?
+            if (peek(sourcefile) == 62) {
+                append_to_stack(stack, build_token(MATCH_HEAD, "?>", lineno, sourcefilename));
+            } else {
+                throwerr_invalid_syntax(sourcefilename, current_char, lineno);
+            }
             break;
         default:
+            // invalid character in syntax
+            throwerr_invalid_syntax(sourcefilename, current_char, lineno);
             break;
     }
 }

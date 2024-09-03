@@ -11,7 +11,11 @@ typedef enum {
     END,
     LET,
     MAIN,
+    IF,
+    ELIF,
+    ElSE,
     SEMICOLON,
+    EOL,
 
     FUNCTION,
     INT_LITERAL,
@@ -26,6 +30,10 @@ typedef enum {
     SUBTRACT,
     DIVIDE,
     MULTIPLY,
+    ADD_EQUAL,
+    SUBTRACT_EQUAL,
+    MULTIPLY_EQUAL,
+    DIVIDE_EQUAL,
     DOT,
     AND,
     OR,
@@ -42,9 +50,36 @@ typedef enum {
 
     BAR,
     MATCHON,
-    MATCH_ARM,
+    MATCH_HEAD,
     ARROW_OP,
+
+    LEFT_PAREN,
+    RIGHT_PAREN,
+    LEFT_BRACKET,
+    RIGHT_BRACKET,
+    LEFT_BRACE,
+    RIGHT_BRACE,
 } categoryValues;
+
+char reserved_words[17][10] = { // array_len, word_size
+    "mod",
+    "def",
+    "do",
+    "end",
+    "let",
+    "main",
+    "if",
+    "elseif",
+    "else",
+    "fn",
+    "int",
+    "float",
+    "char",
+    "string",
+    "bool",
+    ":sym",
+    "matchon",
+    };
 
 /*
  * The token structure used to retain the tokenized source file

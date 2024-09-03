@@ -15,6 +15,7 @@ typedef enum {
     ERR_FILE_UNABLE_OPEN = 1004,
     ERR_EOF_LEX = 1005,
     ERR_INVALID_NUM_LEX = 1006,
+    ERR_INVALID_SYNTAX = 1007,
 } err_code;
 
 void throwerr_file_extension(char* filename);
@@ -22,6 +23,7 @@ void throwerr_file_open(char* filename);
 void throwerr_unclosed_string_lex(char* filename, char* str_peek, int lineno);
 void throwerr_invalid_number_lex(char* filename, int lineno);
 void throwerr_invalid_stack_height(int stack_height);
+void throwerr_invalid_syntax(char* filename, char* str_peek, int lineno);
 
 
 #endif
