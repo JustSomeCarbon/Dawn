@@ -83,7 +83,7 @@ void free_token_stack(struct tokenStack* stack) {
     }
     if (stack->stack_height != 0) {
         throwerr_invalid_stack_height(stack->stack_height);
-        end_runtime();
+        end_runtime(stack);
     }
 }
 
