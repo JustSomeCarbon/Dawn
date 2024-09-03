@@ -121,9 +121,11 @@ struct tokenStack {
 };
 
 /* Lexing Functions */
+
 struct tokenStackPtr* lex_source_file(char* file_name);
 
 /* Token functions */
+
 struct token build_token(int category, char* string_val, int lineno, char* sourcefile);
 void append_to_stack(struct tokenStack* stack, struct token new_token);
 struct token pop_token(struct tokenStack* stack);
