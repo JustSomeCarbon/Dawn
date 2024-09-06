@@ -62,6 +62,9 @@ struct tokenStackPtr* lex_source_file(char* file_name) {
             walk_number(sourcefile, stack, current_char);
         } else if ((current_char >= 65 && current_char <= 90) || (current_char >= 97 && current_char <= 122) || (current_char == 95)) { // [A-Za-z_]
             // walk through defined word
+            walk_word(sourcefile, stack, current_char);
+        } else if (current_char == 32) {// space
+            continue;
         } else {
             walk_special_token(sourcefile, stack, current_char);
         }
@@ -146,9 +149,7 @@ void walk_number(FILE* sourcefile, struct tokenStack* stack, char first_num) {
             number_literal[strlen(number_literal)] = '\0';
             append_to_stack(stack, build_token(category, number_literal, lineno, sourcefilename));
             break;
-        }
-        else if (next_character == 46) {
-            // is a dot
+        } else if (next_character == 46) { // is a dot
             category = FLOAT_LITERAL;
         }
         number_literal = realloc(number_literal, strlen(number_literal) + 1);
@@ -171,7 +172,17 @@ void walk_number(FILE* sourcefile, struct tokenStack* stack, char first_num) {
  * @param first_char the first character of the word
  */
 void walk_word(FILE* sourcefile, struct tokenStack* stack, char first_char) {
-    //
+    char* new_word = (char*)malloc(sizeof(char));
+    new_word = first_char;
+    char next_character;
+
+    while((next_character = walk(sourcefile)) != EOF) {
+        // build a new word
+        if (next_character == 32) {
+            // end word
+            break;
+        }
+    }
 }
 
 /**
@@ -197,6 +208,15 @@ void walk_special_token(FILE* sourcefile, struct tokenStack* stack, char current
             break;
         case 41: // )
             append_to_stack(stack, build_token(RIGHT_PAREN, ')', lineno, sourcefilename));
+            break;
+        case 46: // .
+            append_to_stack(stack, build_token(DOT, '.', lineno, sourcefilename));
+            break;
+        case 58: // :
+            append_to_stack(stack, build_token(COLON, ':', lineno, sourcefilename));
+            break;
+        case 59: // ;
+            append_to_stack(stack, build_token(SEMICOLON, ';', lineno, sourcefilename));
             break;
         case 91: // [
             append_to_stack(stack, build_token(LEFT_BRACKET, '[', lineno, sourcefilename));
@@ -224,6 +244,9 @@ void walk_special_token(FILE* sourcefile, struct tokenStack* stack, char current
             } else {
                 append_to_stack(stack, build_token(BAR, '|', lineno, sourcefilename));
             }
+            break;
+        case 33: // !
+            append_to_stack(stack, build_token(NOT, '!', lineno, sourcefilename));;
             break;
         case 38: // &
             // check if logical and, if not throw error

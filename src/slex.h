@@ -14,6 +14,7 @@ typedef enum {
     IF,
     ELIF,
     ElSE,
+    COLON,
     SEMICOLON,
     EOL,
 
