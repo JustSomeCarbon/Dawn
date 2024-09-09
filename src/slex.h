@@ -18,7 +18,15 @@ typedef enum {
     SEMICOLON,
     EOL,
 
-    FUNCTION,
+    FUNCTION_TYPE,
+    INT_TYPE,
+    FLOAT_TYPE,
+    CHAR_TYPE,
+    STRING_TYPE,
+    BOOL_TYPE,
+    SYMBOL_TYPE,
+    TUPPLE_TYPE,
+
     INT_LITERAL,
     FLOAT_LITERAL,
     CHAR_LITERAL,
@@ -60,6 +68,8 @@ typedef enum {
     RIGHT_BRACKET,
     LEFT_BRACE,
     RIGHT_BRACE,
+
+    USER_SYMBOL,
 } categoryValues;
 
 char reserved_words[17][10] = { // array_len, word_size
@@ -82,7 +92,7 @@ char reserved_words[17][10] = { // array_len, word_size
     "matchon",
     };
 
-/*
+/**
  * The token structure used to retain the tokenized source file
  */
 struct token {
@@ -93,7 +103,7 @@ struct token {
     union literalValue val;
 };
 
-/*
+/**
  * The true value of the allocated token
  */
 union literalValue {
@@ -103,7 +113,7 @@ union literalValue {
     char* sval;
 };
 
-/*
+/**
  * The stack that contains all the tokens that have
  * been lexed
  */
@@ -112,7 +122,7 @@ struct tokenStackPtr {
     struct tokenStackPtr* next;
 };
 
-/*
+/**
  * a stack pointer to maintain our position in the stack
  */
 struct tokenStack {

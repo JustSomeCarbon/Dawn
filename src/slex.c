@@ -14,8 +14,12 @@ char peek(FILE* sourcefile);
 void walk_string(FILE* sourcefile, struct tokenStack* stack);
 void walk_number(FILE* sourcefile, struct tokenStack* stack, char first_num);
 void walk_word(FILE* sourcefile, struct tokenStack* stack, char first_char);
+void walk_symbol(FILE* sourcefile, struct tokenStack* stack);
 int is_reserved_word(char* word);
 void walk_special_token(FILE* sourcefile,struct tokenStack* stack, char current_char);
+int is_alpha_or_num(char character);
+int is_alpha(char character);
+int is_num(char character);
 
 // line number of current position
 int lineno = 1;
@@ -54,13 +58,13 @@ struct tokenStackPtr* lex_source_file(char* file_name) {
             // create an EOL token
             append_to_stack(stack, build_token(EOL, "eol", lineno, sourcefilename));
             lineno += 1;
-        } else if (current_char == 34) { // \"
+        } else if (current_char == 34) { // "
             // walk through a string
             walk_string(sourcefile, stack);
         } else if (current_char >= 48 && current_char <= 57) { // [0-9]
             // walk through number
             walk_number(sourcefile, stack, current_char);
-        } else if ((current_char >= 65 && current_char <= 90) || (current_char >= 97 && current_char <= 122) || (current_char == 95)) { // [A-Za-z_]
+        } else if (is_alpha(current_char) || (current_char == 95)) { // [A-Za-z_]
             // walk through defined word
             walk_word(sourcefile, stack, current_char);
         } else if (current_char == 32) {// space
@@ -101,28 +105,34 @@ char peek(FILE* sourcefile) {
  * @param stackptr the pointer to the token stack
  */
 void walk_string(FILE* sourcefile, struct tokenStack* stack) {
+    int start_line = lineno;
     char* string_token = malloc(sizeof(char));
+    int length = 1;
     *string_token = "\"";
     
     char next_character;
     while(next_character = walk(sourcefile) != EOF) {
-        if (next_character == 34) {
+        if (next_character == 34) { // "
             // end of string
-            // create token
-            string_token = realloc(string_token, strlen(string_token) + 1);
-            string_token[strlen(string_token)] = '\0';
+            string_token = realloc(string_token, strlen(string_token) + 2);
+            string_token[length] = '\"';
+            string_token[length+1] = '\0';
             append_to_stack(stack, build_token(STRING_LITERAL, string_token, lineno, sourcefilename));
-            break;
+            return;
         }
-        string_token = realloc(string_token, strlen(string_token) + 1);
-        string_token[strlen(string_token)] = next_character;
+        if (next_character == '\n') {
+            lineno += 1;
+        }
+        string_token = realloc(string_token, length + 1);
+        string_token[length] = next_character;
+        length += 1;
     }
     if (next_character == EOF) {
         // end of the file
         free(string_token);
         char str_peek[15];
         strncpy(str_peek, string_token, 15);
-        throwerr_unclosed_string_lex(sourcefile, str_peek, lineno);
+        throwerr_unclosed_string_lex(sourcefile, str_peek, start_line);
         end_runtime(stack); // need to free stack
     }
 }
@@ -138,26 +148,28 @@ void walk_string(FILE* sourcefile, struct tokenStack* stack) {
 void walk_number(FILE* sourcefile, struct tokenStack* stack, char first_num) {
     char* number_literal = (char*)malloc(sizeof(char));
     number_literal = first_num;
+    int length = 1;
     int category = INT_LITERAL;
 
     char next_character;
     while ((next_character = walk(sourcefile)) != EOF) {
-        if ((next_character == 32) || !(next_character >= 48 && next_character <= 57) || !(next_character == 46)) {
+        if ((next_character == 32) || !(is_num(next_character)) || !(next_character == 46)) {
             // is a space, is not a number, or is not a dot
-            // end of number literal
-            number_literal = realloc(number_literal, strlen(number_literal) + 1);
+            // end of number
+            number_literal = realloc(number_literal, sizeof(char) * (length + 1));
             number_literal[strlen(number_literal)] = '\0';
             append_to_stack(stack, build_token(category, number_literal, lineno, sourcefilename));
-            break;
+            return;
         } else if (next_character == 46) { // is a dot
             category = FLOAT_LITERAL;
         }
-        number_literal = realloc(number_literal, strlen(number_literal) + 1);
-        number_literal[strlen(number_literal)] = next_character;
+        number_literal = realloc(number_literal, sizeof(char) * (length + 1));
+        number_literal[length] = next_character;
+        length += 1;
     }
     if (next_character == EOF) {
-        number_literal = realloc(number_literal, strlen(number_literal) + 1);
-        number_literal[strlen(number_literal)] = '\0';
+        number_literal = realloc(number_literal, sizeof(char) * (length + 1));
+        number_literal[length] = '\0';
         append_to_stack(stack, build_token(category, number_literal, lineno, sourcefilename));
     }
     // move the source file back a single character
@@ -175,13 +187,33 @@ void walk_word(FILE* sourcefile, struct tokenStack* stack, char first_char) {
     char* new_word = (char*)malloc(sizeof(char));
     new_word = first_char;
     char next_character;
+    int length = strlen(new_word);
 
     while((next_character = walk(sourcefile)) != EOF) {
         // build a new word
-        if (next_character == 32) {
-            // end word
+        if (next_character == 32) { // space character
+            // end of the word
+            new_word = realloc(new_word, sizeof(char) * (length + 1));
+            new_word[length] = '/0';
+            append_to_stack(stack, build_token(USER_SYMBOL, new_word, lineno, sourcefilename));
             break;
+        } else if (is_alpha_or_num(next_character) || next_character == 95) {
+            new_word = realloc(new_word, sizeof(char) * (length + 1));
+            new_word[length] = next_character;
+            length += 1;
+        } else {
+            // throw an error
         }
+    }
+}
+
+void walk_symbol(FILE* sourcefile, struct tokenStack* stack) {
+    char* new_symbol = (char*)malloc(sizeof(char));
+    new_symbol = ':';
+    char next_character;
+
+    while((next_character = walk(sourcefile)) != EOF) {
+        // DO THINGS
     }
 }
 
@@ -213,6 +245,19 @@ void walk_special_token(FILE* sourcefile, struct tokenStack* stack, char current
             append_to_stack(stack, build_token(DOT, '.', lineno, sourcefilename));
             break;
         case 58: // :
+            char next = peek(sourcefile);
+            if (next == 58) {
+                // build a colon token
+                append_to_stack(stack, build_token(COLON, "::", lineno, sourcefilename));
+            } else {
+                if (is_alpha(next)) {
+                    // build a symbol token
+                    walk_symbol(sourcefile, stack);
+                } else {
+                    // throw an error
+                    throwerr_invalid_syntax(sourcefilename, next, "Invalid symbol definition", lineno);
+                }
+            }
             append_to_stack(stack, build_token(COLON, ':', lineno, sourcefilename));
             break;
         case 59: // ;
@@ -235,7 +280,7 @@ void walk_special_token(FILE* sourcefile, struct tokenStack* stack, char current
                 append_to_stack(stack, build_token(MATCH_EQUALS, "~=", lineno, sourcefilename));
                 current_char = walk(sourcefile); // =
             } else {
-                throwerr_invalid_syntax(sourcefilename, current_char, lineno);
+                throwerr_invalid_syntax(sourcefilename, current_char, "Expected an = character",  lineno);
             }
             break;
         case 124: // |
@@ -249,11 +294,12 @@ void walk_special_token(FILE* sourcefile, struct tokenStack* stack, char current
             append_to_stack(stack, build_token(NOT, '!', lineno, sourcefilename));;
             break;
         case 38: // &
+            char next = peek(sourcefile);
             // check if logical and, if not throw error
-            if (peek(sourcefile) == 38) {
+            if (next == 38) {
                 append_to_stack(stack, build_token(AND, "&&", lineno, sourcefilename));
             } else {
-                throwerr_invalid_syntax(sourcefilename, current_char, lineno);
+                throwerr_invalid_syntax(sourcefilename, next, "Expected an & charcter", lineno);
             }
             break;
         case 42: // *
@@ -306,15 +352,51 @@ void walk_special_token(FILE* sourcefile, struct tokenStack* stack, char current
             }
             break;
         case 63: // ?
-            if (peek(sourcefile) == 62) {
+            char next = peek(sourcefile);
+            if (next == 62) {
                 append_to_stack(stack, build_token(MATCH_HEAD, "?>", lineno, sourcefilename));
             } else {
-                throwerr_invalid_syntax(sourcefilename, current_char, lineno);
+                throwerr_invalid_syntax(sourcefilename, next, "Expected a > character", lineno);
             }
             break;
         default:
             // invalid character in syntax
-            throwerr_invalid_syntax(sourcefilename, current_char, lineno);
+            throwerr_invalid_syntax(sourcefilename, current_char, "Invalid character found", lineno);
             break;
     }
+}
+
+/**
+ * checks the given character and determines if the character is an
+ * alphabet character, or a number character. If not 0 is returned.
+ * @param character the given character to test
+ */
+int is_alpha_or_num(char character) {
+    if ((character >= 48 && character <= 57) || (character >= 65 && character <= 90) || (character >= 97 && character <= 122)) {
+        return 1;
+    }
+    return 0;
+}
+
+/**
+ * checks if the given character is an alphabet character. Returns 0 if not.
+ * @param character the given character to test
+ */
+int is_alpha(char character) {
+    // [A-Za-z]
+    if ((character >= 65 && character <= 90) || (character >= 97 && character <= 122)) {
+        return 1;
+    }
+    return 0;
+}
+
+/**
+ * checks if the given character is a number character. Returns 0 if not.
+ * @param character the given character to test
+ */
+int is_num(char character) {
+    if (character >= 65 && character <= 90) {
+        return 1;
+    }
+    return 0;
 }
