@@ -17,6 +17,9 @@ void walk_word(FILE* sourcefile, struct tokenStack* stack, char first_char);
 void walk_symbol(FILE* sourcefile, struct tokenStack* stack);
 int is_reserved_word(struct tokenStack* stack, char* word);
 void walk_special_token(FILE* sourcefile,struct tokenStack* stack, char current_char);
+void walk_line_comment(FILE* sourcefile);
+void walk_multiline_comment(FILE* sourcefile);
+
 int is_alpha_or_num(char character);
 int is_alpha(char character);
 int is_num(char character);
@@ -353,7 +356,11 @@ void walk_special_token(FILE* sourcefile, struct tokenStack* stack, char current
             }
             break;
         case 47: // /
-            if (peek(sourcefile) == 61) {
+            if (peek(sourcefile) == 47) { // /
+                walk_line_comment(sourcefile);
+            } else if (peek(sourcefile) == 42) { // *
+                walk_multiline_comment(sourcefile);
+            } else if (peek(sourcefile) == 61) {
                 append_to_stack(stack, build_token(DIVIDE_EQUAL, "/=", lineno, sourcefilename));
             } else {
                 append_to_stack(stack, build_token(DIVIDE, '/', lineno, sourcefilename));
@@ -393,6 +400,37 @@ void walk_special_token(FILE* sourcefile, struct tokenStack* stack, char current
             throwerr_invalid_syntax(sourcefilename, current_char, "Invalid character found", lineno);
             break;
     }
+}
+
+/**
+ * walk the remainder of the line and discard everything
+ * @param sourcefile the source file
+ */
+void walk_line_comment(FILE* sourcefile) {
+    while (walk(sourcefile) != 10) {
+        continue;
+    }
+    lineno += 1;
+}
+
+/**
+ * walk the remainder of the line until a close multiline comment
+ * symbol is found. Discard everything.
+ * @param sourcefile the source file
+ */
+void walk_multiline_comment(FILE* sourcefile) {
+    // consume the * character
+    walk(sourcefile);
+    // consume the first character in the comment
+    char current_char = walk(sourcefile);
+    while (!(current_char == '*' && peek(sourcefile) == 47)) {
+        current_char = walk(sourcefile);
+        if (current_char == 10) {
+            lineno += 1;
+        }
+    }
+    // consume the end of the multiline comment
+    walk(sourcefile);
 }
 
 /**
