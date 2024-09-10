@@ -22,7 +22,7 @@ typedef enum {
 void throwerr_file_extension(char* filename);
 void throwerr_file_open(char* filename);
 void throwerr_unclosed_string_lex(char* filename, char* str_peek, int lineno);
-void throwerr_invalid_number_lex(char* filename, int lineno);
+void throwerr_invalid_number_lex(char* filename, char current_char, int lineno);
 void throwerr_invalid_stack_height(int stack_height);
 void throwerr_invalid_syntax(char* filename, char* str_peek, char* description, int lineno);
 

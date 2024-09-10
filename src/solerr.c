@@ -32,7 +32,7 @@ void throwerr_file_open(char* filename) {
  * @param lineno the line number the string begins at
  */
 void throwerr_unclosed_string_lex(char* filename, char* str_peek, int lineno) {
-    fprintf(stderr, "Error:%d::%d:: string '%s' not closed by end of file\n\n", ERR_EOF_LEX, lineno, str_peek);
+    fprintf(stderr, "Error:%d:  %s::%d:: string '%s' not closed by end of file\n\n", ERR_EOF_LEX, filename, lineno, str_peek);
     errflag++;
     return;
 }
@@ -42,8 +42,8 @@ void throwerr_unclosed_string_lex(char* filename, char* str_peek, int lineno) {
  * @param filename the name of the source file
  * @param lineno the line number or the error
  */
-void throwerr_invalid_number_lex(char* filename, int lineno) {
-    // might not need this???
+void throwerr_invalid_number_lex(char* filename, char current_char, int lineno) {
+    fprintf(stderr, "Error:%d:  %s::%d:: invalid character %c in number definition\n\n", ERR_INVALID_NUM_LEX, filename, lineno, current_char);
     errflag++;
     return;
 }
@@ -54,7 +54,7 @@ void throwerr_invalid_number_lex(char* filename, int lineno) {
  * @param stack_height the remaining height of the stack
  */
 void throwerr_invalid_stack_height(int stack_height) {
-    fprintf(stderr, "Error:%d: Invalid lexing token stack height\n\tRemaining: %d", ERR_STACK_HEIGHT, stack_height);
+    fprintf(stderr, "Error:%d: Invalid lexing token stack height\n\tRemaining: %d\n\n", ERR_STACK_HEIGHT, stack_height);
     errflag++;
     return;
 }
@@ -67,7 +67,7 @@ void throwerr_invalid_stack_height(int stack_height) {
  * @param lineno the line that the error occured
  */
 void throwerr_invalid_syntax(char* filename, char* str_peek, char* description, int lineno) {
-    fprintf(stderr, "Error:%d::%d:: invalid syntax at '%s'\n\t%s", ERR_INVALID_SYNTAX, lineno, str_peek, description);
+    fprintf(stderr, "Error:%d:  %s::%d:: invalid syntax at '%s'\n\t%s", ERR_INVALID_SYNTAX, filename, lineno, str_peek, description);
     errflag++;
     return;
 }

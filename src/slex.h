@@ -14,9 +14,7 @@ typedef enum {
     IF,
     ELIF,
     ElSE,
-    COLON,
-    SEMICOLON,
-    EOL,
+    MATCHON,
 
     FUNCTION_TYPE,
     INT_TYPE,
@@ -70,8 +68,16 @@ typedef enum {
     RIGHT_BRACE,
 
     USER_SYMBOL,
+    COLON,
+    SEMICOLON,
+    EOL,
 } categoryValues;
 
+/**
+ * the reserved words for the compiler.
+ * Make sure the length of the words is always 1 more than the
+ * largest reserve word to make space for the '\0' character.
+ */
 char reserved_words[17][10] = { // array_len, word_size
     "mod",
     "def",
@@ -82,6 +88,7 @@ char reserved_words[17][10] = { // array_len, word_size
     "if",
     "elseif",
     "else",
+    "matchon",
     "fn",
     "int",
     "float",
@@ -89,7 +96,6 @@ char reserved_words[17][10] = { // array_len, word_size
     "string",
     "bool",
     ":sym",
-    "matchon",
     };
 
 /**

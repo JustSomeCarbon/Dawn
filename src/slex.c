@@ -15,7 +15,7 @@ void walk_string(FILE* sourcefile, struct tokenStack* stack);
 void walk_number(FILE* sourcefile, struct tokenStack* stack, char first_num);
 void walk_word(FILE* sourcefile, struct tokenStack* stack, char first_char);
 void walk_symbol(FILE* sourcefile, struct tokenStack* stack);
-int is_reserved_word(char* word);
+int is_reserved_word(struct tokenStack* stack, char* word);
 void walk_special_token(FILE* sourcefile,struct tokenStack* stack, char current_char);
 int is_alpha_or_num(char character);
 int is_alpha(char character);
@@ -153,13 +153,16 @@ void walk_number(FILE* sourcefile, struct tokenStack* stack, char first_num) {
 
     char next_character;
     while ((next_character = walk(sourcefile)) != EOF) {
+        if (is_alpha(next_character)) {
+            throwerr_invalid_number_lex(sourcefilename, next_character, lineno);
+        }
         if ((next_character == 32) || !(is_num(next_character)) || !(next_character == 46)) {
             // is a space, is not a number, or is not a dot
             // end of number
             number_literal = realloc(number_literal, sizeof(char) * (length + 1));
-            number_literal[strlen(number_literal)] = '\0';
+            number_literal[length] = '\0';
             append_to_stack(stack, build_token(category, number_literal, lineno, sourcefilename));
-            return;
+            break;
         } else if (next_character == 46) { // is a dot
             category = FLOAT_LITERAL;
         }
@@ -172,7 +175,7 @@ void walk_number(FILE* sourcefile, struct tokenStack* stack, char first_num) {
         number_literal[length] = '\0';
         append_to_stack(stack, build_token(category, number_literal, lineno, sourcefilename));
     }
-    // move the source file back a single character
+    // put the next character back
     ungetc(next_character, sourcefile);
 }
 
@@ -191,30 +194,49 @@ void walk_word(FILE* sourcefile, struct tokenStack* stack, char first_char) {
 
     while((next_character = walk(sourcefile)) != EOF) {
         // build a new word
-        if (next_character == 32) { // space character
-            // end of the word
-            new_word = realloc(new_word, sizeof(char) * (length + 1));
-            new_word[length] = '/0';
-            append_to_stack(stack, build_token(USER_SYMBOL, new_word, lineno, sourcefilename));
-            break;
-        } else if (is_alpha_or_num(next_character) || next_character == 95) {
+        if (is_alpha_or_num(next_character) || (next_character == 95)) {
             new_word = realloc(new_word, sizeof(char) * (length + 1));
             new_word[length] = next_character;
             length += 1;
         } else {
-            // throw an error
+            // end of the word
+            new_word = realloc(new_word, sizeof(char) * (length + 1));
+            new_word[length] = '/0';
+            if (!(is_reserved_word(stack, new_word))) {
+                append_to_stack(stack, build_token(USER_SYMBOL, new_word, lineno, sourcefilename));
+            }
+            break;
         }
     }
+    // put the next character back
+    ungetc(next_character, sourcefile);
 }
 
 void walk_symbol(FILE* sourcefile, struct tokenStack* stack) {
     char* new_symbol = (char*)malloc(sizeof(char));
     new_symbol = ':';
     char next_character;
+    int length = 1;
 
     while((next_character = walk(sourcefile)) != EOF) {
-        // DO THINGS
+        if (is_alpha(next_character)) {
+            // build symbol
+            new_symbol = realloc(new_symbol, sizeof(char) * (length+1));
+            new_symbol[length] = next_character;
+            length += 1;
+        } else {
+            // end symbol
+            new_symbol = realloc(new_symbol, sizeof(char) * (length+1));
+            new_symbol[length] = '\0';
+            if (strcmp(new_symbol, reserved_words[16]) == 0) {
+                append_to_stack(stack, build_token(SYMBOL_TYPE, new_symbol, lineno, sourcefilename));
+            } else {
+                append_to_stack(stack, build_token(SYMBOL_TYPE, new_symbol, lineno, sourcefilename));
+            }
+            break;
+        }
     }
+    ungetc(next_character, sourcefile);
 }
 
 /**
@@ -222,7 +244,14 @@ void walk_symbol(FILE* sourcefile, struct tokenStack* stack) {
  * reserved word category value is returned, if not 0.
  * @param word the given word to test
  */
-int is_reserved_word(char* word) {
+int is_reserved_word(struct tokenStack* stack, char* word) {
+    int length = sizeof(reserved_words) / sizeof(reserved_words[0]);
+    for (int i = 0; i < length; i++) {
+        if (strcmp(word, reserved_words[i]) == 0) {
+            append_to_stack(stack, build_token((1101+i), word, lineno, sourcefilename));
+            return 1;
+        }
+    }
     return 0;
 }
 
