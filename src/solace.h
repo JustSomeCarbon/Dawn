@@ -6,4 +6,4 @@ extern struct tokenStack* stack;
 
 void valid_solace_source_file(char* givenfile);
 
-#endif SOLC_H
+#endif
