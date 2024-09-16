@@ -56,7 +56,6 @@ typedef enum {
     LESS_THAN_OR_EQ,
 
     BAR,
-    MATCHON,
     MATCH_HEAD,
     ARROW_OP,
 
@@ -99,6 +98,16 @@ char reserved_words[17][10] = { // array_len, word_size
     };
 
 /**
+ * The true value of the allocated token
+ */
+typedef union {
+    int ival;
+    double dval;
+    char cval;
+    char* sval;
+} literalValue;
+
+/**
  * The token structure used to retain the tokenized source file
  */
 struct token {
@@ -106,17 +115,7 @@ struct token {
     int lineno;
     int category;
     char* fileorigin;
-    union literalValue val;
-};
-
-/**
- * The true value of the allocated token
- */
-union literalValue {
-    int ival;
-    double dval;
-    char cval;
-    char* sval;
+    literalValue val;
 };
 
 /**
@@ -139,7 +138,7 @@ struct tokenStack {
 
 /* Lexing Functions */
 
-struct tokenStackPtr* lex_source_file(char* file_name);
+struct tokenStack* lex_source_file(char* file_name);
 
 /* Token functions */
 

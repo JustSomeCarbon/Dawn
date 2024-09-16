@@ -34,7 +34,7 @@ char* sourcefilename;
  * returned once the whole file is lexed.
  * @param filename the name of the solace source file
  */
-struct tokenStackPtr* lex_source_file(char* file_name) {
+struct tokenStack* lex_source_file(char* file_name) {
     sourcefilename = strndup(file_name, strlen(file_name));
     FILE* sourcefile = fopen(file_name, "r");
     if (!sourcefile) {
@@ -43,12 +43,8 @@ struct tokenStackPtr* lex_source_file(char* file_name) {
         end_runtime(NULL);
     }
 
-    // maintains our position within the stack
-    struct tokenStackPtr* stackptr = NULL;
     // maintains the head, tail, and height of the stack
     struct tokenStack* stack = (struct tokenStack*)malloc(sizeof(struct tokenStackPtr));
-    stack->head = stackptr;
-    stack->tail = stackptr;
     stack->stack_height = 0;
 
     // current character in source file

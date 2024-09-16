@@ -14,7 +14,7 @@ void print_stack(struct tokenStack* stack);
 /*
  * Solace Compiler: anvl
  */
-int main(int argc, char* argv) {
+int main(int argc, char* argv[]) {
     if (argc != 2) {
         perror("Error: invalide use of solace compiler\n");
         printf("Usage: ./anvl <sourcefilename.solc>\n\n");

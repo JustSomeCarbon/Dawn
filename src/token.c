@@ -21,7 +21,7 @@ struct token build_token(int category, char* string_val, int lineno, char* sourc
     char* token_string = strncpy(token_string, string_val, strlen(string_val));
     char* file = strncpy(file, sourcefile, strlen(sourcefile));
 
-    union literalValue lit_val = {0};
+    literalValue lit_val = {.ival = 0};
     switch (category)
     {
     case INT_LITERAL:
