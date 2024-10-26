@@ -34,15 +34,14 @@ Currently only tested on Linux/Unix and Apple silicon systems.
 To run the Solace compiler, run the resulting object file called `anvl` followed by the name of the source file to
 be compiled.
 ~~~
-$ ./anvl example_file.arfc
+$ ./slx example_file.slc
 ~~~
 
 To run the debugger to print the abstract syntax tree of the compiled file to the console we set the flag.
 ~~~
-$ ./anvl -s example_file.arfc
+$ ./slx -s example_file.slc
 ~~~
 
 To print the symbols capured by the compiler during execution, set the symbol_table_flag during compilation.
 ~~~
-$ ./anvl -t example_file.arfc
-~~~
+$ ./slx -t example_file.slc
